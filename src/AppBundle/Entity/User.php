@@ -120,4 +120,12 @@ class User
     {
         $this->roles->add($role);
     }
+    
+    /**
+     * @param Role $role
+     */
+    public function removeRole(Role $role)
+    {
+        $this->roles->removeElement($role);
+    }
 }
