@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,6 +39,17 @@ class User
     private $registrationDate;
 
     /**
+     * @var Role[]|ArrayCollection
+     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
+     * @ORM\JoinTable(
+     *     name="user_roles",
+     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="login")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="name")}
+     *     )
+     */
+    private $roles;
+
+    /**
      * @param string $login
      * @param string $name
      * @param string|null $description
@@ -48,6 +60,7 @@ class User
         $this->name = $name;
         $this->description = $description;
         $this->registrationDate = new \DateTime();
+        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -90,5 +103,13 @@ class User
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return Role[]|ArrayCollection
+     */
+    public function getRoles(): ArrayCollection
+    {
+        return $this->roles;
     }
 }

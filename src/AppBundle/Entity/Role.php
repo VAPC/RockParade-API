@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,6 +27,23 @@ class Role
     private $description;
 
     /**
+     * @var User[]|ArrayCollection
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
+     */
+    private $users;
+
+    /**
+     * @param string $name
+     * @param string|null $description
+     */
+    public function __construct($name, $description = null)
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->users = new ArrayCollection();
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -47,6 +65,14 @@ class Role
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return User[]|ArrayCollection
+     */
+    public function getUsers(): ArrayCollection
+    {
+        return $this->users;
     }
 }
 
