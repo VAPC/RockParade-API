@@ -1,0 +1,42 @@
+# Old Symfony directories
+app/bootstrap.php.cache
+app/cache/*
+app/logs/*
+
+# Symfony directories
+app/phpunit.xml
+/bin/
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
+/vendor/
+/web/bundles/
+web/uploads/*
+
+# Configuration files
+app/config/parameters.ini
+app/config/parameters.yml
+
+# Composer
+composer.phar
+
+# PhpStorm
+/.idea/
+
+# Node and Bower modules
+/node_modules/
+/bower_components/
+
+# JS and CSS compiled files
+/web/assets/*
+
+# PhpUnit
+/phpunit.xml
