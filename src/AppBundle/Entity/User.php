@@ -112,4 +112,12 @@ class User
     {
         return $this->roles;
     }
+
+    /**
+     * @param Role $role
+     */
+    public function addRole(Role $role)
+    {
+        $this->roles->add($role);
+    }
 }
