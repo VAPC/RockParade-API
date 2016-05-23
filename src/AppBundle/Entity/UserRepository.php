@@ -2,10 +2,10 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\EntityRepository;
+use AppBundle\Entity\Infrasctucture\AbstractRepository;
 
 /** {@inheritDoc} */
-class UserRepository extends EntityRepository
+class UserRepository extends AbstractRepository
 {
 
     /**
