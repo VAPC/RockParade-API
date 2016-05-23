@@ -14,17 +14,31 @@ class RestController extends Controller
     const FORMAT_JSON = 'json';
 
     /**
-     * @param array $data
-     * @return mixed|string
+     * @param array|object $data
+     * @return Response
      */
-    public function respond(array $data): Response
+    public function respond($data): Response
     {
-        $serializer = $this->get('jms_serializer');
-        $serializedData = $serializer->serialize($data, self::FORMAT_JSON);
-        
-        $response = new Response($serializedData);
+        if ($data) {
+            $serializer = $this->get('jms_serializer');
+            $serializedData = $serializer->serialize($data, self::FORMAT_JSON);
+
+            $response = new Response($serializedData);
+        } else {
+            $response = $this->createNotFoundResponse();
+        }
+
         $response->headers->set('Content-Type', 'application/json');
-        
+
         return $response;
+
+    }
+
+    /**
+     * @return Response
+     */
+    private function createNotFoundResponse(): Response
+    {
+        return new Response(json_encode(Response::$statusTexts[Response::HTTP_NOT_FOUND]), Response::HTTP_NOT_FOUND);
     }
 }

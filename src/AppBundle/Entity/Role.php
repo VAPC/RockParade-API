@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * User role
@@ -68,9 +69,9 @@ class Role
     }
 
     /**
-     * @return User[]|ArrayCollection
+     * @return PersistentCollection|User[]
      */
-    public function getUsers(): ArrayCollection
+    public function getUsers(): PersistentCollection
     {
         return $this->users;
     }

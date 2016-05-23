@@ -4,6 +4,10 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Type as SerializerType;
 
 /**
  * User
@@ -35,6 +39,7 @@ class User
     /**
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime", nullable=false)
+     * @SerializedName("registration_date")
      */
     private $registrationDate;
 
@@ -46,6 +51,8 @@ class User
      *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="login")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="name")}
      *     )
+     * @Accessor(getter="getRolesNames")
+     * @SerializerType("array")
      */
     private $roles;
 
@@ -106,9 +113,9 @@ class User
     }
 
     /**
-     * @return Role[]|ArrayCollection
+     * @return PersistentCollection|Role[]
      */
-    public function getRoles(): ArrayCollection
+    public function getRoles(): PersistentCollection
     {
         return $this->roles;
     }
@@ -127,5 +134,15 @@ class User
     public function removeRole(Role $role)
     {
         $this->roles->removeElement($role);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getRolesNames(): array
+    {
+        return array_map(function (Role $role) {
+            return $role->getName();
+        }, $this->getRoles()->toArray());
     }
 }
