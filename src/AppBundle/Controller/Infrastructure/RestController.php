@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller\Infrastructure;
 
-use AppBundle\Response\HttpCodeInterface;
+use AppBundle\Response\ApiError;
+use AppBundle\Response\ApiResnonse;
+use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,37 +17,18 @@ class RestController extends Controller
     const FORMAT_JSON = 'json';
 
     /**
-     * @param array|object $data
+     * @param ApiResnonse $responseContents
      * @return Response
      */
-    public function respond($data): Response
+    public function respond(ApiResnonse $responseContents): Response
     {
-        if ($data) {
-            $serializer = $this->get('jms_serializer');
-            $serializedData = $serializer->serialize($data, self::FORMAT_JSON);
+        $serializer = $this->get('jms_serializer');
+        $serializedData = $serializer->serialize($responseContents, self::FORMAT_JSON);
 
-            $code = Response::HTTP_OK;
-            
-            if ($data instanceof HttpCodeInterface) {
-            	$code = $data->getCode();
-            }
-            
-            $response = new Response($serializedData, $code);
-        } else {
-            $response = $this->createNotFoundResponse();
-        }
-
+        $response = new Response($serializedData, $responseContents->getHttpCode());
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
 
-    }
-
-    /**
-     * @return Response
-     */
-    private function createNotFoundResponse(): Response
-    {
-        return new Response(json_encode(Response::$statusTexts[Response::HTTP_NOT_FOUND]), Response::HTTP_NOT_FOUND);
     }
 }
