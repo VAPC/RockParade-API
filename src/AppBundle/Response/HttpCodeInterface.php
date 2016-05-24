@@ -8,6 +8,9 @@ namespace AppBundle\Response;
 interface HttpCodeInterface
 {
 
-    /** @return int */
-    public function getCode(): int;
+    /**
+     * Get HTTP code
+     * @return int
+     */
+    public function getHttpCode(): int;
 }
