@@ -2,9 +2,7 @@
 
 namespace AppBundle\Controller\Infrastructure;
 
-use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiResnonse;
-use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
