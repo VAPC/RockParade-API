@@ -10,19 +10,19 @@ use JMS\Serializer\Annotation\Exclude;
 class ApiResnonse implements HttpCodeInterface
 {
     /** @var array */
-    private $data;
+    protected $data;
 
     /**
      * @var int
      * @Exclude
      */
-    private $httpCode;
+    protected $httpCode;
 
     /**
-     * @param array $data
+     * @param $data
      * @param int $httpCode
      */
-    public function __construct(array $data, int $httpCode)
+    public function __construct($data, int $httpCode)
     {
         $this->data = $data;
         $this->httpCode = $httpCode;
