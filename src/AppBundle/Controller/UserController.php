@@ -6,6 +6,8 @@ use AppBundle\Entity\User;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\UserRepository;
 use AppBundle\Response\ApiError;
+use AppBundle\Response\ApiResnonse;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,45 +21,100 @@ class UserController extends RestController
 {
 
     /**
-     * @Route("/", name="users_index")
+     * List all users
+     * @Route("/", name="users_list")
      * @Method("GET")
+     * @ApiDoc(
+     *     statusCodes={
+     *         200="OK",
+     *     }
+     * )
      * @return Response
      */
-    public function indexAction(): Response
+    public function listAction(): Response
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->getDoctrine()->getRepository(User::class);
         $allUsers = $userRepository->findAll();
 
-        return $this->respond($allUsers);
+        $response = new ApiResnonse($allUsers, Response::HTTP_OK);
+
+        return $this->respond($response);
     }
 
     /**
-     * @Route("/view/{userLogin}", name="users_view")
+     * View single user by login
+     * @param string $login user login
+     * @Route("/view/{login}", name="users_view")
      * @Method("GET")
-     * @param string $userLogin
+     * @ApiDoc(
+     *     statusCodes={
+     *         200="User was found",
+     *         404="User with given login was not found",
+     *     }
+     * )
      * @return Response
      */
-    public function viewAction(string $userLogin): Response
+    public function viewAction(string $login): Response
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->getDoctrine()->getRepository(User::class);
-        $user = $userRepository->findOneByLogin($userLogin);
+        $user = $userRepository->findOneByLogin($login);
 
-        return $this->respond($user);
+        if ($user) {
+            $response = new ApiResnonse($user, Response::HTTP_OK);
+        } else {
+            $response = $this->createUserNotFoundErrorResult($login);
+        }
+
+        return $this->respond($response);
     }
 
     /**
-     * @Route("/create", name="users_add")
-     * @Method("POST")
+     * Create new user with given login, name and description
      * @param Request $request
+     * @Route("/create", name="users_create")
+     * @Method("POST")
+     * @ApiDoc(
+     *     requirements={
+     *         {
+     *             "name"="login",
+     *             "dataType"="string",
+     *             "requirement"="word",
+     *             "description"="user login in single word"
+     *         },
+     *         {
+     *             "name"="name",
+     *             "dataType"="string",
+     *             "requirement"="text",
+     *             "description"="user full name"
+     *         },
+     *         {
+     *             "name"="description",
+     *             "dataType"="string",
+     *             "requirement"="text",
+     *             "description"="user description"
+     *         },
+     *     },
+     *     statusCodes={
+     *         200="New user was created",
+     *         400="Mandatory parameters are missed",
+     *         409="User with given login or username already exists",
+     *     }
+     * )
      * @return Response
      */
-    public function addAction(Request $request): Response
+    public function createAction(Request $request): Response
     {
         $userLogin = $request->request->getAlnum('login');
         $userName = $request->request->get('name');
         $description = $request->request->get('description');
+
+        if (empty($userLogin) || empty($userName)) {
+            return $this->respond(
+                new ApiError('Properties "login" and "name" are mandatory.', Response::HTTP_BAD_REQUEST)
+            );
+        }
 
         /** @var UserRepository $userRepository */
         $userRepository = $this->getDoctrine()->getRepository(User::class);
@@ -71,7 +128,7 @@ class UserController extends RestController
             $userRepository->persist($user);
             $userRepository->flush();
 
-            $result = $user;
+            $result = new ApiResnonse($user, Response::HTTP_OK);
         }
 
         return $this->respond($result);
@@ -88,6 +145,18 @@ class UserController extends RestController
                 'User with login or username "%s" already exists.',
                 $userLoginOrName
             ), Response::HTTP_CONFLICT
+        );
+    }
+
+    /**
+     * @param string $userLogin
+     * @return ApiError
+     */
+    private function createUserNotFoundErrorResult(string $userLogin)
+    {
+        return new ApiError(
+            sprintf('User with login "%s" was not found.', $userLogin),
+            Response::HTTP_NOT_FOUND
         );
     }
 }
