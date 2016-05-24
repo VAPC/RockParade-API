@@ -17,4 +17,4 @@ How to run server
 
 API documentation
 =================
-Run server and go to `http://localhost:8000/api`. You can view documentation and try queries in sandbox.
+Run server and go to http://localhost:8000/api. You can view documentation and try queries in sandbox.
