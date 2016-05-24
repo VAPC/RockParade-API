@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Infrastructure;
 
+use AppBundle\Response\HttpCodeInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,7 +24,13 @@ class RestController extends Controller
             $serializer = $this->get('jms_serializer');
             $serializedData = $serializer->serialize($data, self::FORMAT_JSON);
 
-            $response = new Response($serializedData);
+            $code = Response::HTTP_OK;
+            
+            if ($data instanceof HttpCodeInterface) {
+            	$code = $data->getCode();
+            }
+            
+            $response = new Response($serializedData, $code);
         } else {
             $response = $this->createNotFoundResponse();
         }
