@@ -3,14 +3,12 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Fixture\UsersFixture;
-use Liip\FunctionalTestBundle\Test\WebTestCase;
-use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\HttpFoundation\Request;
+use Tests\FunctionalTester;
 
 /**
  * @author Vehsamrak
  */
-class UserControllerTest extends WebTestCase
+class UserControllerTest extends FunctionalTester
 {
 
     const USER_NAME_NEW = 'Unit Tester';
@@ -21,31 +19,21 @@ class UserControllerTest extends WebTestCase
     const USER_NAME_FIRST = 'Mr. First';
     const USER_NAME_SECOND = 'Mr. Second';
 
-    /** @var Client */
-    private $httpClient;
-
     /** {@inheritDoc} */
     protected function setUp()
     {
-        $this->httpClient = $this->makeClient();
         $this->loadFixtures(
             [
                 UsersFixture::class,
             ]
         );
-    }
-
-    /** {@inheritDoc} */
-    protected function tearDown()
-    {
-        $this->httpClient = null;
-        parent::tearDown();
+        parent::setUp();
     }
 
     /** @test */
     public function listAction_GETUsersRequest_listOfAllUsers()
     {
-        $this->httpClient->followRedirects();
+        $this->followRedirects();
 
         $contents = $this->sendGetRequestAndHandleResponse('/users');
         $responseCode = $this->getResponseCode();
@@ -127,42 +115,6 @@ class UserControllerTest extends WebTestCase
 
         $this->assertEquals(400, $responseCode);
         $this->assertEquals('Properties "login" and "name" are mandatory.', $contents['error']);
-    }
-
-    /**
-     * @param string $route
-     * @return array
-     */
-    protected function sendGetRequestAndHandleResponse(string $route): array
-    {
-        $this->httpClient->request(Request::METHOD_GET, $route);
-        $response = $this->httpClient->getResponse();
-
-        return json_decode($response->getContent(), true);
-    }
-
-    /**
-     * @param string $route
-     * @param array $parameters
-     */
-    protected function sendPostRequest(string $route, array $parameters = [])
-    {
-        $this->httpClient->request(Request::METHOD_POST, $route, $parameters);
-    }
-
-    private function getResponseContents()
-    {
-        return json_decode($this->httpClient->getResponse()->getContent(), true);
-    }
-
-    /**
-     * @return int
-     */
-    private function getResponseCode()
-    {
-        $responseCode = $this->httpClient->getResponse()->getStatusCode();
-
-        return $responseCode;
     }
 
     /**
