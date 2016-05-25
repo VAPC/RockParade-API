@@ -25,6 +25,7 @@ class UserController extends RestController
      * @Route("/", name="users_list")
      * @Method("GET")
      * @ApiDoc(
+     *     section="Users",
      *     statusCodes={
      *         200="OK",
      *     }
@@ -48,6 +49,7 @@ class UserController extends RestController
      * @Route("/view/{login}", name="users_view")
      * @Method("GET")
      * @ApiDoc(
+     *     section="Users",
      *     statusCodes={
      *         200="User was found",
      *         404="User with given login was not found",
@@ -76,6 +78,7 @@ class UserController extends RestController
      * @Route("/create", name="users_create")
      * @Method("POST")
      * @ApiDoc(
+     *     section="Users",
      *     requirements={
      *         {
      *             "name"="login",

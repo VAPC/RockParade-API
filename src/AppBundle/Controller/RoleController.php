@@ -22,6 +22,7 @@ class RoleController extends RestController
      * @Route("/", name="roles_list")
      * @Method("GET")
      * @ApiDoc(
+     *     section="Roles",
      *     statusCodes={
      *         200="OK",
      *     }
