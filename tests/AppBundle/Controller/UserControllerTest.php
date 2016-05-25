@@ -43,7 +43,7 @@ class UserControllerTest extends WebTestCase
     }
 
     /** @test */
-    public function indexAction_GETUsersRequest_listOfAllUsers()
+    public function listAction_GETUsersRequest_listOfAllUsers()
     {
         $this->httpClient->followRedirects();
 
