@@ -8,4 +8,16 @@ use AppBundle\Entity\Infrasctucture\AbstractRepository;
 class RoleRepository extends AbstractRepository
 {
 
+    /**
+     * @param string $name
+     * @return null|Role
+     */
+    public function findOneByName(string $name)
+    {
+        return $this->findOneBy(
+            [
+                'name' => $name,
+            ]
+        );
+    }
 }

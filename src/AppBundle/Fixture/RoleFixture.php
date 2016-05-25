@@ -3,6 +3,7 @@
 namespace AppBundle\Fixture;
 
 use AppBundle\Entity\Role;
+use AppBundle\Entity\RoleRepository;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -23,8 +24,14 @@ class RoleFixture implements FixtureInterface
             new Role('organizer', 'Организатор'),
         ];
 
+        /** @var Role $role */
         foreach ($roles as $role) {
-            $manager->persist($role);
+            /** @var RoleRepository $roleRepository */
+            $roleRepository = $manager->getRepository(Role::class);
+
+            if (empty($roleRepository->findOneByName($role->getName()))) {
+                $manager->persist($role);
+            }
         }
 
         $manager->flush();
