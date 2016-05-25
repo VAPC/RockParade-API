@@ -25,21 +25,14 @@ class UserControllerTest extends WebTestCase
     private $httpClient;
 
     /** {@inheritDoc} */
-    public function __construct($name = null, array $data = [], $dataName = '')
+    protected function setUp()
     {
-        parent::__construct($name, $data, $dataName);
-
+        $this->httpClient = $this->makeClient();
         $this->loadFixtures(
             [
                 UsersFixture::class,
             ]
         );
-    }
-
-    /** {@inheritDoc} */
-    protected function setUp()
-    {
-        $this->httpClient = $this->makeClient();
     }
 
     /** {@inheritDoc} */
@@ -100,9 +93,9 @@ class UserControllerTest extends WebTestCase
     }
 
     /** @test */
-    public function createAction_POSTUsersCreateWithLoginAndNameOfExistingUser_userAlreadyExistsError()
+    public function createAction_POSTUsersCreateWithLoginOfExistingUser_userAlreadyExistsError()
     {
-        $parameters = $this->createParametersForExistingUser();
+        $parameters = $this->createParametersWithLoginOfExistingUser();
 
         $this->sendPostRequest('/users/create', $parameters);
         $responseCode = $this->getResponseCode();
@@ -110,6 +103,19 @@ class UserControllerTest extends WebTestCase
 
         $this->assertEquals(409, $responseCode);
         $this->assertEquals('User with login or username "first" already exists.', $contents['error']);
+    }
+
+    /** @test */
+    public function createAction_POSTUsersCreateWithUsernameOfExistingUser_userAlreadyExistsError()
+    {
+        $parameters = $this->createParametersWithUsernameOfExistingUser();
+
+        $this->sendPostRequest('/users/create', $parameters);
+        $responseCode = $this->getResponseCode();
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(409, $responseCode);
+        $this->assertEquals('User with login or username "Mr. First" already exists.', $contents['error']);
     }
 
     /** @test */
@@ -174,11 +180,22 @@ class UserControllerTest extends WebTestCase
     /**
      * @return array
      */
-    private function createParametersForExistingUser(): array
+    private function createParametersWithLoginOfExistingUser(): array
     {
         return [
             'login'       => self::USER_LOGIN_FIRST,
             'name'        => self::USER_NAME_NEW,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function createParametersWithUsernameOfExistingUser(): array
+    {
+        return [
+            'login'       => self::USER_LOGIN_NEW,
+            'name'        => self::USER_NAME_FIRST,
         ];
     }
 }
