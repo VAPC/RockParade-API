@@ -80,19 +80,19 @@ class UserController extends RestController
      *         {
      *             "name"="login",
      *             "dataType"="string",
-     *             "requirement"="word",
+     *             "requirement"="\w",
      *             "description"="user login in single word"
      *         },
      *         {
      *             "name"="name",
      *             "dataType"="string",
-     *             "requirement"="text",
+     *             "requirement"="[\w\s]",
      *             "description"="user full name"
      *         },
      *         {
      *             "name"="description",
      *             "dataType"="string",
-     *             "requirement"="text",
+     *             "requirement"=".",
      *             "description"="user description"
      *         },
      *     },
