@@ -10,6 +10,9 @@ build:
           file: my-coverage-file
           format: php-clover
 
+checks:
+  php: true
+
 filter:
   excluded_paths:
     - "app/*"
