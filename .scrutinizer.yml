@@ -1,17 +1,18 @@
 build:
-    environment:
-        php.version: 7.0.6
-    tests:
-        override:
-            -
-                command: phpunit --coverage-clover=my-coverage-file tests
-                coverage:
-                    file: my-coverage-file
-                    format: php-clover
+  environment:
+    php:
+      version: 7.0.6
+  tests:
+    override:
+      -
+        command: phpunit --coverage-clover=my-coverage-file tests
+        coverage:
+          file: my-coverage-file
+          format: php-clover
 
 filter:
-    excluded_paths:
-        - "app/*"
-        - "bin/*"
-        - "tests/*"
-        - "var/*"
+  excluded_paths:
+    - "app/*"
+    - "bin/*"
+    - "tests/*"
+    - "var/*"
