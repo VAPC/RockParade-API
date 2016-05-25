@@ -46,6 +46,7 @@ class UserControllerTest extends WebTestCase
     protected function tearDown()
     {
         $this->httpClient = null;
+        parent::tearDown();
     }
 
     /** @test */

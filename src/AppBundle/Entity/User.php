@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type as SerializerType;
@@ -16,6 +17,8 @@ use JMS\Serializer\Annotation\Type as SerializerType;
  */
 class User
 {
+
+    const DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * @var string
@@ -40,6 +43,8 @@ class User
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime", nullable=false)
      * @SerializedName("registration_date")
+     * @Accessor(getter="getRegistrationDate")
+     * @SerializerType("string")
      */
     private $registrationDate;
 
@@ -87,18 +92,17 @@ class User
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getRegistrationDate()
+    public function getRegistrationDate(): string 
     {
-        return $this->registrationDate;
+        return $this->registrationDate->format(self::DATE_FORMAT);
     }
 
     /**
-     * Get description
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -107,7 +111,7 @@ class User
      * @param string $description
      * @return User
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
         $this->description = $description;
     }
