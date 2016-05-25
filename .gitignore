@@ -6,6 +6,7 @@ app/logs/*
 # Symfony directories
 app/phpunit.xml
 /bin/
+!/bin/console
 /var/*
 !/var/cache
 /var/cache/*
