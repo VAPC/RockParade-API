@@ -33,7 +33,8 @@
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "^2.0",
         "jms/serializer-bundle": "^1.1",
-        "nelmio/api-doc-bundle": "^2.12"
+        "nelmio/api-doc-bundle": "^2.12",
+        "myclabs/php-enum": "^1.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.3",
