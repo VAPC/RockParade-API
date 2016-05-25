@@ -16,3 +16,4 @@ filter:
     - "bin/*"
     - "tests/*"
     - "var/*"
+    - "src/AppBundle/Fixture/*"
