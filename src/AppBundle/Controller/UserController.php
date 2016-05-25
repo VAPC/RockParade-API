@@ -106,7 +106,7 @@ class UserController extends RestController
      */
     public function createAction(Request $request): Response
     {
-        $userLogin = $request->request->getAlnum('login');
+        $userLogin = (string) $request->request->getAlnum('login');
         $userName = $request->request->get('name');
         $description = $request->request->get('description');
 
