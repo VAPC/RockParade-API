@@ -34,14 +34,11 @@ abstract class FunctionalTester extends WebTestCase
 
     /**
      * @param string $route
-     * @return array
+     * @throws \Exception
      */
-    protected function sendGetRequestAndHandleResponse(string $route): array
+    protected function sendGetRequest(string $route)
     {
         $this->httpClient->request(Request::METHOD_GET, $route);
-        $response = $this->httpClient->getResponse();
-
-        return json_decode($response->getContent(), true);
     }
 
     /**
@@ -53,9 +50,22 @@ abstract class FunctionalTester extends WebTestCase
         $this->httpClient->request(Request::METHOD_POST, $route, $parameters);
     }
 
-    protected function getResponseContents()
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    protected function getResponseContents(): array
     {
-        return json_decode($this->httpClient->getResponse()->getContent(), true);
+        $response = $this->httpClient->getResponse();
+        $responseContent = $response->getContent();
+
+        $jsonEncodedResponseContent = json_decode($responseContent, true);
+
+        if ($jsonEncodedResponseContent) {
+            return $jsonEncodedResponseContent;
+        } else {
+            throw new \Exception($responseContent);
+        }
     }
 
     /**

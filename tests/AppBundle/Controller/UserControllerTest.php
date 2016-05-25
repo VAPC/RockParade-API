@@ -35,7 +35,8 @@ class UserControllerTest extends FunctionalTester
     {
         $this->followRedirects();
 
-        $contents = $this->sendGetRequestAndHandleResponse('/users');
+        $this->sendGetRequest('/users');
+        $contents = $this->getResponseContents();
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(200, $responseCode);
@@ -48,7 +49,8 @@ class UserControllerTest extends FunctionalTester
     /** @test */
     public function viewAction_GETUsersViewLoginRequest_singleUserInfo()
     {
-        $contents = $this->sendGetRequestAndHandleResponse('/users/view/first');
+        $this->sendGetRequest('/users/view/first');
+        $contents = $this->getResponseContents();
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(200, $responseCode);
@@ -59,7 +61,8 @@ class UserControllerTest extends FunctionalTester
     /** @test */
     public function viewAction_GETUsersViewNotExistingLoginRequest_userNotFoundError()
     {
-        $contents = $this->sendGetRequestAndHandleResponse('/users/view/notexistinguser');
+        $this->sendGetRequest('/users/view/notexistinguser');
+        $contents = $this->getResponseContents();
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(404, $responseCode);
