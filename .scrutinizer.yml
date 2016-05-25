@@ -1,7 +1,6 @@
 build:
     environment:
-        php:
-            version: 7.0.5
+        php.version: 7.0.6
     tests:
         override:
             -
@@ -9,3 +8,10 @@ build:
                 coverage:
                     file: my-coverage-file
                     format: php-clover
+
+filter:
+    excluded_paths:
+        - "app/*"
+        - "bin/*"
+        - "tests/*"
+        - "var/*"
