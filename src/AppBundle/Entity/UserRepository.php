@@ -14,7 +14,11 @@ class UserRepository extends AbstractRepository
      */
     public function findOneByLogin(string $userLogin)
     {
-        return parent::findOneByLogin($userLogin);
+        return $this->findOneBy(
+            [
+                'login' => $userLogin,
+            ]
+        );
     }
 
     /**
@@ -23,6 +27,10 @@ class UserRepository extends AbstractRepository
      */
     public function findOneByName(string $userName)
     {
-        return parent::findOneByName($userName);
+        return $this->findOneBy(
+            [
+                'name' => $userName,
+            ]
+        );
     }
 }
