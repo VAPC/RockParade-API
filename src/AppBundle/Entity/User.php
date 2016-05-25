@@ -78,42 +78,9 @@ class User
     /**
      * @return string
      */
-    public function getLogin(): string
-    {
-        return $this->login;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRegistrationDate(): string 
+    public function getRegistrationDate(): string
     {
         return $this->registrationDate->format(self::DATE_FORMAT);
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     * @return User
-     */
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
     }
 
     /**
@@ -122,22 +89,6 @@ class User
     public function getRoles(): PersistentCollection
     {
         return $this->roles;
-    }
-
-    /**
-     * @param Role $role
-     */
-    public function addRole(Role $role)
-    {
-        $this->roles->add($role);
-    }
-    
-    /**
-     * @param Role $role
-     */
-    public function removeRole(Role $role)
-    {
-        $this->roles->removeElement($role);
     }
 
     /**
