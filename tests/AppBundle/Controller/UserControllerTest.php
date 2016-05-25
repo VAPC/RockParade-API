@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Fixture\UsersFixture;
+use AppBundle\Fixture\UserFixture;
 use Tests\FunctionalTester;
 
 /**
@@ -24,7 +24,7 @@ class UserControllerTest extends FunctionalTester
     {
         $this->loadFixtures(
             [
-                UsersFixture::class,
+                UserFixture::class,
             ]
         );
         parent::setUp();

@@ -21,7 +21,7 @@ class UserController extends RestController
 {
 
     /**
-     * List all users
+     * List all registered users
      * @Route("/", name="users_list")
      * @Method("GET")
      * @ApiDoc(
