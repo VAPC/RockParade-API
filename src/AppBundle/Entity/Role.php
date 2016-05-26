@@ -60,22 +60,6 @@ class Role
     }
 
     /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
      * @return PersistentCollection|User[]
      */
     public function getUsers(): PersistentCollection
