@@ -3,15 +3,22 @@
 namespace AppBundle\Response;
 
 use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * @author Vehsamrak
  */
-class ApiError extends ApiResnonse
+class ApiError implements HttpCodeInterface
 {
 
     /** @var string */
     private $error;
+
+    /**
+     * @var int
+     * @Exclude
+     */
+    private $httpCode;
 
     /**
      * @param string $message
@@ -20,7 +27,7 @@ class ApiError extends ApiResnonse
     public function __construct(string $message, int $httpCode)
     {
         $this->error = $message;
-        parent::__construct($message, $httpCode);
+        $this->httpCode = $httpCode;
     }
 
     /**
@@ -29,5 +36,13 @@ class ApiError extends ApiResnonse
     public function getError(): string
     {
         return $this->error;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHttpCode(): int
+    {
+        return $this->httpCode;
     }
 }
