@@ -23,15 +23,14 @@ class RoleRepository extends AbstractRepository
 
     /**
      * @param string[] $roleNames
-     * @return int
+     * @return Role[]
      */
-    public function countRolesWithNames(array $roleNames): int
+    public function findByNames(array $roleNames): array
     {
-        $queryBuilder = $this->createQueryBuilder('role');
-        $queryBuilder->select('count(role.name)');
-        $queryBuilder->where($queryBuilder->expr()->in('role.name', ':roleNames'));
-        $queryBuilder->setParameter('roleNames', $roleNames);
-
-        return $queryBuilder->getQuery()->getSingleScalarResult();
+        return $this->findBy(
+            [
+                'name' => $roleNames,
+            ]
+        );
     }
 }
