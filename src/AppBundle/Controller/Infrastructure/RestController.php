@@ -3,6 +3,8 @@
 namespace AppBundle\Controller\Infrastructure;
 
 use AppBundle\Response\ApiResnonse;
+use AppBundle\Response\EmptyApiResponse;
+use AppBundle\Response\HttpCodeInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,15 +17,19 @@ class RestController extends Controller
     const FORMAT_JSON = 'json';
 
     /**
-     * @param ApiResnonse $responseContents
+     * @param ApiResnonse|EmptyApiResponse|HttpCodeInterface $apiResponse
      * @return Response
      */
-    public function respond(ApiResnonse $responseContents): Response
+    public function respond(HttpCodeInterface $apiResponse): Response
     {
-        $serializer = $this->get('jms_serializer');
-        $serializedData = $serializer->serialize($responseContents, self::FORMAT_JSON);
+        $serializedData = '';
 
-        $response = new Response($serializedData, $responseContents->getHttpCode());
+        if (!$apiResponse instanceof EmptyApiResponse) {
+            $serializer = $this->get('jms_serializer');
+            $serializedData = $serializer->serialize($apiResponse, self::FORMAT_JSON);
+        }
+
+        $response = new Response($serializedData, $apiResponse->getHttpCode());
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
