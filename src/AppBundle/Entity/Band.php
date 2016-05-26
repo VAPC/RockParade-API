@@ -37,7 +37,7 @@ class Band
      * @var User[]|ArrayCollection
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", cascade={"persist", "remove"})
      * @ORM\JoinTable(name="users_bands",
-     *      joinColumns={@ORM\JoinColumn(name="community_name", referencedColumnName="name")},
+     *      joinColumns={@ORM\JoinColumn(name="band_name", referencedColumnName="name")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_login", referencedColumnName="login")}
      *      )
      */
