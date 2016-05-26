@@ -50,8 +50,8 @@ class RoleController extends RestController
     }
 
     /**
-     * Add roles to user
-     * @Route("/add", name="roles_add")
+     * Assign roles to user
+     * @Route("/assign", name="roles_assign")
      * @Method("POST")
      * @ApiDoc(
      *     section="Roles",
@@ -78,7 +78,7 @@ class RoleController extends RestController
      * @param Request $request
      * @return Response
      */
-    public function addAction(Request $request): Response
+    public function assignAction(Request $request): Response
     {
         $userLogin = filter_var($request->request->get('login'), FILTER_SANITIZE_STRING) ?: '';
         $roleNames = (array) $request->request->get('roles');

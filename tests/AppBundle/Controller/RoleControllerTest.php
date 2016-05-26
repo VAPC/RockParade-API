@@ -43,12 +43,12 @@ class RoleControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function addAction_POSTRolesAddRequestWithLoginAndRoles_adminAndMusicianRolesAppliedToUser()
+    public function assignAction_POSTRolesAddRequestWithLoginAndRoles_adminAndMusicianRolesAppliedToUser()
     {
         $this->followRedirects();
         $parameters = $this->createParametersLoginFirstAndRolesAdminMusician();
 
-        $this->sendPostRequest('/roles/add', $parameters);
+        $this->sendPostRequest('/roles/assign', $parameters);
         $responseCode = $this->getResponseCode();
         $this->assertEquals(200, $responseCode);
 
@@ -60,9 +60,9 @@ class RoleControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function addAction_POSTRolesAddRequestWithEmptyParameters_response400AndErrorMessage()
+    public function assignAction_POSTRolesAddRequestWithEmptyParameters_response400AndErrorMessage()
     {
-        $this->sendPostRequest('/roles/add', []);
+        $this->sendPostRequest('/roles/assign', []);
         $contents = $this->getResponseContents();
         $responseCode = $this->getResponseCode();
 
@@ -71,11 +71,11 @@ class RoleControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function addAction_POSTRolesAddRequestWithLoginAndNonexistentRole_response400AndErrorMessage()
+    public function assignAction_POSTRolesAddRequestWithLoginAndNonexistentRole_response400AndErrorMessage()
     {
         $parameters = $this->createParametersLoginAndNonexistentRoles();
 
-        $this->sendPostRequest('/roles/add', $parameters);
+        $this->sendPostRequest('/roles/assign', $parameters);
         $contents = $this->getResponseContents();
         $responseCode = $this->getResponseCode();
 
