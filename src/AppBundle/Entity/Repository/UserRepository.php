@@ -1,8 +1,9 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Entity\Repository;
 
 use AppBundle\Entity\Infrasctucture\AbstractRepository;
+use AppBundle\Entity\User;
 
 /** {@inheritDoc} */
 class UserRepository extends AbstractRepository

@@ -13,7 +13,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 /**
  * User role
  * @ORM\Table(name="roles")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\RoleRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\RoleRepository")
  */
 class Role
 {

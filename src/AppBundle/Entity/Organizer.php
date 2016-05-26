@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Organizer
  * @ORM\Table(name="organizers")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\OrganizerRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\OrganizerRepository")
  */
 class Organizer
 {

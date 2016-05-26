@@ -13,7 +13,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 /**
  * User
  * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\UserRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\UserRepository")
  */
 class User
 {

@@ -3,7 +3,6 @@
 namespace AppBundle\Entity\Infrasctucture;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\Entity;
 
 /**
  * @author Vehsamrak

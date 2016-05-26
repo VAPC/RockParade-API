@@ -4,7 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 use AppBundle\Controller\Infrastructure\RestController;
-use AppBundle\Entity\UserRepository;
+use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiResnonse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;

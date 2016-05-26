@@ -1,8 +1,9 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Entity\Repository;
 
 use AppBundle\Entity\Infrasctucture\AbstractRepository;
+use AppBundle\Entity\Role;
 
 /** {@inheritDoc} */
 class RoleRepository extends AbstractRepository
