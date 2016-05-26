@@ -20,7 +20,7 @@ class ApiError extends ApiResnonse
     public function __construct(string $message, int $httpCode)
     {
         $this->error = $message;
-        $this->httpCode = $httpCode;
+        parent::__construct($message, $httpCode);
     }
 
     /**
