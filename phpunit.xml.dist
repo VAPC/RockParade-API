@@ -24,6 +24,7 @@
             <exclude>
                 <directory>src/*Bundle/Resources</directory>
                 <directory>src/*Bundle/Fixture</directory>
+                <directory>src/*Bundle/Command/Composer</directory>
                 <directory>src/*/*Bundle/Resources</directory>
                 <directory>src/*/Bundle/*Bundle/Resources</directory>
             </exclude>
