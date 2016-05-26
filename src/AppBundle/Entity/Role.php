@@ -5,7 +5,9 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\Exclude;
 use JMS\Serializer\Annotation\Type as SerializerType;
 
 /**
@@ -20,6 +22,7 @@ class Role
      * @var string
      * @ORM\Id
      * @ORM\Column(name="name", type="string", length=255, nullable=false, unique=true)
+     * @Exclude
      */
     private $name;
 
