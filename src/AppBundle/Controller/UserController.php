@@ -45,7 +45,6 @@ class UserController extends RestController
 
     /**
      * View single user by login
-     * @param string $login user login
      * @Route("/view/{login}", name="users_view")
      * @Method("GET")
      * @ApiDoc(
@@ -55,6 +54,7 @@ class UserController extends RestController
      *         404="User with given login was not found",
      *     }
      * )
+     * @param string $login user login
      * @return Response
      */
     public function viewAction(string $login): Response
@@ -74,7 +74,6 @@ class UserController extends RestController
 
     /**
      * Create new user with given login, name and description
-     * @param Request $request
      * @Route("/create", name="users_create")
      * @Method("POST")
      * @ApiDoc(
@@ -105,6 +104,7 @@ class UserController extends RestController
      *         409="User with given login or username already exists",
      *     }
      * )
+     * @param Request $request
      * @return Response
      */
     public function createAction(Request $request): Response
