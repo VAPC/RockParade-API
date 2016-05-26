@@ -84,7 +84,9 @@ class RoleController extends RestController
         $userLogin = filter_var($request->request->get('login'), FILTER_SANITIZE_STRING) ?: '';
         $roleNames = (array) $request->request->get('roles');
 
-        if ($userLogin && $roleNames) {
+        if (empty($roleNames) || empty($userLogin)) {
+            $response = new ApiError('Properties "login" and "roles" are mandatory.', Response::HTTP_BAD_REQUEST);
+        } else {
             $doctrineService = $this->getDoctrine();
             /** @var UserRepository $userRepository */
             $userRepository = $doctrineService->getRepository(User::class);
@@ -108,8 +110,6 @@ class RoleController extends RestController
             } else {
                 $response = new ApiError('User with provided login was not found.', Response::HTTP_NOT_FOUND);
             }
-        } else {
-            $response = new ApiError('Properties "login" and "roles" are mandatory.', Response::HTTP_BAD_REQUEST);
         }
 
         return $this->respond($response);
