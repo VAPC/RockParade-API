@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Role;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\RoleRepository;
+use AppBundle\Entity\User;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiResnonse;
 use AppBundle\Response\EmptyApiResponse;
@@ -38,6 +39,11 @@ class RoleController extends RestController
         $rolesRepository = $this->getDoctrine()->getRepository(Role::class);
         $roles = $rolesRepository->findAll();
 
+        foreach ($roles as $key => $role) {
+            $roles[$role->getName()] = $role;
+            unset($roles[$key]);
+        }
+
         $response = new ApiResnonse($roles, Response::HTTP_OK);
 
         return $this->respond($response);
@@ -66,6 +72,7 @@ class RoleController extends RestController
      *     statusCodes={
      *         200="Roles were assigned to user",
      *         400="Mandatory parameters are missed or not all provided roles are valid",
+     *         404="User with provided login was not found",
      *     }
      * )
      * @param Request $request
@@ -77,19 +84,31 @@ class RoleController extends RestController
         $roleNames = (array) $request->request->get('roles');
 
         if ($userLogin && $roleNames) {
-            /** @var RoleRepository $rolesRepository */
-            $rolesRepository = $this->getDoctrine()->getRepository(Role::class);
+            $doctrineService = $this->getDoctrine();
+            $userRepository = $doctrineService->getRepository(User::class);
+            $user = $userRepository->findOneByLogin($userLogin);
 
-            if (count($roleNames) === $rolesRepository->countRolesWithNames($roleNames)) {
-                $response = new EmptyApiResponse(Response::HTTP_OK);
+            if ($user) {
+                /** @var RoleRepository $roleRepository */
+                $roleRepository = $doctrineService->getRepository(Role::class);
+                $roles = $roleRepository->findByNames($roleNames);
+                
+                if (count($roleNames) === count($roles)) {
+                    foreach ($roles as $role) {
+                        $user->addRole($role);
+                    }
+                    
+                    $roleRepository->flush();
+                    $response = new EmptyApiResponse(Response::HTTP_OK);
+                } else {
+                    $response = new ApiError('Not all provided roles are valid.', Response::HTTP_BAD_REQUEST);
+                }
             } else {
-                $response = new ApiError('Not all provided roles are valid.', Response::HTTP_BAD_REQUEST);
+                $response = new ApiError('User with provided login was not found.', Response::HTTP_NOT_FOUND);
             }
-
         } else {
             $response = new ApiError('Properties "login" and "roles" are mandatory.', Response::HTTP_BAD_REQUEST);
         }
-
 
         return $this->respond($response);
     }

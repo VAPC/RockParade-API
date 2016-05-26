@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Fixture\RoleFixture;
+use AppBundle\Fixture\UserFixture;
 use Tests\FunctionalTester;
 
 /**
@@ -14,12 +15,14 @@ class RoleControllerTest extends FunctionalTester
     const USER_LOGIN_FIRST = 'first';
     const ROLE_ADMIN = 'admin';
     const ROLE_NONEXISTENT = 'nonexistent';
+    const ROLE_MUSICIAN = 'musician';
 
     /** {@inheritDoc} */
     protected function setUp()
     {
         $this->loadFixtures(
             [
+                UserFixture::class,
                 RoleFixture::class,
             ]
         );
@@ -36,19 +39,24 @@ class RoleControllerTest extends FunctionalTester
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(200, $responseCode);
-        $this->assertEquals('admin', $contents['data'][0]['name']);
-        $this->assertEquals('Администратор', $contents['data'][0]['description']);
+        $this->assertEquals('Администратор', $contents['data']['admin']['description']);
     }
 
     /** @test */
-    public function addAction_POSTRolesAddRequestWithLoginAndRoles_response200()
+    public function addAction_POSTRolesAddRequestWithLoginAndRoles_adminAndMusicianRolesAppliedToUser()
     {
-        $parameters = $this->createParametersLoginAndRoles();
+        $this->followRedirects();
+        $parameters = $this->createParametersLoginFirstAndRolesAdminMusician();
 
         $this->sendPostRequest('/roles/add', $parameters);
         $responseCode = $this->getResponseCode();
-
         $this->assertEquals(200, $responseCode);
+
+        $this->sendGetRequest('/roles');
+        $contents = $this->getResponseContents();
+        $this->assertEquals(200, $responseCode);
+        $this->assertTrue(in_array(self::USER_LOGIN_FIRST, $contents['data']['admin']['users']));
+        $this->assertTrue(in_array(self::USER_LOGIN_FIRST, $contents['data']['musician']['users']));
     }
 
     /** @test */
@@ -78,11 +86,11 @@ class RoleControllerTest extends FunctionalTester
     /**
      * @return array
      */
-    private function createParametersLoginAndRoles(): array
+    private function createParametersLoginFirstAndRolesAdminMusician(): array
     {
         return [
             'login' => self::USER_LOGIN_FIRST,
-            'roles' => [self::ROLE_ADMIN],
+            'roles' => [self::ROLE_ADMIN, self::ROLE_MUSICIAN],
         ];
     }
 
@@ -91,7 +99,7 @@ class RoleControllerTest extends FunctionalTester
      */
     private function createParametersLoginAndNonexistentRoles(): array
     {
-        $parameters = $this->createParametersLoginAndRoles();
+        $parameters = $this->createParametersLoginFirstAndRolesAdminMusician();
         $parameters['roles'][] = self::ROLE_NONEXISTENT;
 
         return $parameters;
