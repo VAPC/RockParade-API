@@ -6,6 +6,7 @@ use AppBundle\Entity\Role;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\RoleRepository;
 use AppBundle\Entity\User;
+use AppBundle\Entity\UserRepository;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiResnonse;
 use AppBundle\Response\EmptyApiResponse;
@@ -85,6 +86,7 @@ class RoleController extends RestController
 
         if ($userLogin && $roleNames) {
             $doctrineService = $this->getDoctrine();
+            /** @var UserRepository $userRepository */
             $userRepository = $doctrineService->getRepository(User::class);
             $user = $userRepository->findOneByLogin($userLogin);
 
