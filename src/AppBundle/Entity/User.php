@@ -23,7 +23,7 @@ class User
     /**
      * @var string
      * @ORM\Id
-     * @ORM\Column(name="login", type="string", length=255, nullable=false, unique=true)
+     * @ORM\Column(name="login", type="string", length=255, nullable=false)
      */
     private $login;
 
@@ -52,9 +52,9 @@ class User
      * @var Role[]|ArrayCollection
      * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
      * @ORM\JoinTable(
-     *     name="user_roles",
-     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="login")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="name")}
+     *     name="users_roles",
+     *     joinColumns={@ORM\JoinColumn(name="user_login", referencedColumnName="login")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="role_name", referencedColumnName="name")}
      *     )
      * @Accessor(getter="getRolesNames")
      * @SerializerType("array")

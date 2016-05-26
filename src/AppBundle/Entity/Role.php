@@ -21,7 +21,7 @@ class Role
     /**
      * @var string
      * @ORM\Id
-     * @ORM\Column(name="name", type="string", length=255, nullable=false, unique=true)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      * @Exclude
      */
     private $name;
