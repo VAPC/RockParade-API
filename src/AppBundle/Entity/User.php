@@ -92,6 +92,14 @@ class User
     }
 
     /**
+     * @return string
+     */
+    public function getLogin(): string 
+    {
+        return $this->login;
+    }
+
+    /**
      * @return string[]
      */
     public function getRolesNames(): array

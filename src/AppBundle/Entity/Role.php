@@ -5,6 +5,8 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\Type as SerializerType;
 
 /**
  * User role
@@ -30,6 +32,8 @@ class Role
     /**
      * @var User[]|ArrayCollection
      * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
+     * @Accessor(getter="getUserLogins")
+     * @SerializerType("array")
      */
     private $users;
 
@@ -74,5 +78,15 @@ class Role
     public function getUsers(): PersistentCollection
     {
         return $this->users;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getUserLogins(): array
+    {
+        return array_map(function (User $user) {
+            return $user->getLogin();
+        }, $this->getUsers()->toArray());
     }
 }
