@@ -78,6 +78,14 @@ class User
     /**
      * @return string
      */
+    public function getLogin(): string
+    {
+        return $this->login;
+    }
+
+    /**
+     * @return string
+     */
     public function getRegistrationDate(): string
     {
         return $this->registrationDate->format(self::DATE_FORMAT);
@@ -92,14 +100,6 @@ class User
     }
 
     /**
-     * @return string
-     */
-    public function getLogin(): string 
-    {
-        return $this->login;
-    }
-
-    /**
      * @return string[]
      */
     public function getRolesNames(): array
@@ -107,5 +107,13 @@ class User
         return array_map(function (Role $role) {
             return $role->getName();
         }, $this->getRoles()->toArray());
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function addRole(Role $role)
+    {
+        $this->roles->add($role);
     }
 }
