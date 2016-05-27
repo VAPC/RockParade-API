@@ -53,5 +53,13 @@ class Band
         $this->description = $description;
         $this->users = new ArrayCollection();
     }
+
+    /**
+     * @param User $user
+     */
+    public function addUser(User $user)
+    {
+        $this->users->add($user);
+    }
 }
 
