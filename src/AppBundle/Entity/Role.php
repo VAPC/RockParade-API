@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Infrasctucture\GetUserLoginsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
@@ -17,6 +18,8 @@ use JMS\Serializer\Annotation\Type as SerializerType;
  */
 class Role
 {
+    
+    use GetUserLoginsTrait;
 
     /**
      * @var string
@@ -65,15 +68,5 @@ class Role
     public function getUsers(): PersistentCollection
     {
         return $this->users;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getUserLogins(): array
-    {
-        return array_map(function (User $user) {
-            return $user->getLogin();
-        }, $this->getUsers()->toArray());
     }
 }
