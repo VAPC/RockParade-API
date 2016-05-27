@@ -2,8 +2,12 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Infrasctucture\GetUserLoginsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\Type as SerializerType;
 
 /**
  * Band
@@ -12,6 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Band
 {
+
+    use GetUserLoginsTrait;
 
     /**
      * @var string
@@ -39,6 +45,8 @@ class Band
      *      joinColumns={@ORM\JoinColumn(name="band_name", referencedColumnName="name")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="user_login", referencedColumnName="login")}
      *      )
+     * @Accessor(getter="getUserLogins")
+     * @SerializerType("array")
      */
     protected $users;
 
@@ -60,6 +68,14 @@ class Band
     public function addUser(User $user)
     {
         $this->users->add($user);
+    }
+
+    /**
+     * @return User[]|PersistentCollection
+     */
+    public function getUsers(): PersistentCollection
+    {
+        return $this->users;
     }
 }
 
