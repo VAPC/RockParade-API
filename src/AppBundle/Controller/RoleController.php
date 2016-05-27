@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Roles
  * @Route("roles")
+ * @author Vehsamrak
  */
 class RoleController extends RestController
 {
@@ -28,7 +29,7 @@ class RoleController extends RestController
      * @Route("/", name="roles_list")
      * @Method("GET")
      * @ApiDoc(
-     *     section="Roles",
+     *     section="Role",
      *     statusCodes={
      *         200="OK",
      *     }
@@ -55,7 +56,7 @@ class RoleController extends RestController
      * @Route("/assign", name="roles_assign")
      * @Method("POST")
      * @ApiDoc(
-     *     section="Roles",
+     *     section="Role",
      *     requirements={
      *         {
      *             "name"="login",
