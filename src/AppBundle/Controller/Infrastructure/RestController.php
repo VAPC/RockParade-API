@@ -6,6 +6,8 @@ use AppBundle\Response\ApiResnonse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\HttpCodeInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -33,6 +35,17 @@ class RestController extends Controller
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
+    }
 
+    /**
+     * Process form
+     * @param Request $request
+     * @param FormInterface $form
+     */
+    protected function processForm(Request $request, FormInterface $form)
+    {
+        $data = json_decode($request->getContent(), true);
+        $clearMissing = $request->getMethod() != 'PATCH';
+        $form->submit($data, $clearMissing);
     }
 }
