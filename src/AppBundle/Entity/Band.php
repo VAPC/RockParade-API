@@ -4,25 +4,29 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\Infrasctucture\GetUserLoginsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use JMS\Serializer\Annotation\Accessor;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Type as SerializerType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Band
  * @ORM\Table(name="bands")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\BandRepository")
+ * @UniqueEntity("name", message="This name is already used. Parameter 'name' must be unique")
  */
 class Band
 {
-
     use GetUserLoginsTrait;
 
     /**
      * @var string
      * @ORM\Id
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Parameter 'name' is mandatory")
      */
     protected $name;
 
@@ -35,6 +39,7 @@ class Band
     /**
      * @var string
      * @ORM\Column(name="description", type="text", nullable=true)
+     * @Assert\NotBlank(message="Parameter 'description' is mandatory")
      */
     protected $description;
 
@@ -50,17 +55,10 @@ class Band
      */
     protected $users;
 
-    /**
-     * @param string $name
-     * @param User[] $users
-     * @param string $description
-     */
-    public function __construct(string $name, array $users, string $description = null)
+    public function __construct()
     {
         $this->registrationDate = new \DateTime();
-        $this->name = $name;
-        $this->description = $description;
-        $this->users = new ArrayCollection($users);
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -72,10 +70,42 @@ class Band
     }
 
     /**
-     * @return User[]|PersistentCollection
+     * @return Collection|User[]|ArrayCollection|PersistentCollection
      */
-    public function getUsers(): PersistentCollection
+    public function getUsers(): Collection
     {
         return $this->users;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
     }
 }
