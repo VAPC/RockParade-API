@@ -67,7 +67,7 @@ class RoleControllerTest extends FunctionalTester
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(400, $responseCode);
-        $this->assertEquals('Properties "login" and "roles" are mandatory.', $contents['error']);
+        $this->assertContains('Properties "login" and "roles" are mandatory.', $contents['errors']);
     }
 
     /** @test */
@@ -80,7 +80,7 @@ class RoleControllerTest extends FunctionalTester
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(400, $responseCode);
-        $this->assertEquals('Not all provided roles are valid.', $contents['error']);
+        $this->assertContains('Not all provided roles are valid.', $contents['errors']);
     }
 
     /**

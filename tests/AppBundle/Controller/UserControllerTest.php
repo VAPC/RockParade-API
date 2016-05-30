@@ -66,7 +66,7 @@ class UserControllerTest extends FunctionalTester
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(404, $responseCode);
-        $this->assertEquals('User with login "notexistinguser" was not found.', $contents['error']);
+        $this->assertContains('User with login "notexistinguser" was not found.', $contents['errors']);
     }
 
     /** @test */
@@ -93,7 +93,7 @@ class UserControllerTest extends FunctionalTester
         $contents = $this->getResponseContents();
 
         $this->assertEquals(409, $responseCode);
-        $this->assertEquals('User with login or username "first" already exists.', $contents['error']);
+        $this->assertContains('User with login or username "first" already exists.', $contents['errors']);
     }
 
     /** @test */
@@ -106,7 +106,7 @@ class UserControllerTest extends FunctionalTester
         $contents = $this->getResponseContents();
 
         $this->assertEquals(409, $responseCode);
-        $this->assertEquals('User with login or username "Mr. First" already exists.', $contents['error']);
+        $this->assertContains('User with login or username "Mr. First" already exists.', $contents['errors']);
     }
 
     /** @test */
@@ -117,7 +117,7 @@ class UserControllerTest extends FunctionalTester
         $contents = $this->getResponseContents();
 
         $this->assertEquals(400, $responseCode);
-        $this->assertEquals('Properties "login" and "name" are mandatory.', $contents['error']);
+        $this->assertContains('Properties "login" and "name" are mandatory.', $contents['errors']);
     }
 
     /**
