@@ -52,14 +52,15 @@ class Band
 
     /**
      * @param string $name
+     * @param User[] $users
      * @param string $description
      */
-    public function __construct(string $name, string $description)
+    public function __construct(string $name, array $users, string $description = null)
     {
         $this->registrationDate = new \DateTime();
         $this->name = $name;
         $this->description = $description;
-        $this->users = new ArrayCollection();
+        $this->users = new ArrayCollection($users);
     }
 
     /**
@@ -78,4 +79,3 @@ class Band
         return $this->users;
     }
 }
-
