@@ -6,7 +6,7 @@ namespace AppBundle\Response;
  * Nullobject for API response. Returns only HTTP code with empty body
  * @author Vehsamrak
  */
-class EmptyApiResponse extends ApiResnonse
+class EmptyApiResponse extends ApiResponse
 {
     /**
      * @param int $httpCode

@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller\Infrastructure;
 
-use AppBundle\Response\ApiResnonse;
+use AppBundle\Response\ApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\HttpCodeInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,7 +19,7 @@ class RestController extends Controller
     const FORMAT_JSON = 'json';
 
     /**
-     * @param ApiResnonse|EmptyApiResponse|HttpCodeInterface $apiResponse
+     * @param ApiResponse|EmptyApiResponse|HttpCodeInterface $apiResponse
      * @return Response
      */
     public function respond(HttpCodeInterface $apiResponse): Response

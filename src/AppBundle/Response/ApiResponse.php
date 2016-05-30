@@ -7,7 +7,7 @@ use JMS\Serializer\Annotation\Exclude;
 /**
  * @author Vehsamrak
  */
-class ApiResnonse implements HttpCodeInterface
+class ApiResponse implements HttpCodeInterface
 {
     /** @var array */
     protected $data;

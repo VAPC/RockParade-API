@@ -2,12 +2,12 @@
 
 namespace AppBundle\Controller;
 
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Form;
-use Symfony\Component\Validator\Constraints as Assert;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Band;
 use AppBundle\Response\ApiError;
-use AppBundle\Response\ApiResnonse;
+use AppBundle\Response\ApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @Route("band")
@@ -38,7 +39,7 @@ class BandController extends RestController
     public function listAction(): Response
     {
         $bandRepository = $this->getDoctrine()->getRepository(Band::class);
-        $response = new ApiResnonse($bandRepository->findAll(), Response::HTTP_OK);
+        $response = new ApiResponse($bandRepository->findAll(), Response::HTTP_OK);
 
         return $this->respond($response);
     }
@@ -65,7 +66,7 @@ class BandController extends RestController
      *         {
      *             "name"="users",
      *             "dataType"="array",
-     *             "requirement"="",
+     *             "requirement"="true",
      *             "description"="band users"
      *         },
      *     },
@@ -96,17 +97,9 @@ class BandController extends RestController
      */
     private function createBandCreateForm()
     {
-        $formBuilder = $this->createFormBuilder(
-            new class
-            {
-                /** @Assert\NotBlank(message="Parameter 'name' is mandatory") */
-                public $name;
-
-                /** @Assert\NotBlank(message="Parameter 'description' is mandatory") */
-                public $description;
-            }
-        )
+        $formBuilder = $this->createFormBuilder(new Band())
             ->add('name', TextType::class)
+            ->add('users', CollectionType::class)
             ->add('description', TextareaType::class);
 
         return $formBuilder->getForm();

@@ -6,7 +6,7 @@ use AppBundle\Entity\User;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Response\ApiError;
-use AppBundle\Response\ApiResnonse;
+use AppBundle\Response\ApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -38,7 +38,7 @@ class UserController extends RestController
         $userRepository = $this->getDoctrine()->getRepository(User::class);
         $allUsers = $userRepository->findAll();
 
-        $response = new ApiResnonse($allUsers, Response::HTTP_OK);
+        $response = new ApiResponse($allUsers, Response::HTTP_OK);
 
         return $this->respond($response);
     }
@@ -64,7 +64,7 @@ class UserController extends RestController
         $user = $userRepository->findOneByLogin($login);
 
         if ($user) {
-            $response = new ApiResnonse($user, Response::HTTP_OK);
+            $response = new ApiResponse($user, Response::HTTP_OK);
         } else {
             $response = $this->createUserNotFoundErrorResult($login);
         }
@@ -131,7 +131,7 @@ class UserController extends RestController
             $userRepository->persist($user);
             $userRepository->flush();
 
-            $result = new ApiResnonse($user, Response::HTTP_OK);
+            $result = new ApiResponse($user, Response::HTTP_OK);
         }
 
         return $this->respond($result);

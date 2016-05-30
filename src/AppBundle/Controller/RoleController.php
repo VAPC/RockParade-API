@@ -8,7 +8,7 @@ use AppBundle\Entity\Repository\RoleRepository;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Response\ApiError;
-use AppBundle\Response\ApiResnonse;
+use AppBundle\Response\ApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -46,7 +46,7 @@ class RoleController extends RestController
             unset($roles[$key]);
         }
 
-        $response = new ApiResnonse($roles, Response::HTTP_OK);
+        $response = new ApiResponse($roles, Response::HTTP_OK);
 
         return $this->respond($response);
     }
