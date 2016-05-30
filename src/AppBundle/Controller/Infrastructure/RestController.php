@@ -48,4 +48,19 @@ class RestController extends Controller
         $clearMissing = $request->getMethod() != 'PATCH';
         $form->submit($data, $clearMissing);
     }
+
+    /**
+     * @param FormInterface $form
+     * @return string[]
+     */
+    protected function getFormErrors(FormInterface $form): array
+    {
+        $errors = [];
+
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        return $errors;
+    }
 }
