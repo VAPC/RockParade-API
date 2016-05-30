@@ -11,8 +11,8 @@ use JMS\Serializer\Annotation\Exclude;
 class ApiError implements HttpCodeInterface
 {
 
-    /** @var string */
-    private $error;
+    /** @var string[] */
+    private $errors;
 
     /**
      * @var int
@@ -21,21 +21,21 @@ class ApiError implements HttpCodeInterface
     private $httpCode;
 
     /**
-     * @param string $message
+     * @param string|string[] $errors
      * @param int $httpCode
      */
-    public function __construct(string $message, int $httpCode)
+    public function __construct($errors, int $httpCode)
     {
-        $this->error = $message;
+        $this->errors = (array) $errors;
         $this->httpCode = $httpCode;
     }
 
     /**
-     * @return string
+     * @return string[]
      */
-    public function getError(): string
+    public function getErrors(): array
     {
-        return $this->error;
+        return $this->errors;
     }
 
     /**
