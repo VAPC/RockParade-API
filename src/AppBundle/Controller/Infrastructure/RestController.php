@@ -44,7 +44,7 @@ class RestController extends Controller
      */
     protected function processForm(Request $request, FormInterface $form)
     {
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
         $clearMissing = $request->getMethod() != 'PATCH';
         $form->submit($data, $clearMissing);
     }
@@ -62,5 +62,13 @@ class RestController extends Controller
         }
 
         return $errors;
+    }
+
+    /** {@inheritDoc} */
+    protected function createFormBuilder($data = null, array $options = [])
+    {
+        $options['allow_extra_fields'] = true;
+
+        return parent::createFormBuilder($data, $options);
     }
 }
