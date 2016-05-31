@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace Tests\AppBundle\Controller;
 
 use AppBundle\Fixture\UserFixture;
 use Tests\FunctionalTester;
