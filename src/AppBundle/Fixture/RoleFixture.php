@@ -3,7 +3,7 @@
 namespace AppBundle\Fixture;
 
 use AppBundle\Entity\Role;
-use AppBundle\Entity\RoleRepository;
+use AppBundle\Entity\Repository\RoleRepository;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
