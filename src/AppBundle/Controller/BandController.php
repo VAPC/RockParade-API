@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use AppBundle\Entity\DTO\CreateBand;
 use Symfony\Component\Form\Form;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Band;
@@ -97,10 +97,10 @@ class BandController extends RestController
      */
     private function createBandCreateForm()
     {
-        $formBuilder = $this->createFormBuilder(new Band())
-            ->add('name', TextType::class)
-            ->add('users', CollectionType::class)
-            ->add('description', TextareaType::class);
+        $formBuilder = $this->createFormBuilder(new CreateBand());
+        $formBuilder->add('name', TextType::class);
+        $formBuilder->add('users', TextType::class);
+        $formBuilder->add('description', TextareaType::class);
 
         return $formBuilder->getForm();
     }

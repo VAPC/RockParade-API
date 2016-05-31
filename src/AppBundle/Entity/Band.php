@@ -10,7 +10,6 @@ use JMS\Serializer\Annotation\Accessor;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Type as SerializerType;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Band
@@ -26,7 +25,6 @@ class Band
      * @var string
      * @ORM\Id
      * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\NotBlank(message="Parameter 'name' is mandatory")
      */
     protected $name;
 
@@ -39,7 +37,6 @@ class Band
     /**
      * @var string
      * @ORM\Column(name="description", type="text", nullable=true)
-     * @Assert\NotBlank(message="Parameter 'description' is mandatory")
      */
     protected $description;
 
@@ -86,26 +83,10 @@ class Band
     }
 
     /**
-     * @param string $name
-     */
-    public function setName(string $name)
-    {
-        $this->name = $name;
-    }
-
-    /**
      * @return string
      */
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
     }
 }
