@@ -34,6 +34,7 @@ class Band
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime")
      * @Accessor(getter="getRegistrationDate")
+     * @SerializerType("string")
      */
     protected $registrationDate;
 

@@ -49,7 +49,7 @@ class UserControllerTest extends FunctionalTester
     /** @test */
     public function viewAction_GETUsersViewLoginRequest_singleUserInfo()
     {
-        $this->sendGetRequest('/users/view/first');
+        $this->sendGetRequest('/user/first');
         $contents = $this->getResponseContents();
         $responseCode = $this->getResponseCode();
 
@@ -61,7 +61,7 @@ class UserControllerTest extends FunctionalTester
     /** @test */
     public function viewAction_GETUsersViewNotExistingLoginRequest_userNotFoundError()
     {
-        $this->sendGetRequest('/users/view/notexistinguser');
+        $this->sendGetRequest('/user/notexistinguser');
         $contents = $this->getResponseContents();
         $responseCode = $this->getResponseCode();
 
@@ -74,7 +74,7 @@ class UserControllerTest extends FunctionalTester
     {
         $parameters = $this->createParametersForNewUser();
 
-        $this->sendPostRequest('/users/create', $parameters);
+        $this->sendPostRequest('/user/create', $parameters);
         $responseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 
@@ -88,7 +88,7 @@ class UserControllerTest extends FunctionalTester
     {
         $parameters = $this->createParametersWithLoginOfExistingUser();
 
-        $this->sendPostRequest('/users/create', $parameters);
+        $this->sendPostRequest('/user/create', $parameters);
         $responseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 
@@ -101,7 +101,7 @@ class UserControllerTest extends FunctionalTester
     {
         $parameters = $this->createParametersWithUsernameOfExistingUser();
 
-        $this->sendPostRequest('/users/create', $parameters);
+        $this->sendPostRequest('/user/create', $parameters);
         $responseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 
@@ -112,7 +112,7 @@ class UserControllerTest extends FunctionalTester
     /** @test */
     public function createAction_POSTUsersCreateWithEmptyParameters_missingParametersError()
     {
-        $this->sendPostRequest('/users/create', []);
+        $this->sendPostRequest('/user/create', []);
         $responseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 

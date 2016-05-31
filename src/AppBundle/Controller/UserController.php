@@ -15,14 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Actions with users
- * @Route("users")
+ * @Route("user")
  */
 class UserController extends RestController
 {
 
     /**
      * List all registered users
-     * @Route("/", name="users_list")
+     * @Route("s/", name="users_list")
      * @Method("GET")
      * @ApiDoc(
      *     section="User",
@@ -45,7 +45,7 @@ class UserController extends RestController
 
     /**
      * View single user by login
-     * @Route("/view/{login}", name="users_view")
+     * @Route("/{login}", name="users_view")
      * @Method("GET")
      * @ApiDoc(
      *     section="User",

@@ -26,7 +26,7 @@ class BandController extends RestController
 {
     /**
      * List all registered bands
-     * @Route("/", name="bands_list")
+     * @Route("s/", name="bands_list")
      * @Method("GET")
      * @ApiDoc(
      *     section="Band",

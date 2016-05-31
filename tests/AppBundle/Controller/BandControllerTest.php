@@ -2,6 +2,7 @@
 
 namespace Tests\AppBundle\Controller;
 
+use AppBundle\Fixture\BandFixture;
 use Tests\FunctionalTester;
 
 /**
@@ -10,14 +11,41 @@ use Tests\FunctionalTester;
 class BandControllerTest extends FunctionalTester
 {
     const BAND_NAME = 'Test Band';
-    const DESCRIPTION = 'description';
+    const BAND_DESCRIPTION = 'Band description.';
+    const BAND_USER_LOGIN = 'Banders';
+
+    /** {@inheritDoc} */
+    protected function setUp()
+    {
+        $this->loadFixtures(
+            [
+                BandFixture::class,
+            ]
+        );
+        parent::setUp();
+    }
+
+    /** @test */
+    public function listAction_GETBandRequest_bandCreated()
+    {
+        $this->followRedirects();
+
+        $this->sendGetRequest('/bands');
+        $listBandsResponseCode = $this->getResponseCode();
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(200, $listBandsResponseCode);
+        $this->assertEquals(self::BAND_USER_LOGIN, $contents['data'][0]['name']);
+        $this->assertEquals(self::BAND_DESCRIPTION, $contents['data'][0]['description']);
+    }
 
     /** @test */
     public function createAction_POSTBandCreateRequest_bandCreated()
     {
+        $this->followRedirects();
         $parameters = [
             'name'        => self::BAND_NAME,
-            'description' => self::DESCRIPTION,
+            'description' => self::BAND_DESCRIPTION,
             'users'       => [
                 'first',
                 'second',
@@ -25,11 +53,19 @@ class BandControllerTest extends FunctionalTester
         ];
 
         $this->sendPostRequest('/band/create', $parameters);
-        $responseCode = $this->getResponseCode();
+        $createBandResponseCode = $this->getResponseCode();
 
-        $this->assertEquals(200, $responseCode);
+        $this->assertEquals(200, $createBandResponseCode);
+
+        $this->sendGetRequest('/bands');
+        $listBandsResponseCode = $this->getResponseCode();
+        $bandListContents = $this->getResponseContents();
+
+        $this->assertEquals(200, $listBandsResponseCode);
+        $this->assertEquals(self::BAND_USER_LOGIN, $bandListContents['data'][0]['name']);
+        $this->assertEquals(self::BAND_DESCRIPTION, $bandListContents['data'][0]['description']);
     }
-
+    
     /** @test */
     public function createAction_POSTBandCreateEmptyRequest_validationErrors()
     {

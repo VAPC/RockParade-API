@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Roles
- * @Route("roles")
+ * @Route("role")
  * @author Vehsamrak
  */
 class RoleController extends RestController
@@ -26,7 +26,7 @@ class RoleController extends RestController
 
     /**
      * List all available user roles
-     * @Route("/", name="roles_list")
+     * @Route("s/", name="roles_list")
      * @Method("GET")
      * @ApiDoc(
      *     section="Role",
