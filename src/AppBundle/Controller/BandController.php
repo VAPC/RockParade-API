@@ -17,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -86,13 +87,17 @@ class BandController extends RestController
     {
         $form = $this->createBandCreateForm();
         $this->processForm($request, $form);
+        $entityManager = $this->getDoctrine()->getManager();
 
         if ($form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-
             $band = $this->createBandUsingForm($form, $entityManager);
 
-            $entityManager->persist($band);
+            if ($band) {
+                $entityManager->persist($band);
+            }
+        }
+
+        if ($form->isValid()) {
             $entityManager->flush();
 
             $response = new EmptyApiResponse(Response::HTTP_OK);
@@ -121,25 +126,32 @@ class BandController extends RestController
      * @param EntityManager $entityManager
      * @return Band
      */
-    private function createBandUsingForm(FormInterface $form, EntityManager $entityManager): Band
+    private function createBandUsingForm(FormInterface $form, EntityManager $entityManager)
     {
         $name = $form->get('name')->getData();
         $description = $form->get('description')->getData();
+        $usersData = $form->get('users')->getData();
 
-        $usersRepository = $entityManager->getRepository(User::class);
-        $users = array_map(
-            function (string $userLogin) use ($usersRepository) {
-                $user = $usersRepository->findOneByLogin($userLogin);
+        if (!$usersData) {
+        	$form->addError(new FormError('Parameter \'users\' is mandatory'));
+        } else {
+            $usersRepository = $entityManager->getRepository(User::class);
+            $users = array_map(
+                function (string $userLogin) use ($usersRepository, $form) {
+                    $user = $usersRepository->findOneByLogin($userLogin);
 
-                if (!$user) {
-                    throw new UserNotFound($userLogin);
-                }
+                    if (!$user) {
+                        $form->addError(new FormError(sprintf('User %s was not found.', $userLogin)));
+                    }
 
-                return $user;
-            },
-            $form->get('users')->getData()
-        );
+                    return $user;
+                },
+                $usersData
+            );
 
-        return new Band($name, $users, $description);
+            return new Band($name, $users, $description);
+        }
+
+        return null;
     }
 }
