@@ -51,20 +51,22 @@ abstract class FunctionalTester extends WebTestCase
     }
 
     /**
-     * @return array
+     * @return array|string
      * @throws \Exception
      */
     protected function getResponseContents(): array
     {
         $response = $this->httpClient->getResponse();
-        $responseContent = $response->getContent();
+        $responseContents = $response->getContent();
 
-        $jsonEncodedResponseContent = json_decode($responseContent, true);
+        $jsonEncodedResponseContent = json_decode($responseContents, true);
 
         if ($jsonEncodedResponseContent) {
             return $jsonEncodedResponseContent;
+        } elseif ($responseContents) {
+            throw new \Exception('Response contents: "' . $responseContents . '"');
         } else {
-            throw new \Exception('Response content: "' . $responseContent . '"');
+            return $responseContents;
         }
     }
 
