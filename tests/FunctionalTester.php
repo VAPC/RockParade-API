@@ -54,7 +54,7 @@ abstract class FunctionalTester extends WebTestCase
      * @return array|string
      * @throws \Exception
      */
-    protected function getResponseContents(): array
+    protected function getResponseContents()
     {
         $response = $this->httpClient->getResponse();
         $responseContents = $response->getContent();
