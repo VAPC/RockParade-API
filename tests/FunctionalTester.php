@@ -64,7 +64,7 @@ abstract class FunctionalTester extends WebTestCase
         if ($jsonEncodedResponseContent) {
             return $jsonEncodedResponseContent;
         } else {
-            throw new \Exception($responseContent);
+            throw new \Exception('Response content: "' . $responseContent . '"');
         }
     }
 
