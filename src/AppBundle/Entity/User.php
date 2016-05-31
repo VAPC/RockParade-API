@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
@@ -18,7 +19,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 class User
 {
 
-    const DATE_FORMAT = 'Y-m-d H:i:s';
+    use FormattedRegistrationDateTrait;
 
     /**
      * @var string
@@ -81,14 +82,6 @@ class User
     public function getLogin(): string
     {
         return $this->login;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRegistrationDate(): string
-    {
-        return $this->registrationDate->format(self::DATE_FORMAT);
     }
 
     /**

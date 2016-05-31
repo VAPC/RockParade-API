@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
 use AppBundle\Entity\Infrasctucture\GetUserLoginsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,7 +21,8 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 class Band
 {
     use GetUserLoginsTrait;
-
+    use FormattedRegistrationDateTrait;
+    
     /**
      * @var string
      * @ORM\Id
@@ -31,6 +33,7 @@ class Band
     /**
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime")
+     * @Accessor(getter="getRegistrationDate")
      */
     protected $registrationDate;
 
@@ -52,10 +55,17 @@ class Band
      */
     protected $users;
 
-    public function __construct()
+    /**
+     * @param string $name
+     * @param User[] $users
+     * @param string $description
+     */
+    public function __construct(string $name, array $users, string $description = null)
     {
         $this->registrationDate = new \DateTime();
-        $this->users = new ArrayCollection();
+        $this->name = $name;
+        $this->description = $description;
+        $this->users = new ArrayCollection($users);
     }
 
     /**
