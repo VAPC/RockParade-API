@@ -6,6 +6,7 @@ use AppBundle\Response\ApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\HttpCodeInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,9 +45,8 @@ class RestController extends Controller
      */
     protected function processForm(Request $request, FormInterface $form)
     {
-        $data = json_decode($request->getContent(), true) ?? $request->request->all();
         $clearMissing = $request->getMethod() != 'PATCH';
-        $form->submit($data, $clearMissing);
+        $form->submit($this->getFormContents($request), $clearMissing);
     }
 
     /**
@@ -65,10 +65,21 @@ class RestController extends Controller
     }
 
     /** {@inheritDoc} */
-    protected function createFormBuilder($data = null, array $options = [])
+    protected function createFormBuilder($data = null, array $options = []): FormBuilder
     {
         $options['allow_extra_fields'] = true;
 
         return parent::createFormBuilder($data, $options);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    protected function getFormContents(Request $request): array
+    {
+        $data = json_decode($request->getContent(), true) ?? $request->request->all();
+
+        return $data;
     }
 }
