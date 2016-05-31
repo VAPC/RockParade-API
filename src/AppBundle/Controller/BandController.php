@@ -3,6 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\DTO\CreateBand;
+use AppBundle\Entity\User;
+use AppBundle\Exception\UserNotFound;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Form;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Band;
@@ -14,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -67,7 +71,7 @@ class BandController extends RestController
      *             "name"="users",
      *             "dataType"="array",
      *             "requirement"="true",
-     *             "description"="band users"
+     *             "description"="logins of band musicians"
      *         },
      *     },
      *     statusCodes={
@@ -84,6 +88,13 @@ class BandController extends RestController
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $band = $this->createBandUsingForm($form, $entityManager);
+
+            $entityManager->persist($band);
+            $entityManager->flush();
+
             $response = new EmptyApiResponse(Response::HTTP_OK);
         } else {
             $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
@@ -103,5 +114,32 @@ class BandController extends RestController
         $formBuilder->add('description', TextareaType::class);
 
         return $formBuilder->getForm();
+    }
+
+    /**
+     * @param FormInterface $form
+     * @param EntityManager $entityManager
+     * @return Band
+     */
+    private function createBandUsingForm(FormInterface $form, EntityManager $entityManager): Band
+    {
+        $name = $form->get('name')->getData();
+        $description = $form->get('description')->getData();
+
+        $usersRepository = $entityManager->getRepository(User::class);
+        $users = array_map(
+            function (string $userLogin) use ($usersRepository) {
+                $user = $usersRepository->findOneByLogin($userLogin);
+
+                if (!$user) {
+                    throw new UserNotFound($userLogin);
+                }
+
+                return $user;
+            },
+            $form->get('users')->getData()
+        );
+
+        return new Band($name, $users, $description);
     }
 }

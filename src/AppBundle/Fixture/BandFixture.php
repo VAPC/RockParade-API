@@ -20,6 +20,7 @@ class BandFixture implements FixtureInterface
 
         $entities = [
             $user,
+            new User('derban', 'Derban'),
             new Band('Banders', [$user], 'Band description.'),
         ];
 

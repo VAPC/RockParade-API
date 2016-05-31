@@ -10,9 +10,12 @@ use Tests\FunctionalTester;
  */
 class BandControllerTest extends FunctionalTester
 {
-    const BAND_NAME = 'Test Band';
-    const BAND_DESCRIPTION = 'Band description.';
-    const BAND_USER_LOGIN = 'Banders';
+    const BAND_NAME_FIRST = 'Banders';
+    const BAND_DESCRIPTION_FIRST = 'Band description.';
+    const BAND_NAME_SECOND = 'Derbans';
+    const BAND_DESCRIPTION_SECOND = 'Derband description.';
+    const BAND_USER_LOGIN_FIRST = 'bander';
+    const BAND_USER_LOGIN_SECOND = 'derban';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -35,8 +38,20 @@ class BandControllerTest extends FunctionalTester
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $listBandsResponseCode);
-        $this->assertEquals(self::BAND_USER_LOGIN, $contents['data'][0]['name']);
-        $this->assertEquals(self::BAND_DESCRIPTION, $contents['data'][0]['description']);
+        $this->assertEquals(self::BAND_NAME_FIRST, $contents['data'][0]['name']);
+        $this->assertEquals(self::BAND_DESCRIPTION_FIRST, $contents['data'][0]['description']);
+    }
+
+    /** @test */
+    public function createAction_POSTBandCreateEmptyRequest_validationErrors()
+    {
+        $this->sendPostRequest('/band/create', []);
+        $responseCode = $this->getResponseCode();
+        $errors = $this->getResponseContents()['errors'];
+
+        $this->assertEquals(400, $responseCode);
+        $this->assertContains('Parameter \'name\' is mandatory', $errors);
+        $this->assertContains('Parameter \'description\' is mandatory', $errors);
     }
 
     /** @test */
@@ -44,11 +59,11 @@ class BandControllerTest extends FunctionalTester
     {
         $this->followRedirects();
         $parameters = [
-            'name'        => self::BAND_NAME,
-            'description' => self::BAND_DESCRIPTION,
+            'name'        => self::BAND_NAME_SECOND,
+            'description' => self::BAND_DESCRIPTION_SECOND,
             'users'       => [
-                'first',
-                'second',
+                self::BAND_USER_LOGIN_FIRST,
+                self::BAND_USER_LOGIN_SECOND,
             ],
         ];
 
@@ -62,19 +77,9 @@ class BandControllerTest extends FunctionalTester
         $bandListContents = $this->getResponseContents();
 
         $this->assertEquals(200, $listBandsResponseCode);
-        $this->assertEquals(self::BAND_USER_LOGIN, $bandListContents['data'][0]['name']);
-        $this->assertEquals(self::BAND_DESCRIPTION, $bandListContents['data'][0]['description']);
-    }
-    
-    /** @test */
-    public function createAction_POSTBandCreateEmptyRequest_validationErrors()
-    {
-        $this->sendPostRequest('/band/create', []);
-        $responseCode = $this->getResponseCode();
-        $errors = $this->getResponseContents()['errors'];
-
-        $this->assertEquals(400, $responseCode);
-        $this->assertContains('Parameter \'name\' is mandatory', $errors);
-        $this->assertContains('Parameter \'description\' is mandatory', $errors);
+        $this->assertEquals(self::BAND_NAME_SECOND, $bandListContents['data'][1]['name']);
+        $this->assertEquals(self::BAND_DESCRIPTION_SECOND, $bandListContents['data'][1]['description']);
+        $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][1]['users']);
+        $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][1]['users']);
     }
 }
