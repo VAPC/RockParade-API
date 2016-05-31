@@ -7,6 +7,9 @@ RockParade
 
 Requirements
 ============
+* PHP 7
+* MySQL database
+
 All requirements are listed in *composer.json*.
 
 How to run server
