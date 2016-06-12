@@ -2,9 +2,8 @@
 
 namespace AppBundle\Controller\Infrastructure;
 
-use AppBundle\Response\ApiResponse;
+use AppBundle\Response\AbstractApiResponse;
 use AppBundle\Response\EmptyApiResponse;
-use AppBundle\Response\HttpCodeInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormInterface;
@@ -19,11 +18,7 @@ class RestController extends Controller
 
     const FORMAT_JSON = 'json';
 
-    /**
-     * @param ApiResponse|EmptyApiResponse|HttpCodeInterface $apiResponse
-     * @return Response
-     */
-    public function respond(HttpCodeInterface $apiResponse): Response
+    public function respond(AbstractApiResponse $apiResponse): Response
     {
         $serializedData = '';
 
@@ -47,7 +42,7 @@ class RestController extends Controller
     {
         $formData = json_decode($request->getContent(), true) ?? $request->request->all();
         $clearMissing = $request->getMethod() != 'PATCH';
-        
+
         $form->submit($formData, $clearMissing);
     }
 

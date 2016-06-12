@@ -2,21 +2,13 @@
 
 namespace AppBundle\Response;
 
-use JMS\Serializer\Annotation\Exclude;
-
 /**
  * @author Vehsamrak
  */
-class ApiResponse implements HttpCodeInterface
+class ApiResponse extends AbstractApiResponse
 {
     /** @var array */
     protected $data;
-
-    /**
-     * @var int
-     * @Exclude
-     */
-    protected $httpCode;
 
     /**
      * @param $data
@@ -34,11 +26,5 @@ class ApiResponse implements HttpCodeInterface
     public function getData(): array
     {
         return $this->data;
-    }
-
-    /** {@inheritDoc} */
-    public function getHttpCode(): int
-    {
-        return $this->httpCode;
     }
 }
