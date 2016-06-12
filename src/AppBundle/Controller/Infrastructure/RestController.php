@@ -85,7 +85,7 @@ class RestController extends Controller
         }
     }
 
-    private function setJsonContentType($response)
+    private function setJsonContentType(Response $response)
     {
         $response->headers->set('Content-Type', self::TYPE_JSON);
     }
