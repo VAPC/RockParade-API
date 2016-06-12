@@ -47,7 +47,7 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function viewAction_GETUsersViewLoginRequest_singleUserInfo()
+    public function viewAction_GETUserViewLoginRequest_singleUserInfo()
     {
         $this->sendGetRequest('/user/first');
         $contents = $this->getResponseContents();
@@ -59,7 +59,7 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function viewAction_GETUsersViewNotExistingLoginRequest_userNotFoundError()
+    public function viewAction_GETUserViewNotExistingLoginRequest_userNotFoundError()
     {
         $this->sendGetRequest('/user/notexistinguser');
         $contents = $this->getResponseContents();
@@ -70,7 +70,7 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTUsersCreateWithLoginAndNameAndDescription_newUserCreated()
+    public function createAction_POSTUserCreateWithLoginAndNameAndDescription_newUserCreated()
     {
         $parameters = $this->createParametersForNewUser();
 
@@ -84,7 +84,7 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTUsersCreateWithLoginOfExistingUser_userAlreadyExistsError()
+    public function createAction_POSTUserCreateWithLoginOfExistingUser_userAlreadyExistsError()
     {
         $parameters = $this->createParametersWithLoginOfExistingUser();
 
@@ -97,7 +97,7 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTUsersCreateWithUsernameOfExistingUser_userAlreadyExistsError()
+    public function createAction_POSTUserCreateWithUsernameOfExistingUser_userAlreadyExistsError()
     {
         $parameters = $this->createParametersWithUsernameOfExistingUser();
 
@@ -110,7 +110,7 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTUsersCreateWithEmptyParameters_missingParametersError()
+    public function createAction_POSTUserCreateWithEmptyParameters_missingParametersError()
     {
         $this->sendPostRequest('/user/create', []);
         $responseCode = $this->getResponseCode();

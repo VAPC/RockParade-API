@@ -3,14 +3,15 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\DTO\CreateBand;
+use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\User;
-use Doctrine\ORM\EntityManager;
+use AppBundle\Response\CreatedApiResponse;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\Form;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Band;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiResponse;
-use AppBundle\Response\EmptyApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -48,6 +49,34 @@ class BandController extends RestController
     }
 
     /**
+     * View band by name
+     * @Route("/{name}", name="band_view")
+     * @Method("GET")
+     * @ApiDoc(
+     *     section="Band",
+     *     statusCodes={
+     *         200="Band was found",
+     *         404="Band with given name was not found",
+     *     }
+     * )
+     * @param string $name band name
+     */
+    public function viewAction(string $name): Response
+    {
+        /** @var BandRepository $bandRepository */
+        $bandRepository = $this->getDoctrine()->getRepository(Band::class);
+        $user = $bandRepository->findOneByName($name);
+
+        if ($user) {
+            $response = new ApiResponse($user, Response::HTTP_OK);
+        } else {
+            $response = $this->createBandNotFoundErrorResult($name);
+        }
+
+        return $this->respond($response);
+    }
+
+    /**
      * Create new band
      * @Route("/create", name="band_create")
      * @Method("POST")
@@ -74,7 +103,7 @@ class BandController extends RestController
      *         },
      *     },
      *     statusCodes={
-     *         201="New band was created",
+     *         201="New band was created. Link to new resource in header 'Location'",
      *         400="Validation error",
      *     }
      * )
@@ -83,20 +112,15 @@ class BandController extends RestController
     {
         $form = $this->createFormBandCreate();
         $this->processForm($request, $form);
-        $entityManager = $this->getDoctrine()->getManager();
+
+        $objectManager = $this->getDoctrine()->getManager();
+        $this->createBandUsingForm($form, $objectManager);
 
         if ($form->isValid()) {
-            $band = $this->createBandUsingForm($form, $entityManager);
+            $objectManager->flush();
+            $bandLocation = $this->getLocationFromForm($form);
 
-            if ($band) {
-                $entityManager->persist($band);
-            }
-        }
-
-        if ($form->isValid()) {
-            $entityManager->flush();
-
-            $response = new EmptyApiResponse(Response::HTTP_CREATED);
+            $response = new CreatedApiResponse($bandLocation);
         } else {
             $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
         }
@@ -114,16 +138,20 @@ class BandController extends RestController
         return $formBuilder->getForm();
     }
 
-    private function createBandUsingForm(FormInterface $form, EntityManager $entityManager): Band
+    private function createBandUsingForm(FormInterface $form, ObjectManager $objectManager)
     {
+        if (!$form->isValid()) {
+            return null;
+        }
+
         $name = $form->get('name')->getData();
         $description = $form->get('description')->getData();
         $usersData = $form->get('users')->getData();
 
         if (!$usersData) {
-        	$form->addError(new FormError('Parameter \'users\' is mandatory'));
+            $form->addError(new FormError('Parameter \'users\' is mandatory'));
         } else {
-            $usersRepository = $entityManager->getRepository(User::class);
+            $usersRepository = $objectManager->getRepository(User::class);
             $users = array_map(
                 function (string $userLogin) use ($usersRepository, $form) {
                     $user = $usersRepository->findOneByLogin($userLogin);
@@ -137,9 +165,23 @@ class BandController extends RestController
                 $usersData
             );
 
-            return new Band($name, $users, $description);
+            $band = new Band($name, $users, $description);
+            $objectManager->persist($band);
         }
+    }
 
-        return null;
+    private function getLocationFromForm(FormInterface $form)
+    {
+        $bandName = $form->get('name')->getData();
+
+        return $this->generateUrl('band_view', ['name' => $bandName]);
+    }
+
+    private function createBandNotFoundErrorResult(string $bandName): ApiError
+    {
+        return new ApiError(
+            sprintf('Band with name "%s" was not found.', $bandName),
+            Response::HTTP_NOT_FOUND
+        );
     }
 }

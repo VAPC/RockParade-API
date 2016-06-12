@@ -69,8 +69,10 @@ class BandControllerTest extends FunctionalTester
 
         $this->sendPostRequest('/band/create', $parameters);
         $createBandResponseCode = $this->getResponseCode();
+        $createBandResponseLocation = $this->getResponseLocation();
 
         $this->assertEquals(201, $createBandResponseCode);
+        $this->assertEquals('/band/Derbans', $createBandResponseLocation);
 
         $this->sendGetRequest('/bands');
         $listBandsResponseCode = $this->getResponseCode();
@@ -81,5 +83,28 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals(self::BAND_DESCRIPTION_SECOND, $bandListContents['data'][1]['description']);
         $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][1]['users']);
         $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][1]['users']);
+    }
+
+    /** @test */
+    public function viewAction_GETBandViewNameRequest_singleBandInfo()
+    {
+        $this->sendGetRequest('/band/Banders');
+        $contents = $this->getResponseContents();
+        $responseCode = $this->getResponseCode();
+
+        $this->assertEquals(200, $responseCode);
+        $this->assertEquals(self::BAND_NAME_FIRST, $contents['data']['name']);
+        $this->assertEquals(self::BAND_DESCRIPTION_FIRST, $contents['data']['description']);
+    }
+
+    /** @test */
+    public function viewAction_GETBandViewNotExistingNameRequest_bandNotFoundError()
+    {
+        $this->sendGetRequest('/band/VeryUnexistingBand');
+        $contents = $this->getResponseContents();
+        $responseCode = $this->getResponseCode();
+
+        $this->assertEquals(404, $responseCode);
+        $this->assertContains('Band with name "VeryUnexistingBand" was not found.', $contents['errors']);
     }
 }

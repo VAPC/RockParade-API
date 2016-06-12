@@ -45,7 +45,7 @@ class UserController extends RestController
 
     /**
      * View single user by login
-     * @Route("/{login}", name="users_view")
+     * @Route("/{login}", name="user_view")
      * @Method("GET")
      * @ApiDoc(
      *     section="User",
