@@ -4,6 +4,7 @@ namespace Tests;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 
 /**
@@ -33,7 +34,6 @@ abstract class FunctionalTester extends WebTestCase
     }
 
     /**
-     * @param string $route
      * @throws \Exception
      */
     protected function sendGetRequest(string $route)
@@ -41,10 +41,6 @@ abstract class FunctionalTester extends WebTestCase
         $this->httpClient->request(Request::METHOD_GET, $route);
     }
 
-    /**
-     * @param string $route
-     * @param array $parameters
-     */
     protected function sendPostRequest(string $route, array $parameters = [])
     {
         $this->httpClient->request(Request::METHOD_POST, $route, $parameters);
@@ -56,7 +52,7 @@ abstract class FunctionalTester extends WebTestCase
      */
     protected function getResponseContents()
     {
-        $response = $this->httpClient->getResponse();
+        $response = $this->getResponse();
         $responseContents = $response->getContent();
 
         $jsonEncodedResponseContent = json_decode($responseContents, true);
@@ -70,13 +66,16 @@ abstract class FunctionalTester extends WebTestCase
         }
     }
 
-    /**
-     * @return int
-     */
-    protected function getResponseCode()
+    protected function getResponseCode(): int
     {
-        $responseCode = $this->httpClient->getResponse()->getStatusCode();
+        return $this->getResponse()->getStatusCode();
+    }
 
-        return $responseCode;
+    /**
+     * @return Response|null
+     */
+    protected function getResponse()
+    {
+        return $this->httpClient->getResponse();
     }
 }
