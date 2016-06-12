@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\DTO\CreateBand;
 use AppBundle\Entity\Repository\BandRepository;
+use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Entity\User;
 use AppBundle\Response\CreatedApiResponse;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -151,6 +152,7 @@ class BandController extends RestController
         if (!$usersData) {
             $form->addError(new FormError('Parameter \'users\' is mandatory'));
         } else {
+            /** @var UserRepository $usersRepository */
             $usersRepository = $objectManager->getRepository(User::class);
             $users = array_map(
                 function (string $userLogin) use ($usersRepository, $form) {

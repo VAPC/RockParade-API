@@ -13,7 +13,7 @@ class BandRepository extends EntityRepository
      */
     public function findOneByName(string $name)
     {
-        return parent::findOneBy(
+        return $this->findOneBy(
             [
                 'name' => $name,
             ]

@@ -11,9 +11,6 @@ class ApiResponse extends AbstractApiResponse
 {
     protected $data;
     
-    /**
-     * @param $data
-     */
     public function __construct($data, int $httpCode)
     {
         $this->data = $data;
