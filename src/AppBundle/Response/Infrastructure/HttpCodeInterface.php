@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Response;
+namespace AppBundle\Response\Infrastructure;
 
 /**
  * @author Vehsamrak

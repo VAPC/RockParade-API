@@ -2,6 +2,8 @@
 
 namespace AppBundle\Response;
 
+use AppBundle\Response\Infrastructure\AbstractApiResponse;
+
 /**
  * @author Vehsamrak
  */

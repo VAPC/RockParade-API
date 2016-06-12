@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller\Infrastructure;
 
-use AppBundle\Response\AbstractApiResponse;
+use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormBuilder;

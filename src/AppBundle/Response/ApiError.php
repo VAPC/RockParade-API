@@ -2,6 +2,7 @@
 
 namespace AppBundle\Response;
 
+use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use JMS\Serializer\Annotation as Serializer;
 
 /**

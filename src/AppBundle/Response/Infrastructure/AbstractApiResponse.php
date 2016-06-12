@@ -1,9 +1,8 @@
 <?php
 
-namespace AppBundle\Response;
+namespace AppBundle\Response\Infrastructure;
 
 use JMS\Serializer\Annotation\Exclude;
-
 
 /**
  * @author Vehsamrak
