@@ -30,7 +30,6 @@ class UserController extends RestController
      *         200="OK",
      *     }
      * )
-     * @return Response
      */
     public function listAction(): Response
     {
@@ -55,7 +54,6 @@ class UserController extends RestController
      *     }
      * )
      * @param string $login user login
-     * @return Response
      */
     public function viewAction(string $login): Response
     {
@@ -104,8 +102,6 @@ class UserController extends RestController
      *         409="User with given login or username already exists",
      *     }
      * )
-     * @param Request $request
-     * @return Response
      */
     public function createAction(Request $request): Response
     {
@@ -137,11 +133,7 @@ class UserController extends RestController
         return $this->respond($result);
     }
 
-    /**
-     * @param string $userLoginOrName
-     * @return ApiError
-     */
-    private function createUserExistsErrorResult(string $userLoginOrName)
+    private function createUserExistsErrorResult(string $userLoginOrName): ApiError
     {
         return new ApiError(
             sprintf(
@@ -151,11 +143,7 @@ class UserController extends RestController
         );
     }
 
-    /**
-     * @param string $userLogin
-     * @return ApiError
-     */
-    private function createUserNotFoundErrorResult(string $userLogin)
+    private function createUserNotFoundErrorResult(string $userLogin): ApiError
     {
         return new ApiError(
             sprintf('User with login "%s" was not found.', $userLogin),
