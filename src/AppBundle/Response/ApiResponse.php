@@ -9,12 +9,13 @@ use AppBundle\Response\Infrastructure\AbstractApiResponse;
  */
 class ApiResponse extends AbstractApiResponse
 {
-    /** @var array */
-    protected $data;
-
     /**
-     * @param $data
-     * @param int $httpCode
+     * @var string|array
+     */
+    protected $data;
+    
+    /**
+     * @param string|array $data
      */
     public function __construct($data, int $httpCode)
     {
@@ -22,10 +23,7 @@ class ApiResponse extends AbstractApiResponse
         $this->httpCode = $httpCode;
     }
 
-    /**
-     * @return array
-     */
-    public function getData(): array
+    public function getData()
     {
         return $this->data;
     }
