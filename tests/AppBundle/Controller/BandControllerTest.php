@@ -29,7 +29,7 @@ class BandControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function listAction_GETBandRequest_bandCreated()
+    public function listAction_GETBandRequest_listAllBands()
     {
         $this->followRedirects();
 
@@ -70,7 +70,7 @@ class BandControllerTest extends FunctionalTester
         $this->sendPostRequest('/band/create', $parameters);
         $createBandResponseCode = $this->getResponseCode();
 
-        $this->assertEquals(200, $createBandResponseCode);
+        $this->assertEquals(201, $createBandResponseCode);
 
         $this->sendGetRequest('/bands');
         $listBandsResponseCode = $this->getResponseCode();

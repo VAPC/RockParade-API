@@ -78,7 +78,7 @@ class UserControllerTest extends FunctionalTester
         $responseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 
-        $this->assertEquals(200, $responseCode);
+        $this->assertEquals(201, $responseCode);
         $this->assertEquals(self::USER_LOGIN_NEW, $contents['data']['login']);
         $this->assertEquals(self::USER_NAME_NEW, $contents['data']['name']);
     }

@@ -99,7 +99,7 @@ class UserController extends RestController
      *         },
      *     },
      *     statusCodes={
-     *         200="New user was created",
+     *         201="New user was created",
      *         400="Mandatory parameters are missed",
      *         409="User with given login or username already exists",
      *     }
@@ -131,7 +131,7 @@ class UserController extends RestController
             $userRepository->persist($user);
             $userRepository->flush();
 
-            $result = new ApiResponse($user, Response::HTTP_OK);
+            $result = new ApiResponse($user, Response::HTTP_CREATED);
         }
 
         return $this->respond($result);

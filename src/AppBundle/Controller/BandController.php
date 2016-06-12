@@ -74,7 +74,7 @@ class BandController extends RestController
      *         },
      *     },
      *     statusCodes={
-     *         200="New band was created",
+     *         201="New band was created",
      *         400="Validation error",
      *     }
      * )
@@ -96,7 +96,7 @@ class BandController extends RestController
         if ($form->isValid()) {
             $entityManager->flush();
 
-            $response = new EmptyApiResponse(Response::HTTP_OK);
+            $response = new EmptyApiResponse(Response::HTTP_CREATED);
         } else {
             $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
         }
