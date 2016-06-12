@@ -33,9 +33,6 @@ abstract class FunctionalTester extends WebTestCase
         $this->httpClient->followRedirects();
     }
 
-    /**
-     * @throws \Exception
-     */
     protected function sendGetRequest(string $route)
     {
         $this->httpClient->request(Request::METHOD_GET, $route);
@@ -44,6 +41,11 @@ abstract class FunctionalTester extends WebTestCase
     protected function sendPostRequest(string $route, array $parameters = [])
     {
         $this->httpClient->request(Request::METHOD_POST, $route, $parameters);
+    }
+
+    protected function sendPutRequest(string $route, array $parameters = [])
+    {
+        $this->httpClient->request(Request::METHOD_PUT, $route, $parameters);
     }
 
     /**
