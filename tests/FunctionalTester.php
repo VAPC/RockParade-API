@@ -78,4 +78,12 @@ abstract class FunctionalTester extends WebTestCase
     {
         return $this->httpClient->getResponse();
     }
+
+    /**
+     * @return string|null
+     */
+    protected function getResponseLocation()
+    {
+        return $this->getResponse()->headers->get('Location');
+    }
 }
