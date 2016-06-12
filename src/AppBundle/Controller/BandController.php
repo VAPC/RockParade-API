@@ -4,7 +4,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\DTO\CreateBand;
 use AppBundle\Entity\User;
-use AppBundle\Exception\UserNotFound;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Form;
 use AppBundle\Controller\Infrastructure\RestController;
