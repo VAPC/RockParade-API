@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Infrastructure;
 
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use AppBundle\Response\EmptyApiResponse;
+use AppBundle\Response\Infrastructure\HttpLocationInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormInterface;
@@ -18,17 +19,15 @@ class RestController extends Controller
 
     const FORMAT_JSON = 'json';
 
+    const TYPE_JSON = 'application/json';
+
     public function respond(AbstractApiResponse $apiResponse): Response
     {
-        $serializedData = '';
-
-        if (!$apiResponse instanceof EmptyApiResponse) {
-            $serializer = $this->get('jms_serializer');
-            $serializedData = $serializer->serialize($apiResponse, self::FORMAT_JSON);
-        }
+        $serializedData = $this->serialize($apiResponse);
 
         $response = new Response($serializedData, $apiResponse->getHttpCode());
-        $response->headers->set('Content-Type', 'application/json');
+        $this->setLocation($response, $apiResponse);
+        $this->setJsonContentType($response);
 
         return $response;
     }
@@ -67,5 +66,27 @@ class RestController extends Controller
         $options['allow_extra_fields'] = true;
 
         return parent::createFormBuilder($data, $options);
+    }
+
+    private function serialize(AbstractApiResponse $apiResponse): string
+    {
+        if (!$apiResponse instanceof EmptyApiResponse) {
+            $serializer = $this->get('jms_serializer');
+            $serializedData = $serializer->serialize($apiResponse, self::FORMAT_JSON);
+        }
+
+        return $serializedData ?? '';
+    }
+
+    private function setLocation(Response $response, AbstractApiResponse $apiResponse)
+    {
+        if ($apiResponse instanceof HttpLocationInterface) {
+            $response->headers->set('Location', $apiResponse->getLocation());
+        }
+    }
+
+    private function setJsonContentType($response)
+    {
+        $response->headers->set('Content-Type', self::TYPE_JSON);
     }
 }
