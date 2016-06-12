@@ -38,7 +38,6 @@ class BandController extends RestController
      *         200="OK",
      *     }
      * )
-     * @return Response
      */
     public function listAction(): Response
     {
@@ -79,12 +78,10 @@ class BandController extends RestController
      *         400="Validation error",
      *     }
      * )
-     * @param Request $request
-     * @return Response
      */
     public function createAction(Request $request): Response
     {
-        $form = $this->createBandCreateForm();
+        $form = $this->createFormBandCreate();
         $this->processForm($request, $form);
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -107,10 +104,7 @@ class BandController extends RestController
         return $this->respond($response);
     }
 
-    /**
-     * @return Form
-     */
-    private function createBandCreateForm()
+    private function createFormBandCreate(): Form
     {
         $formBuilder = $this->createFormBuilder(new CreateBand());
         $formBuilder->add('name', TextType::class);
@@ -120,12 +114,7 @@ class BandController extends RestController
         return $formBuilder->getForm();
     }
 
-    /**
-     * @param FormInterface $form
-     * @param EntityManager $entityManager
-     * @return Band
-     */
-    private function createBandUsingForm(FormInterface $form, EntityManager $entityManager)
+    private function createBandUsingForm(FormInterface $form, EntityManager $entityManager): Band
     {
         $name = $form->get('name')->getData();
         $description = $form->get('description')->getData();
