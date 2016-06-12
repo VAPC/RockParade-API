@@ -9,13 +9,10 @@ use AppBundle\Response\Infrastructure\AbstractApiResponse;
  */
 class ApiResponse extends AbstractApiResponse
 {
-    /**
-     * @var string|array
-     */
     protected $data;
     
     /**
-     * @param string|array $data
+     * @param $data
      */
     public function __construct($data, int $httpCode)
     {
