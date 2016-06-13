@@ -149,9 +149,13 @@ class BandController extends RestController
      * )
      * @param string $name band name
      */
-    public function editAction(Request $request): Response
+    public function editAction(Request $request, string $name): Response
     {
-        return $this->respond($this->updateBand($request));
+        /** @var BandRepository $bandRepository */
+        $bandRepository = $this->getDoctrine()->getRepository(Band::class);
+        $band = $bandRepository->findOneByName($name);
+
+        return $this->respond($this->updateBand($request, $band));
     }
 
     private function createFormBandCreate(): Form
@@ -164,43 +168,55 @@ class BandController extends RestController
         return $formBuilder->getForm();
     }
 
-    private function createAndPersistOrUpdateBandUsingForm(FormInterface $form, ObjectManager $objectManager)
-    {
+    private function createOrUpdateBandUsingForm(
+        FormInterface $form,
+        ObjectManager $objectManager,
+        Band $band = null
+    ) {
         if (!$form->isValid()) {
             return null;
         }
 
-        $name = $form->get('name')->getData();
-        $description = $form->get('description')->getData();
         $usersData = $form->get('users')->getData();
 
         if (!$usersData) {
             $form->addError(new FormError('Parameter "users" is mandatory'));
+
+            return null;
+        }
+
+        $bandNewName = $form->get('name')->getData();
+        $description = $form->get('description')->getData();
+
+        /** @var BandRepository $bandRepository */
+        $bandRepository = $objectManager->getRepository(Band::class);
+        if ($bandRepository->findOneByName($bandNewName)) {
+            $form->addError(new FormError(sprintf('Band with name "%s" already exists.', $bandNewName)));
+
+            return null;
+        }
+
+        /** @var UserRepository $usersRepository */
+        $usersRepository = $objectManager->getRepository(User::class);
+        $users = array_map(
+            function (string $userLogin) use ($usersRepository, $form) {
+                $user = $usersRepository->findOneByLogin($userLogin);
+
+                if (!$user) {
+                    $form->addError(new FormError(sprintf('User "%s" was not found.', $userLogin)));
+                }
+
+                return $user;
+            },
+            $usersData
+        );
+
+        if ($band) {
+            $band->setName($bandNewName);
+            $band->setDescription($description);
+            $band->setUsers($users);
         } else {
-            /** @var BandRepository $bandRepository */
-            $bandRepository = $objectManager->getRepository(Band::class);
-            $existingBandWithReplacableName = $bandRepository->findOneByName($name);
-
-            if ($existingBandWithReplacableName) {
-            	$form->addError(new FormError(sprintf('Band with name "%s" already exists.', $name)));
-            }
-
-            /** @var UserRepository $usersRepository */
-            $usersRepository = $objectManager->getRepository(User::class);
-            $users = array_map(
-                function (string $userLogin) use ($usersRepository, $form) {
-                    $user = $usersRepository->findOneByLogin($userLogin);
-
-                    if (!$user) {
-                        $form->addError(new FormError(sprintf('User "%s" was not found.', $userLogin)));
-                    }
-
-                    return $user;
-                },
-                $usersData
-            );
-
-            $band = new Band($name, $users, $description);
+            $band = new Band($bandNewName, $users, $description);
             $objectManager->persist($band);
         }
     }
@@ -220,34 +236,27 @@ class BandController extends RestController
         );
     }
 
-    private function updateBand(Request $request, bool $isNew = false): AbstractApiResponse
+    private function updateBand(Request $request, Band $band = null): AbstractApiResponse
     {
         $form = $this->createFormBandCreate();
         $this->processForm($request, $form);
 
         $objectManager = $this->getDoctrine()->getManager();
-        $this->createAndPersistOrUpdateBandUsingForm($form, $objectManager);
+        $this->createOrUpdateBandUsingForm($form, $objectManager, $band);
 
         if ($form->isValid()) {
             $objectManager->flush();
-            $bandLocation = $this->getLocationFromForm($form);
 
-            if ($isNew) {
-                $response = new CreatedApiResponse($bandLocation);
-            } else {
-                $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
-            }
-
-            return $response;
+            return empty($band)
+                ? new CreatedApiResponse($this->getLocationFromForm($form))
+                : new EmptyApiResponse(Response::HTTP_NO_CONTENT);
         } else {
-            $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
-
-            return $response;
+            return new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
         }
     }
 
     private function createBand(Request $request): AbstractApiResponse
     {
-        return $this->updateBand($request, true);
+        return $this->updateBand($request);
     }
 }

@@ -130,4 +130,29 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals(400, $this->getResponseCode());
         $this->assertContains('Band with name "Existing Band" already exists.', $contents['errors']);
     }
+
+    /** @test */
+    public function editAction_PUTBandNameRequestWithNewParameters_bandUpdatedWithNewParameters()
+    {
+        $this->followRedirects();
+        $parameters = [
+            'name'        => self::BAND_NAME_FIRST_EDITED,
+            'description' => self::BAND_DESCRIPTION_FIRST_EDITED,
+            'users'       => [
+                self::BAND_USER_LOGIN_THIRD,
+            ],
+        ];
+
+        $this->sendPutRequest('/band/Banders', $parameters);
+        $this->assertEquals(204, $this->getResponseCode());
+
+        $this->sendGetRequest('/band/Banders');
+        $this->assertEquals(404, $this->getResponseCode());
+
+        $this->sendGetRequest('/band/New%20Derbans');
+        $contents = $this->getResponseContents();
+        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertEquals(self::BAND_NAME_FIRST_EDITED, $contents['data']['name']);
+        $this->assertEquals(self::BAND_DESCRIPTION_FIRST_EDITED, $contents['data']['description']);
+    }
 }
