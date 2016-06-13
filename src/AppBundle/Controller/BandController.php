@@ -81,7 +81,7 @@ class BandController extends RestController
 
     /**
      * Create new band
-     * @Route("/create", name="band_create")
+     * @Route("", name="band_create")
      * @Method("POST")
      * @ApiDoc(
      *     section="Band",

@@ -70,11 +70,11 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTUserCreateWithLoginAndNameAndDescription_newUserCreated()
+    public function createAction_POSTUserWithLoginAndNameAndDescription_newUserCreated()
     {
         $parameters = $this->createParametersForNewUser();
 
-        $this->sendPostRequest('/user/create', $parameters);
+        $this->sendPostRequest('/user', $parameters);
         $responseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 
@@ -84,11 +84,11 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTUserCreateWithLoginOfExistingUser_userAlreadyExistsError()
+    public function createAction_POSTUserWithLoginOfExistingUser_userAlreadyExistsError()
     {
         $parameters = $this->createParametersWithLoginOfExistingUser();
 
-        $this->sendPostRequest('/user/create', $parameters);
+        $this->sendPostRequest('/user', $parameters);
         $responseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 
@@ -97,11 +97,11 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTUserCreateWithUsernameOfExistingUser_userAlreadyExistsError()
+    public function createAction_POSTUserWithUsernameOfExistingUser_userAlreadyExistsError()
     {
         $parameters = $this->createParametersWithUsernameOfExistingUser();
 
-        $this->sendPostRequest('/user/create', $parameters);
+        $this->sendPostRequest('/user', $parameters);
         $responseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 
@@ -110,9 +110,9 @@ class UserControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTUserCreateWithEmptyParameters_missingParametersError()
+    public function createAction_POSTUserWithEmptyParameters_missingParametersError()
     {
-        $this->sendPostRequest('/user/create', []);
+        $this->sendPostRequest('/user', []);
         $responseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 

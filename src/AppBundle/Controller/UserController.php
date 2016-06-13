@@ -72,7 +72,7 @@ class UserController extends RestController
 
     /**
      * Create new user with given login, name and description
-     * @Route("/create", name="users_create")
+     * @Route("", name="user_create")
      * @Method("POST")
      * @ApiDoc(
      *     section="User",

@@ -49,7 +49,7 @@ class BandControllerTest extends FunctionalTester
     /** @test */
     public function createAction_POSTBandCreateEmptyRequest_validationErrors()
     {
-        $this->sendPostRequest('/band/create', []);
+        $this->sendPostRequest('/band', []);
         $responseCode = $this->getResponseCode();
         $errors = $this->getResponseContents()['errors'];
 
@@ -71,7 +71,7 @@ class BandControllerTest extends FunctionalTester
             ],
         ];
 
-        $this->sendPostRequest('/band/create', $parameters);
+        $this->sendPostRequest('/band', $parameters);
         $createBandResponseCode = $this->getResponseCode();
         $createBandResponseLocation = $this->getResponseLocation();
 
