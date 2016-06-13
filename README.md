@@ -18,7 +18,7 @@ How to run server
 2. If composer points on unmet system requirements such as php version or extensions, install them.
 3. Create database `bin/console doctrine:database:create`.
 4. Apply database schema `bin/console doctrine:schema:update --force`.
-5. Run local application webserver `bin/console server:run`. Server would run on http://127.0.0.1:8000
+5. Run local application webserver `bin/console server:run`. Server will run on http://127.0.0.1:8000
 
 API documentation
 =================
