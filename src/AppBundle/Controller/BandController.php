@@ -175,16 +175,16 @@ class BandController extends RestController
         $usersData = $form->get('users')->getData();
 
         if (!$usersData) {
-            $form->addError(new FormError('Parameter \'users\' is mandatory'));
+            $form->addError(new FormError('Parameter "users" is mandatory'));
         } else {
             /** @var BandRepository $bandRepository */
             $bandRepository = $objectManager->getRepository(Band::class);
             $existingBandWithReplacableName = $bandRepository->findOneByName($name);
-            
+
             if ($existingBandWithReplacableName) {
-            	$form->addError(new FormError(sprintf('Band with name %s already exists.', $name)));
+            	$form->addError(new FormError(sprintf('Band with name "%s" already exists.', $name)));
             }
-            
+
             /** @var UserRepository $usersRepository */
             $usersRepository = $objectManager->getRepository(User::class);
             $users = array_map(
@@ -192,14 +192,14 @@ class BandController extends RestController
                     $user = $usersRepository->findOneByLogin($userLogin);
 
                     if (!$user) {
-                        $form->addError(new FormError(sprintf('User %s was not found.', $userLogin)));
+                        $form->addError(new FormError(sprintf('User "%s" was not found.', $userLogin)));
                     }
 
                     return $user;
                 },
                 $usersData
             );
-            
+
             $band = new Band($name, $users, $description);
             $objectManager->persist($band);
         }

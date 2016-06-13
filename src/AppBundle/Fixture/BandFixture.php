@@ -23,7 +23,7 @@ class BandFixture implements FixtureInterface
             new User('derban', 'Derban'),
             new User('rocker', 'Hard Rocker'),
             new Band('Banders', [$user], 'Band description.'),
-            new Band('Second Band', [$user], 'Second Band description.'),
+            new Band('Existing Band', [$user], 'Second Band description.'),
         ];
 
         foreach ($entities as $entity) {

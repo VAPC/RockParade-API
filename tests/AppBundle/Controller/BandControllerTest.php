@@ -11,11 +11,12 @@ use Tests\FunctionalTester;
 class BandControllerTest extends FunctionalTester
 {
     const BAND_NAME_FIRST = 'Banders';
-    const BAND_DESCRIPTION_FIRST = 'Band description.';
-    const BAND_NAME_SECOND = 'Derbans';
     const BAND_NAME_FIRST_EDITED = 'New Derbans';
-    const BAND_DESCRIPTION_SECOND = 'Derband description.';
+    const BAND_NAME_SECOND = 'Derbans';
+    const BAND_NAME_EXISTING = 'Existing Band';
+    const BAND_DESCRIPTION_FIRST = 'Band description.';
     const BAND_DESCRIPTION_FIRST_EDITED = 'New Derbans description.';
+    const BAND_DESCRIPTION_SECOND = 'Derband description.';
     const BAND_USER_LOGIN_FIRST = 'bander';
     const BAND_USER_LOGIN_SECOND = 'derban';
     const BAND_USER_LOGIN_THIRD = 'rocker';
@@ -109,5 +110,24 @@ class BandControllerTest extends FunctionalTester
 
         $this->assertEquals(404, $responseCode);
         $this->assertContains('Band with name "VeryUnexistingBand" was not found.', $contents['errors']);
+    }
+
+    /** @test */
+    public function editAction_PUTBandNameRequestWithExistingName_validationError()
+    {
+        $this->followRedirects();
+        $parameters = [
+            'name'        => self::BAND_NAME_EXISTING,
+            'description' => self::BAND_DESCRIPTION_FIRST,
+            'users'       => [
+                self::BAND_USER_LOGIN_THIRD,
+            ],
+        ];
+
+        $this->sendPutRequest('/band/Banders', $parameters);
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(400, $this->getResponseCode());
+        $this->assertContains('Band with name "Existing Band" already exists.', $contents['errors']);
     }
 }
