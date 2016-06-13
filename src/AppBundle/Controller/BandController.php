@@ -7,6 +7,8 @@ use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Entity\User;
 use AppBundle\Response\CreatedApiResponse;
+use AppBundle\Response\EmptyApiResponse;
+use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\Form;
 use AppBundle\Controller\Infrastructure\RestController;
@@ -111,22 +113,45 @@ class BandController extends RestController
      */
     public function createAction(Request $request): Response
     {
-        $form = $this->createFormBandCreate();
-        $this->processForm($request, $form);
+        return $this->respond($this->createBand($request));
+    }
 
-        $objectManager = $this->getDoctrine()->getManager();
-        $this->createBandUsingForm($form, $objectManager);
-
-        if ($form->isValid()) {
-            $objectManager->flush();
-            $bandLocation = $this->getLocationFromForm($form);
-
-            $response = new CreatedApiResponse($bandLocation);
-        } else {
-            $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
-        }
-
-        return $this->respond($response);
+    /**
+     * Edit band
+     * @Route("/{name}", name="band_edit")
+     * @Method("PUT")
+     * @ApiDoc(
+     *     section="Band",
+     *     requirements={
+     *         {
+     *             "name"="name",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="band name"
+     *         },
+     *         {
+     *             "name"="description",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="band description"
+     *         },
+     *         {
+     *             "name"="users",
+     *             "dataType"="array",
+     *             "requirement"="true",
+     *             "description"="logins of band musicians"
+     *         },
+     *     },
+     *     statusCodes={
+     *         204="Band was edited with new data",
+     *         400="Validation error",
+     *     }
+     * )
+     * @param string $name band name
+     */
+    public function editAction(Request $request): Response
+    {
+        return $this->respond($this->updateBand($request));
     }
 
     private function createFormBandCreate(): Form
@@ -139,7 +164,7 @@ class BandController extends RestController
         return $formBuilder->getForm();
     }
 
-    private function createBandUsingForm(FormInterface $form, ObjectManager $objectManager)
+    private function createAndPersistOrUpdateBandUsingForm(FormInterface $form, ObjectManager $objectManager)
     {
         if (!$form->isValid()) {
             return null;
@@ -152,6 +177,14 @@ class BandController extends RestController
         if (!$usersData) {
             $form->addError(new FormError('Parameter \'users\' is mandatory'));
         } else {
+            /** @var BandRepository $bandRepository */
+            $bandRepository = $objectManager->getRepository(Band::class);
+            $existingBandWithReplacableName = $bandRepository->findOneByName($name);
+            
+            if ($existingBandWithReplacableName) {
+            	$form->addError(new FormError(sprintf('Band with name %s already exists.', $name)));
+            }
+            
             /** @var UserRepository $usersRepository */
             $usersRepository = $objectManager->getRepository(User::class);
             $users = array_map(
@@ -166,7 +199,7 @@ class BandController extends RestController
                 },
                 $usersData
             );
-
+            
             $band = new Band($name, $users, $description);
             $objectManager->persist($band);
         }
@@ -185,5 +218,36 @@ class BandController extends RestController
             sprintf('Band with name "%s" was not found.', $bandName),
             Response::HTTP_NOT_FOUND
         );
+    }
+
+    private function updateBand(Request $request, bool $isNew = false): AbstractApiResponse
+    {
+        $form = $this->createFormBandCreate();
+        $this->processForm($request, $form);
+
+        $objectManager = $this->getDoctrine()->getManager();
+        $this->createAndPersistOrUpdateBandUsingForm($form, $objectManager);
+
+        if ($form->isValid()) {
+            $objectManager->flush();
+            $bandLocation = $this->getLocationFromForm($form);
+
+            if ($isNew) {
+                $response = new CreatedApiResponse($bandLocation);
+            } else {
+                $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+            }
+
+            return $response;
+        } else {
+            $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
+
+            return $response;
+        }
+    }
+
+    private function createBand(Request $request): AbstractApiResponse
+    {
+        return $this->updateBand($request, true);
     }
 }

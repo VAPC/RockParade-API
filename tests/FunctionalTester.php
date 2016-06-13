@@ -42,7 +42,7 @@ abstract class FunctionalTester extends WebTestCase
     {
         $this->httpClient->request(Request::METHOD_POST, $route, $parameters);
     }
-
+    
     protected function sendPutRequest(string $route, array $parameters = [])
     {
         $this->httpClient->request(Request::METHOD_PUT, $route, $parameters);

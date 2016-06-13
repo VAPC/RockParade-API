@@ -13,9 +13,12 @@ class BandControllerTest extends FunctionalTester
     const BAND_NAME_FIRST = 'Banders';
     const BAND_DESCRIPTION_FIRST = 'Band description.';
     const BAND_NAME_SECOND = 'Derbans';
+    const BAND_NAME_FIRST_EDITED = 'New Derbans';
     const BAND_DESCRIPTION_SECOND = 'Derband description.';
+    const BAND_DESCRIPTION_FIRST_EDITED = 'New Derbans description.';
     const BAND_USER_LOGIN_FIRST = 'bander';
     const BAND_USER_LOGIN_SECOND = 'derban';
+    const BAND_USER_LOGIN_THIRD = 'rocker';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -29,7 +32,7 @@ class BandControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function listAction_GETBandRequest_listAllBands()
+    public function listAction_GETBandsRequest_listAllBands()
     {
         $this->followRedirects();
 
@@ -79,14 +82,14 @@ class BandControllerTest extends FunctionalTester
         $bandListContents = $this->getResponseContents();
 
         $this->assertEquals(200, $listBandsResponseCode);
-        $this->assertEquals(self::BAND_NAME_SECOND, $bandListContents['data'][1]['name']);
-        $this->assertEquals(self::BAND_DESCRIPTION_SECOND, $bandListContents['data'][1]['description']);
-        $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][1]['users']);
-        $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][1]['users']);
+        $this->assertEquals(self::BAND_NAME_SECOND, $bandListContents['data'][2]['name']);
+        $this->assertEquals(self::BAND_DESCRIPTION_SECOND, $bandListContents['data'][2]['description']);
+        $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][2]['users']);
+        $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][2]['users']);
     }
 
     /** @test */
-    public function viewAction_GETBandViewNameRequest_singleBandInfo()
+    public function viewAction_GETBandNameRequest_singleBandInfo()
     {
         $this->sendGetRequest('/band/Banders');
         $contents = $this->getResponseContents();
@@ -98,7 +101,7 @@ class BandControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function viewAction_GETBandViewNotExistingNameRequest_bandNotFoundError()
+    public function viewAction_GETBandNotExistingNameRequest_bandNotFoundError()
     {
         $this->sendGetRequest('/band/VeryUnexistingBand');
         $contents = $this->getResponseContents();
