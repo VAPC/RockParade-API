@@ -100,4 +100,22 @@ class Band
     {
         return $this->description;
     }
+
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @param User[]|ArrayCollection $users
+     */
+    public function setUsers($users)
+    {
+        $this->users = $users;
+    }
 }
