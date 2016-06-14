@@ -34,7 +34,7 @@ class UserController extends RestController
     public function listAction(): Response
     {
         /** @var UserRepository $userRepository */
-        $userRepository = $this->getDoctrine()->getRepository(User::class);
+        $userRepository = $this->get('rockparade.user_repository');
         $allUsers = $userRepository->findAll();
 
         $response = new ApiResponse($allUsers, Response::HTTP_OK);
@@ -58,7 +58,7 @@ class UserController extends RestController
     public function viewAction(string $login): Response
     {
         /** @var UserRepository $userRepository */
-        $userRepository = $this->getDoctrine()->getRepository(User::class);
+        $userRepository = $this->get('rockparade.user_repository');
         $user = $userRepository->findOneByLogin($login);
 
         if ($user) {
@@ -116,7 +116,7 @@ class UserController extends RestController
         }
 
         /** @var UserRepository $userRepository */
-        $userRepository = $this->getDoctrine()->getRepository(User::class);
+        $userRepository = $this->get('rockparade.user_repository');
 
         if ($userRepository->findOneByLogin($userLogin)) {
             $result = $this->createUserExistsErrorResult($userLogin);

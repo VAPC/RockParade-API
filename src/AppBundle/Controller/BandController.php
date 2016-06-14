@@ -5,7 +5,6 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\DTO\CreateBand;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\Repository\UserRepository;
-use AppBundle\Entity\User;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
@@ -45,7 +44,7 @@ class BandController extends RestController
      */
     public function listAction(): Response
     {
-        $bandRepository = $this->getDoctrine()->getRepository(Band::class);
+        $bandRepository = $this->get('rockparade.band_repository');
         $response = new ApiResponse($bandRepository->findAll(), Response::HTTP_OK);
 
         return $this->respond($response);
@@ -66,8 +65,7 @@ class BandController extends RestController
      */
     public function viewAction(string $name): Response
     {
-        /** @var BandRepository $bandRepository */
-        $bandRepository = $this->getDoctrine()->getRepository(Band::class);
+        $bandRepository = $this->get('rockparade.band_repository');
         $user = $bandRepository->findOneByName($name);
 
         if ($user) {
@@ -152,7 +150,7 @@ class BandController extends RestController
     public function editAction(Request $request, string $name): Response
     {
         /** @var BandRepository $bandRepository */
-        $bandRepository = $this->getDoctrine()->getRepository(Band::class);
+        $bandRepository = $this->get('rockparade.band_repository');
         $band = $bandRepository->findOneByName($name);
 
         return $this->respond($this->updateBand($request, $band));
@@ -189,7 +187,7 @@ class BandController extends RestController
         $description = $form->get('description')->getData();
 
         /** @var BandRepository $bandRepository */
-        $bandRepository = $objectManager->getRepository(Band::class);
+        $bandRepository = $this->get('rockparade.band_repository');
         if ($bandRepository->findOneByName($bandNewName)) {
             $form->addError(new FormError(sprintf('Band with name "%s" already exists.', $bandNewName)));
 
@@ -197,7 +195,7 @@ class BandController extends RestController
         }
 
         /** @var UserRepository $usersRepository */
-        $usersRepository = $objectManager->getRepository(User::class);
+        $usersRepository = $this->get('rockparade.user_repository');
         $users = array_map(
             function (string $userLogin) use ($usersRepository, $form) {
                 $user = $usersRepository->findOneByLogin($userLogin);

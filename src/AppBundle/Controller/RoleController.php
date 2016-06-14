@@ -38,7 +38,7 @@ class RoleController extends RestController
      */
     public function listAction(): Response
     {
-        $rolesRepository = $this->getDoctrine()->getRepository(Role::class);
+        $rolesRepository = $this->get('rockparade.role_repository');
         $roles = $rolesRepository->findAll();
 
         foreach ($roles as $key => $role) {
@@ -88,14 +88,13 @@ class RoleController extends RestController
         if (empty($roleNames) || empty($userLogin)) {
             $response = new ApiError('Properties "login" and "roles" are mandatory.', Response::HTTP_BAD_REQUEST);
         } else {
-            $doctrineService = $this->getDoctrine();
             /** @var UserRepository $userRepository */
-            $userRepository = $doctrineService->getRepository(User::class);
+            $userRepository = $this->get('rockparade.user_repository');
             $user = $userRepository->findOneByLogin($userLogin);
 
             if ($user) {
                 /** @var RoleRepository $roleRepository */
-                $roleRepository = $doctrineService->getRepository(Role::class);
+                $roleRepository = $this->get('rockparade.role_repository');
                 $roles = $roleRepository->findByNames($roleNames);
                 
                 if (count($roleNames) === count($roles)) {
