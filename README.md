@@ -10,7 +10,7 @@ Requirements
 * PHP 7
 * MySQL database
 
-All requirements are listed in *composer.json*.
+All requirements are listed in **composer.json**.
 
 How to run server
 =================
@@ -23,3 +23,10 @@ How to run server
 API documentation
 =================
 Run server and go to http://127.0.0.1:8000/api. You can view documentation and try queries in sandbox.
+
+Contribution
+============
+1. Take issue from issue board.
+2. Create new branch with conventional name: **t-IssueNumber-feature_description** 
+(please use underscore in description part of branch name)
+3. When work is done, create pull request from your branch to master.
