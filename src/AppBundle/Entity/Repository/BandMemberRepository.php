@@ -19,6 +19,6 @@ class BandMemberRepository extends EntityRepository
         $queryBuilder->where('band_member.band = :bandName');
         $queryBuilder->setParameter('bandName', $name);
         
-        return $queryBuilder->getQuery()->getArrayResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 }
