@@ -2,15 +2,20 @@ parameters:
 #    parameter_name: value
 
 services:
+    rockparade.user_repository:
+        class: AppBundle\Entity\Repository\UserRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ['AppBundle\Entity\User']
+
     rockparade.band_repository:
         class: AppBundle\Entity\Repository\BandRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Band']
 
-    rockparade.user_repository:
-        class: AppBundle\Entity\Repository\UserRepository
+    rockparade.band_member_repository:
+        class: AppBundle\Entity\Repository\BandMemberRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
-        arguments: ['AppBundle\Entity\User']
+        arguments: ['AppBundle\Entity\BandMember']
 
     rockparade.role_repository:
         class: AppBundle\Entity\Repository\RoleRepository
