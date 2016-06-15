@@ -156,6 +156,32 @@ class BandController extends RestController
         return $this->respond($this->updateBand($request, $band));
     }
 
+    /**
+     * List all band members
+     * @Route("/{name}/members", name="band_members")
+     * @Method("GET")
+     * @ApiDoc(
+     *     section="Band",
+     *     statusCodes={
+     *         200="OK",
+     *         404="Band was not found",
+     *     }
+     * )
+     */
+    public function listMembersAction(string $name): Response
+    {
+        $bandMemberRepository = $this->get('rockparade.band_member_repository');
+        $bandMembers = $bandMemberRepository->findByBandName($name);
+        
+        if ($bandMembers) {
+            $response = new ApiResponse($bandMembers, Response::HTTP_OK);
+        } else {
+            $response = $this->createBandNotFoundErrorResult($name);
+        }
+
+        return $this->respond($response);
+    }
+
     private function createFormBandCreate(): Form
     {
         $formBuilder = $this->createFormBuilder(new CreateBand());
@@ -178,7 +204,7 @@ class BandController extends RestController
         $usersData = $form->get('users')->getData();
 
         if (!$usersData) {
-            $form->addError(new FormError('Parameter "users" is mandatory'));
+            $form->addError(new FormError('Parameter "users" is mandatory.'));
 
             return null;
         }
