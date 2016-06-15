@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Infrasctucture\GetUserLoginsTrait;
+use AppBundle\Entity\Infrasctucture\GetUserLoginTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
@@ -19,7 +19,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 class Role
 {
     
-    use GetUserLoginsTrait;
+    use GetUserLoginTrait;
 
     /**
      * @var string

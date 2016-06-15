@@ -3,7 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
-use AppBundle\Entity\Infrasctucture\GetUserLoginsTrait;
+use AppBundle\Entity\Infrasctucture\GetUserLoginTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
@@ -20,7 +20,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
  */
 class Band
 {
-    use GetUserLoginsTrait;
+    use GetUserLoginTrait;
     use FormattedRegistrationDateTrait;
     
     /**

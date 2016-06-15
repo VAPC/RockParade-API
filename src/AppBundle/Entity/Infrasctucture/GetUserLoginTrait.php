@@ -7,7 +7,7 @@ use AppBundle\Entity\User;
 /**
  * @author Vehsamrak
  */
-trait GetUserLoginsTrait
+trait GetUserLoginTrait
 {
     /**
      * @return string[]
@@ -16,6 +16,13 @@ trait GetUserLoginsTrait
     {
         return array_map(function (User $user) {
             return $user->getLogin();
-        }, $this->getUsers()->toArray());
+        },
+            $this->users->toArray()
+        );
+    }
+    
+    public function getUserLogin(): string
+    {
+        return $this->user->getLogin();
     }
 }
