@@ -159,7 +159,7 @@ class BandController extends RestController
 
     /**
      * List all band members
-     * @Route("/{bandName}/members", name="band_members")
+     * @Route("/{name}/members", name="band_members")
      * @Method("GET")
      * @ApiDoc(
      *     section="Band",
@@ -169,13 +169,13 @@ class BandController extends RestController
      *     }
      * )
      */
-    public function listMembersAction(string $bandName): Response
+    public function listMembersAction(string $name): Response
     {
         $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneByName($bandName);
+        $band = $bandRepository->findOneByName($name);
 
         if (!$band) {
-            $response = $this->createBandNotFoundErrorResult($bandName);
+            $response = $this->createBandNotFoundErrorResult($name);
         } else {
             $response = new ApiResponse($band->getMembers(), Response::HTTP_OK);
         }
@@ -185,7 +185,7 @@ class BandController extends RestController
 
     /**
      * Add member to band
-     * @Route("/{bandName}/members", name="band_member_add")
+     * @Route("/{name}/members", name="band_member_add")
      * @Method("POST")
      * @ApiDoc(
      *     section="Band",
@@ -214,19 +214,19 @@ class BandController extends RestController
      *         400="Validation error",
      *     }
      * )
-     * @param string $bandName band name
+     * @param string $name band name
      */
-    public function addMemberAction(Request $request, string $bandName): Response
+    public function addMemberAction(Request $request, string $name): Response
     {
         $form = $this->createFormBandMember();
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
             $bandRepository = $this->get('rockparade.band_repository');
-            $band = $bandRepository->findOneByName($bandName);
+            $band = $bandRepository->findOneByName($name);
 
             if (!$band) {
-                $response = $this->createBandNotFoundErrorResult($bandName);
+                $response = $this->createBandNotFoundErrorResult($name);
             } else {
                 $newUserLogin = $form->get('user')->getData();
                 $newUser = $this->get('rockparade.user_repository')->findOneByLogin($newUserLogin);
