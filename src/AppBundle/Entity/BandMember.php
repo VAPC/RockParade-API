@@ -45,11 +45,16 @@ class BandMember
      */
     private $description;
 
-    public function __construct(User $user, Band $band, string $shortDescription, string $description = '')
+    public function __construct(Band $band, User $user, string $shortDescription = '', string $description = '')
     {
         $this->user = $user;
         $this->band = $band;
         $this->shortDescription = $shortDescription;
         $this->description = $description;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
     }
 }

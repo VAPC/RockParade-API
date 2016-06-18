@@ -3,10 +3,11 @@
 namespace AppBundle\Entity\Repository;
 
 use AppBundle\Entity\Band;
+use AppBundle\Entity\Infrasctucture\AbstractRepository;
 use Doctrine\ORM\EntityRepository;
 
 /** {@inheritDoc} */
-class BandRepository extends EntityRepository
+class BandRepository extends AbstractRepository
 {
     /**
      * @return Band|null

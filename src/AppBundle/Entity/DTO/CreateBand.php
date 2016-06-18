@@ -23,6 +23,7 @@ class CreateBand
 
     /**
      * @var string[]
+     * @Assert\Count(min=1, minMessage="Parameter 'members' is mandatory")
      */
-    public $users;
+    public $members;
 }

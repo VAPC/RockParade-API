@@ -2,11 +2,13 @@
 
 namespace AppBundle\Entity\Repository;
 
+use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
-use Doctrine\ORM\EntityRepository;
+use AppBundle\Entity\Infrasctucture\AbstractRepository;
+use AppBundle\Entity\User;
 
 /** {@inheritDoc} */
-class BandMemberRepository extends EntityRepository
+class BandMemberRepository extends AbstractRepository
 {
 
     /**
@@ -20,5 +22,22 @@ class BandMemberRepository extends EntityRepository
         $queryBuilder->setParameter('bandName', $name);
         
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function getOrCreateByBandAndUser(Band $band, User $newUser, string $shortDescription = '', string $description = ''): BandMember
+    {
+        $bandMember = $this->findOneBy(
+            [
+                'band' => $band,
+                'user' => $newUser,
+            ]
+        );
+        
+        if (!$bandMember) {
+            $bandMember = new BandMember($band, $newUser, $shortDescription, $description);
+            $this->persist($bandMember);
+        }
+        
+        return $bandMember;
     }
 }

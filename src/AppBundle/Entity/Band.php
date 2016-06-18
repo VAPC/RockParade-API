@@ -3,7 +3,6 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
-use AppBundle\Entity\Infrasctucture\GetUserLoginTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
@@ -20,7 +19,6 @@ use JMS\Serializer\Annotation\Type as SerializerType;
  */
 class Band
 {
-    use GetUserLoginTrait;
     use FormattedRegistrationDateTrait;
     
     /**
@@ -45,44 +43,36 @@ class Band
     protected $description;
 
     /**
-     * @var User[]|ArrayCollection
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", cascade={"persist", "remove"})
-     * @ORM\JoinTable(name="users_bands",
-     *      joinColumns={@ORM\JoinColumn(name="band_name", referencedColumnName="name")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_login", referencedColumnName="login")}
-     *      )
+     * @var BandMember[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\BandMember", mappedBy="band")
      * @Accessor(getter="getUserLogins")
      * @SerializerType("array")
      */
-    protected $users;
+    protected $members;
 
     /**
      * @param string $name
-     * @param User[] $users
      * @param string $description
      */
-    public function __construct(string $name, array $users, string $description = null)
+    public function __construct(string $name, string $description = null)
     {
         $this->registrationDate = new \DateTime();
         $this->name = $name;
         $this->description = $description;
-        $this->users = new ArrayCollection($users);
+        $this->members = new ArrayCollection();
     }
 
     /**
-     * @param User $user
+     * @return Collection|BandMember[]|ArrayCollection|PersistentCollection
      */
-    public function addUser(User $user)
+    public function getMembers(): Collection
     {
-        $this->users->add($user);
+        return $this->members;
     }
 
-    /**
-     * @return Collection|User[]|ArrayCollection|PersistentCollection
-     */
-    public function getUsers(): Collection
+    public function addMember(BandMember $bandMember)
     {
-        return $this->users;
+        $this->members->add($bandMember);
     }
 
     /**
@@ -112,10 +102,14 @@ class Band
     }
 
     /**
-     * @param User[]|ArrayCollection $users
+     * @return string[]
      */
-    public function setUsers($users)
+    public function getUserLogins(): array
     {
-        $this->users = $users;
+        return array_map(function (BandMember $bandMember) {
+            return $bandMember->getUser()->getLogin();
+        },
+            $this->members->toArray()
+        );
     }
 }
