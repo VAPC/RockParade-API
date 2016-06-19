@@ -48,6 +48,11 @@ abstract class FunctionalTester extends WebTestCase
         $this->httpClient->request(Request::METHOD_PUT, $route, $parameters);
     }
 
+    protected function sendDeleteRequest(string $route, array $parameters = [])
+    {
+        $this->httpClient->request(Request::METHOD_DELETE, $route, $parameters);
+    }
+
     /**
      * @return array|string
      * @throws \Exception
