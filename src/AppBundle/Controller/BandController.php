@@ -235,8 +235,8 @@ class BandController extends RestController
                     $response = $this->createUserNotFoundErrorResult($newUserLogin);
                 } else {
                     $bandMemberRepository = $this->get('rockparade.band_member_repository');
-                    $shortDescription = $form->get('short_description')->getData();
-                    $description = $form->get('description')->getData();
+                    $shortDescription = (string) $form->get('short_description')->getData();
+                    $description = (string) $form->get('description')->getData();
                     $bandMember = $bandMemberRepository->getOrCreateByBandAndUser(
                         $band,
                         $newUser,
