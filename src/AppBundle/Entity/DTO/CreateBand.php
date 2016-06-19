@@ -11,19 +11,19 @@ class CreateBand
 {
     /**
      * @var string
-     * @Assert\NotBlank(message="Parameter 'name' is mandatory")
+     * @Assert\NotBlank(message="Parameter is mandatory: name.")
      */
     public $name;
 
     /**
      * @var string
-     * @Assert\NotBlank(message="Parameter 'description' is mandatory")
+     * @Assert\NotBlank(message="Parameter is mandatory: description.")
      */
     public $description;
 
     /**
      * @var string[]
-     * @Assert\Count(min=1, minMessage="Parameter 'members' is mandatory")
+     * @Assert\Count(min=1, minMessage="Parameter is mandatory: members.")
      */
     public $members;
 }

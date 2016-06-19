@@ -58,8 +58,8 @@ class BandControllerTest extends FunctionalTester
         $errors = $this->getResponseContents()['errors'];
 
         $this->assertEquals(400, $responseCode);
-        $this->assertContains('Parameter \'name\' is mandatory', $errors);
-        $this->assertContains('Parameter \'description\' is mandatory', $errors);
+        $this->assertContains('Parameter is mandatory: name.', $errors);
+        $this->assertContains('Parameter is mandatory: description.', $errors);
     }
 
     /** @test */
