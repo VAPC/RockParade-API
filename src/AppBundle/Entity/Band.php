@@ -44,7 +44,7 @@ class Band
 
     /**
      * @var BandMember[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\BandMember", mappedBy="band")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\BandMember", mappedBy="band", orphanRemoval=true)
      * @Accessor(getter="getUserLogins")
      * @SerializerType("array")
      */
@@ -73,6 +73,11 @@ class Band
     public function addMember(BandMember $bandMember)
     {
         $this->members->add($bandMember);
+    }
+    
+    public function removeMember(BandMember $bandMember)
+    {
+        $this->members->removeElement($bandMember);
     }
 
     /**

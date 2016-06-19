@@ -192,5 +192,15 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals('derban', $contents['data'][1]['user']);
         $this->assertEquals('hard rocker guitarist', $contents['data'][1]['short_description']);
     }
+    
+    /** @test */
+    public function deleteMember_DELETEBandNameMemberLogin_bandMemberDeleted()
+    {
+        $this->sendDeleteRequest('/band/Banders/member/bander');
+        $this->assertEquals(204, $this->getResponseCode());
 
+        $this->sendGetRequest('/band/Banders/members');
+        $contents = $this->getResponseContents();
+        $this->assertEmpty($contents['data']);
+    }
 }

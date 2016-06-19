@@ -257,6 +257,46 @@ class BandController extends RestController
         return $this->respond($response);
     }
 
+    /**
+     * Delete member from band
+     * @Route("/{name}/member/{userLogin}", name="band_member_delete")
+     * @Method("DELETE")
+     * @ApiDoc(
+     *     section="Band",
+     *     statusCodes={
+     *         204="Member was deleted from the band",
+     *         400="Validation error",
+     *     }
+     * )
+     * @param string $name band name
+     * @param string $userLogin member login
+     */
+    public function deleteMemberAction(string $name, string $userLogin)
+    {
+        $bandRepository = $this->get('rockparade.band_repository');
+        $band = $bandRepository->findOneByName($name);
+
+        if ($band) {
+            $userRepository = $this->get('rockparade.user_repository');
+            $user = $userRepository->findOneByLogin($userLogin);
+
+            if ($user) {
+                $bandMemberRepository = $this->get('rockparade.band_member_repository');
+                $bandMember = $bandMemberRepository->findByBandAndUser($band, $user);
+                $band->removeMember($bandMember);
+                $bandRepository->flush();
+
+                $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+            } else {
+                $response = $this->createUserNotFoundErrorResult($userLogin);
+            }
+        } else {
+            $response = $this->createBandNotFoundErrorResult($name);
+        }
+
+        return $this->respond($response);
+    }
+
     private function createFormBandCreate(): Form
     {
         $formBuilder = $this->createFormBuilder(new CreateBand());

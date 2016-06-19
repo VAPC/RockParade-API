@@ -24,20 +24,35 @@ class BandMemberRepository extends AbstractRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function getOrCreateByBandAndUser(Band $band, User $newUser, string $shortDescription = '', string $description = ''): BandMember
+    public function getOrCreateByBandAndUser(
+        Band $band,
+        User $user,
+        string $shortDescription = '',
+        string $description = ''
+    ): BandMember
     {
-        $bandMember = $this->findOneBy(
-            [
-                'band' => $band,
-                'user' => $newUser,
-            ]
-        );
+        $bandMember = $this->findByBandAndUser($band, $user);
         
         if (!$bandMember) {
-            $bandMember = new BandMember($band, $newUser, $shortDescription, $description);
+            $bandMember = new BandMember($band, $user, $shortDescription, $description);
             $this->persist($bandMember);
         }
         
         return $bandMember;
+    }
+
+    /**
+     * @param Band $band
+     * @param User $user
+     * @return BandMember|null
+     */
+    public function findByBandAndUser(Band $band, User $user)
+    {
+        return $this->findOneBy(
+            [
+                'band' => $band,
+                'user' => $user,
+            ]
+        );
     }
 }
