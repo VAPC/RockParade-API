@@ -265,7 +265,7 @@ class BandController extends RestController
      *     section="Band",
      *     statusCodes={
      *         204="Member was deleted from the band",
-     *         400="Validation error",
+     *         404="Band or user was not found",
      *     }
      * )
      * @param string $name band name
