@@ -41,3 +41,6 @@ composer.phar
 
 # PhpUnit
 /phpunit.xml
+
+# Virtualization
+/.vagrant/
