@@ -6,6 +6,9 @@ usermod -u 1000 www-data
 echo "Starting PHP-fpm ..."
 service php7.1-fpm start
 
+echo "Starting MySQL ..."
+service mysql start
+
 echo "Installing composer dependencies ..."
 cd /vagrant
 php /composer.phar install
