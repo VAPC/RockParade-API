@@ -1,4 +1,7 @@
 # vagrant plugin install vagrant-vbguest
+#
+# Until https://github.com/mitchellh/vagrant/issues/4968 is not closed, use:
+# export ATLAS_TOKEN=`cat ~/.vagrant.d/data/vagrant_login_token`
 
 Vagrant.configure(2) do |config|
     config.vm.box = "ubuntu/trusty64"
@@ -11,10 +14,9 @@ Vagrant.configure(2) do |config|
         vb.memory = "1024"
     end
 
-    # https://docs.vagrantup.com/v2/push/atlas.html for more information.
-    # config.push.define "atlas" do |push|
-    #    push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
-    # end
+    config.push.define "atlas" do |push|
+       push.app = "Vehsamrak/rockparade"
+    end
 
     config.vm.provision "shell", inline: <<-SHELL
         export DEBIAN_FRONTEND=noninteractive
