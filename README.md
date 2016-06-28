@@ -13,9 +13,11 @@ All requirements are listed in **composer.json**.
 
 How to run server
 =================
-1. Inside project directory run `vagrant up --provider=docker`
+1. Inside project directory run `vagrant up`
 2. Wait untill environment builds. It may take several minutes at the first time.
 3. App will be available at http://127.0.0.1 once built.
+
+* To update composer dependencies or run migrations run `vagrant provision`
 
 API documentation
 =================
