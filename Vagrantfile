@@ -1,8 +1,45 @@
-Vagrant.configure("2") do |config|
+# vagrant plugin install vagrant-vbguest
+
+Vagrant.configure(2) do |config|
+    config.vm.box = "ubuntu/trusty64"
     config.vm.box_check_update = false
-    config.vm.provider "docker" do |docker|
-        docker.build_dir = "."
-        docker.name = "vagrant"
-        docker.ports = ["80:80"]
+    config.vm.network "forwarded_port", guest: 80, host: 8000
+    config.vm.synced_folder ".", "/vagrant", :owner => "www-data", :group => "www-data"
+
+    config.vm.provider "virtualbox" do |vb|
+        vb.gui = false
+        vb.memory = "1024"
     end
+
+    # https://docs.vagrantup.com/v2/push/atlas.html for more information.
+    # config.push.define "atlas" do |push|
+    #    push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
+    # end
+
+    config.vm.provision "shell", inline: <<-SHELL
+        export DEBIAN_FRONTEND=noninteractive
+        sudo cp -R /vagrant/app/docker/etc/apt/* /etc/apt/
+        sudo cp -R /vagrant/app/docker/etc/* /etc/
+        sudo apt-get update
+        sudo -E apt-get install -y --force-yes -o Dpkg::Options::="--force-confnew" \
+            git \
+            mc \
+            htop \
+            curl \
+            nginx \
+            mysql-server-5.6 \
+            php7.1-cli \
+            php7.1-curl \
+            php7.1-fpm \
+            php7.1-mysql \
+            php7.1-mbstring \
+            php7.1-sqlite3 \
+            php7.1-intl \
+            php7.1-xml
+        curl -sS https://getcomposer.org/installer | php
+    SHELL
+
+    config.vm.provision "shell", run: "always", inline: <<-SHELL
+        sudo bash /vagrant/app/docker/init.sh
+    SHELL
 end
