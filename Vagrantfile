@@ -14,10 +14,6 @@ Vagrant.configure(2) do |config|
         vb.memory = "1024"
     end
 
-    config.push.define "atlas" do |push|
-       push.app = "Vehsamrak/rockparade"
-    end
-
     config.vm.provision "shell", inline: <<-SHELL
         export DEBIAN_FRONTEND=noninteractive
         sudo cp -R /vagrant/app/docker/etc/apt/* /etc/apt/
