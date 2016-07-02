@@ -5,6 +5,10 @@ RockParade
 [![Code Coverage](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/?branch=master)
 
+Conversation
+============
+Join our Slack channel: https://rockparade.slack.com
+
 Requirements
 ============
 * Vagrant
