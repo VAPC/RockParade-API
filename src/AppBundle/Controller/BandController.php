@@ -413,11 +413,18 @@ class BandController extends RestController
         $usersRepository = $this->get('rockparade.user_repository');
 
         return array_map(
-            function (string $userLogin) use ($usersRepository, $form) {
-                $user = $usersRepository->findOneByLogin($userLogin);
-
-                if (!$user) {
-                    $form->addError(new FormError(sprintf('User "%s" was not found.', $userLogin)));
+            function (array $userData) use ($usersRepository, $form) {
+                $user = null;
+                
+                if (isset($userData['login'], $userData['short_description'])) {
+                    $userLogin = $userData['login'];
+                    $user = $usersRepository->findOneByLogin($userLogin);
+    
+                    if (!$user) {
+                        $form->addError(new FormError(sprintf('User "%s" was not found.', $userLogin)));
+                    }
+                } else {
+                    $form->addError(new FormError('Group member parameters login and short_description are mandatory.'));
                 }
 
                 return $user;

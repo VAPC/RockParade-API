@@ -20,8 +20,10 @@ class BandControllerTest extends FunctionalTester
     const BAND_USER_LOGIN_FIRST = 'bander';
     const BAND_USER_LOGIN_SECOND = 'derban';
     const BAND_USER_LOGIN_THIRD = 'rocker';
-    const USER_DESCRIPTION_SHORT = 'hard rocker guitarist';
-    const USER_DESCRIPTION = 'Hard rocker was the second musician in this band.';
+    const USER_DESCRIPTION_SHORT_FIRST = 'first description';
+    const USER_DESCRIPTION_SHORT_SECOND = 'hard rocker guitarist';
+    const USER_DESCRIPTION_FIRST = 'Long description of first user';
+    const USER_DESCRIPTION_SECOND = 'Hard rocker was the second musician in this band.';
     const BAND_MEMBER_FIRST_SHORT_DESCRIPTION = 'bass guitar';
     const BAND_MEMBER_FIRST_DESCRIPTION = 'loremus unitus';
 
@@ -70,8 +72,16 @@ class BandControllerTest extends FunctionalTester
             'name'        => self::BAND_NAME_SECOND,
             'description' => self::BAND_DESCRIPTION_SECOND,
             'members'     => [
-                self::BAND_USER_LOGIN_FIRST,
-                self::BAND_USER_LOGIN_SECOND,
+                [
+                    'login'              => self::BAND_USER_LOGIN_FIRST,
+                    'short_description' => self::USER_DESCRIPTION_SHORT_FIRST,
+                    'description'       => self::USER_DESCRIPTION_FIRST,
+                ],
+                [
+                    'login'              => self::BAND_USER_LOGIN_SECOND,
+                    'short_description' => self::USER_DESCRIPTION_SHORT_SECOND,
+                    'description'       => self::USER_DESCRIPTION_SECOND,
+                ],
             ],
         ];
 
@@ -180,8 +190,8 @@ class BandControllerTest extends FunctionalTester
     {
         $parameters = [
             'user'              => self::BAND_USER_LOGIN_SECOND,
-            'short_description' => self::USER_DESCRIPTION_SHORT,
-            'description'       => self::USER_DESCRIPTION,
+            'short_description' => self::USER_DESCRIPTION_SHORT_SECOND,
+            'description'       => self::USER_DESCRIPTION_SECOND,
         ];
 
         $this->sendPostRequest('/band/Banders/members', $parameters);
