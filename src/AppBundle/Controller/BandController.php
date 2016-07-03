@@ -101,7 +101,7 @@ class BandController extends RestController
      *             "name"="users",
      *             "dataType"="array",
      *             "requirement"="true",
-     *             "description"="logins of band musicians"
+     *             "description"="logins (mandatory), short (mandatory) and long descriptions (not mandatory) of band musicians"
      *         },
      *     },
      *     statusCodes={
