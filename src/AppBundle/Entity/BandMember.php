@@ -21,6 +21,7 @@ class BandMember
      * @ORM\JoinColumn(name="user_id", referencedColumnName="login")
      * @Serializer\Accessor("getUserLogin")
      * @Serializer\Type("string")
+     * @Serializer\SerializedName("login")
      */
     private $user;
 

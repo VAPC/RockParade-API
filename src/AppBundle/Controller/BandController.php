@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\BandMember;
 use AppBundle\Entity\DTO\BandMemberDTO;
 use AppBundle\Entity\DTO\CreateBand;
 use AppBundle\Entity\Repository\BandRepository;
@@ -101,7 +102,7 @@ class BandController extends RestController
      *             "name"="users",
      *             "dataType"="array",
      *             "requirement"="true",
-     *             "description"="logins (mandatory), short (mandatory) and long descriptions (not mandatory) of band musicians"
+     *             "description"="logins and short descriptions of band musicians"
      *         },
      *     },
      *     statusCodes={
@@ -154,7 +155,7 @@ class BandController extends RestController
         $bandRepository = $this->get('rockparade.band_repository');
         $band = $bandRepository->findOneByName($name);
 
-        return $this->respond($this->updateBand($request, $band));
+        return $this->respond($this->createOrUpdateBand($request, $band));
     }
 
     /**
@@ -349,16 +350,13 @@ class BandController extends RestController
             $band->setDescription($description);
         } else {
             $band = new Band($bandNewName, $description);
-            $users = $this->getUsersFromForm($form);
-
-            $bandMemberRepository = $this->get('rockparade.band_member_repository');
-
-            foreach ($users as $user) {
-                $bandMember = $bandMemberRepository->getOrCreateByBandAndUser($band, $user);
-                $band->addMember($bandMember);
-            }
-
             $bandRepository->persist($band);
+        }
+
+        $bandMembers = $this->getBandMembersFromForm($band, $form);
+
+        foreach ($bandMembers as $bandMember) {
+            $band->addMember($bandMember);
         }
     }
 
@@ -385,7 +383,13 @@ class BandController extends RestController
         );
     }
 
-    private function updateBand(Request $request, Band $band = null): AbstractApiResponse
+    /**
+     * Create or update band. If no Band object passed, new one will be created
+     * @param Request $request
+     * @param Band|null $band
+     * @return AbstractApiResponse
+     */
+    private function createOrUpdateBand(Request $request, Band $band = null): AbstractApiResponse
     {
         $form = $this->createFormBandCreate();
         $this->processForm($request, $form);
@@ -405,21 +409,27 @@ class BandController extends RestController
 
     private function createBand(Request $request): AbstractApiResponse
     {
-        return $this->updateBand($request);
+        return $this->createOrUpdateBand($request);
     }
 
-    private function getUsersFromForm(FormInterface $form)
+    /**
+     * @return BandMember[]
+     */
+    private function getBandMembersFromForm(Band $band, FormInterface $form): array
     {
         $usersRepository = $this->get('rockparade.user_repository');
+        $bandMemberRepository = $this->get('rockparade.band_member_repository');
 
         return array_map(
-            function (array $userData) use ($usersRepository, $form) {
+            function (array $userData) use ($usersRepository, $bandMemberRepository, $band, $form) {
                 $user = null;
-                
+                $shortDescription = '';
+
                 if (isset($userData['login'], $userData['short_description'])) {
                     $userLogin = $userData['login'];
+                    $shortDescription = $userData['short_description'];
                     $user = $usersRepository->findOneByLogin($userLogin);
-    
+
                     if (!$user) {
                         $form->addError(new FormError(sprintf('User "%s" was not found.', $userLogin)));
                     }
@@ -427,7 +437,7 @@ class BandController extends RestController
                     $form->addError(new FormError('Group member parameters login and short_description are mandatory.'));
                 }
 
-                return $user;
+                return $bandMemberRepository->getOrCreateByBandAndUser($band, $user, $shortDescription);
             },
             $form->get(self::ATTRIBUTE_MEMBERS)->getData()
         );

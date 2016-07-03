@@ -45,7 +45,7 @@ class Band
     /**
      * @var BandMember[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\BandMember", mappedBy="band", orphanRemoval=true)
-     * @Accessor(getter="getUserLogins")
+     * @Accessor(getter="getMembers")
      * @SerializerType("array")
      */
     protected $members;
@@ -106,15 +106,15 @@ class Band
         $this->description = $description;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getUserLogins(): array
-    {
-        return array_map(function (BandMember $bandMember) {
-            return $bandMember->getUser()->getLogin();
-        },
-            $this->members->toArray()
-        );
-    }
+//    /**
+//     * @return []
+//     */
+//    public function getMembers(): array
+//    {
+//        return array_map(function (BandMember $bandMember) {
+//            return $bandMember->getUser()->getLogin();
+//        },
+//            $this->members->toArray()
+//        );
+//    }
 }

@@ -73,14 +73,12 @@ class BandControllerTest extends FunctionalTester
             'description' => self::BAND_DESCRIPTION_SECOND,
             'members'     => [
                 [
-                    'login'              => self::BAND_USER_LOGIN_FIRST,
+                    'login'             => self::BAND_USER_LOGIN_FIRST,
                     'short_description' => self::USER_DESCRIPTION_SHORT_FIRST,
-                    'description'       => self::USER_DESCRIPTION_FIRST,
                 ],
                 [
-                    'login'              => self::BAND_USER_LOGIN_SECOND,
+                    'login'             => self::BAND_USER_LOGIN_SECOND,
                     'short_description' => self::USER_DESCRIPTION_SHORT_SECOND,
-                    'description'       => self::USER_DESCRIPTION_SECOND,
                 ],
             ],
         ];
@@ -99,8 +97,10 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals(200, $listBandsResponseCode);
         $this->assertEquals(self::BAND_NAME_SECOND, $bandListContents['data'][2]['name']);
         $this->assertEquals(self::BAND_DESCRIPTION_SECOND, $bandListContents['data'][2]['description']);
-        $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][2]['members']);
-        $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][2]['members']);
+        $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][2]['members'][0]['login']);
+        $this->assertContains(self::USER_DESCRIPTION_SHORT_FIRST, $bandListContents['data'][2]['members'][0]['short_description']);
+        $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][2]['members'][1]['login']);
+        $this->assertContains(self::USER_DESCRIPTION_SHORT_SECOND, $bandListContents['data'][2]['members'][1]['short_description']);
     }
 
     /** @test */
