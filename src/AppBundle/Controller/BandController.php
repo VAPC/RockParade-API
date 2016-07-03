@@ -2,16 +2,15 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\BandMember;
 use AppBundle\Entity\DTO\BandMemberDTO;
 use AppBundle\Entity\DTO\CreateBand;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
+use AppBundle\Service\BandService;
 use Symfony\Component\Form\Form;
 use AppBundle\Controller\Infrastructure\RestController;
-use AppBundle\Entity\Band;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -19,7 +18,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,8 +29,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class BandController extends RestController
 {
-    const ATTRIBUTE_MEMBERS = 'members';
-
     /**
      * List all registered bands
      * @Route("s/", name="bands_list")
@@ -113,7 +109,11 @@ class BandController extends RestController
      */
     public function createAction(Request $request): Response
     {
-        return $this->respond($this->createBand($request));
+        $form = $this->createFormBandCreate();
+        $this->processForm($request, $form);
+        $form = $this->get('rockparade.band')->processFormAndCreateBand($form);
+
+        return $this->respond($this->createResponseFromCreateForm($form));
     }
 
     /**
@@ -155,7 +155,11 @@ class BandController extends RestController
         $bandRepository = $this->get('rockparade.band_repository');
         $band = $bandRepository->findOneByName($name);
 
-        return $this->respond($this->createOrUpdateBand($request, $band));
+        $form = $this->createFormBandCreate();
+        $this->processForm($request, $form);
+        $form = $this->get('rockparade.band')->processFormAndUpdateBand($form, $band);
+
+        return $this->respond($this->createResponseFromUpdateForm($form));
     }
 
     /**
@@ -298,16 +302,6 @@ class BandController extends RestController
         return $this->respond($response);
     }
 
-    private function createFormBandCreate(): Form
-    {
-        $formBuilder = $this->createFormBuilder(new CreateBand());
-        $formBuilder->add('name', TextType::class);
-        $formBuilder->add(self::ATTRIBUTE_MEMBERS, TextType::class);
-        $formBuilder->add('description', TextareaType::class);
-
-        return $formBuilder->getForm();
-    }
-
     private function createFormBandMember(): Form
     {
         $formBuilder = $this->createFormBuilder(new BandMemberDTO());
@@ -316,55 +310,6 @@ class BandController extends RestController
         $formBuilder->add('description', TextareaType::class);
 
         return $formBuilder->getForm();
-    }
-
-    private function createOrUpdateBandUsingForm(
-        FormInterface $form,
-        Band $band = null
-    ) {
-        if (!$form->isValid()) {
-            return null;
-        }
-
-        $membersData = $form->get(self::ATTRIBUTE_MEMBERS)->getData();
-
-        if (!$membersData) {
-            $form->addError(new FormError(sprintf('Parameter "%s" is mandatory.', self::ATTRIBUTE_MEMBERS)));
-
-            return null;
-        }
-
-        $bandNewName = $form->get('name')->getData();
-        $description = $form->get('description')->getData();
-
-        /** @var BandRepository $bandRepository */
-        $bandRepository = $this->get('rockparade.band_repository');
-        if ($bandRepository->findOneByName($bandNewName)) {
-            $form->addError(new FormError(sprintf('Band with name "%s" already exists.', $bandNewName)));
-
-            return null;
-        }
-
-        if ($band) {
-            $band->setName($bandNewName);
-            $band->setDescription($description);
-        } else {
-            $band = new Band($bandNewName, $description);
-            $bandRepository->persist($band);
-        }
-
-        $bandMembers = $this->getBandMembersFromForm($band, $form);
-
-        foreach ($bandMembers as $bandMember) {
-            $band->addMember($bandMember);
-        }
-    }
-
-    private function getLocationFromForm(FormInterface $form)
-    {
-        $bandName = $form->get('name')->getData();
-
-        return $this->generateUrl('band_view', ['name' => $bandName]);
     }
 
     private function createBandNotFoundErrorResult(string $bandName): ApiError
@@ -383,63 +328,46 @@ class BandController extends RestController
         );
     }
 
-    /**
-     * Create or update band. If no Band object passed, new one will be created
-     * @param Request $request
-     * @param Band|null $band
-     * @return AbstractApiResponse
-     */
-    private function createOrUpdateBand(Request $request, Band $band = null): AbstractApiResponse
+    private function createFormBandCreate(): Form
     {
-        $form = $this->createFormBandCreate();
-        $this->processForm($request, $form);
+        $formBuilder = $this->createFormBuilder(new CreateBand());
+        $formBuilder->add('name', TextType::class);
+        $formBuilder->add(BandService::ATTRIBUTE_MEMBERS, TextType::class);
+        $formBuilder->add('description', TextareaType::class);
 
-        $this->createOrUpdateBandUsingForm($form, $band);
+        return $formBuilder->getForm();
+    }
 
+    private function getLocationFromForm(FormInterface $form): string
+    {
+        $bandName = $form->get('name')->getData();
+
+        return $this->generateUrl('band_view', ['name' => $bandName]);
+    }
+
+    /**
+     * @param $form
+     * @param $band
+     * @return ApiError|CreatedApiResponse|EmptyApiResponse
+     */
+    private function createResponseFromCreateForm(FormInterface $form): AbstractApiResponse
+    {
         if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return empty($band)
-                ? new CreatedApiResponse($this->getLocationFromForm($form))
-                : new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+            return new CreatedApiResponse($this->getLocationFromForm($form));
         } else {
             return new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
         }
     }
 
-    private function createBand(Request $request): AbstractApiResponse
-    {
-        return $this->createOrUpdateBand($request);
-    }
-
     /**
-     * @return BandMember[]
+     * @return ApiError|CreatedApiResponse|EmptyApiResponse
      */
-    private function getBandMembersFromForm(Band $band, FormInterface $form): array
+    private function createResponseFromUpdateForm(FormInterface $form): AbstractApiResponse
     {
-        $usersRepository = $this->get('rockparade.user_repository');
-        $bandMemberRepository = $this->get('rockparade.band_member_repository');
-
-        return array_map(
-            function (array $userData) use ($usersRepository, $bandMemberRepository, $band, $form) {
-                $user = null;
-                $shortDescription = '';
-
-                if (isset($userData['login'], $userData['short_description'])) {
-                    $userLogin = $userData['login'];
-                    $shortDescription = $userData['short_description'];
-                    $user = $usersRepository->findOneByLogin($userLogin);
-
-                    if (!$user) {
-                        $form->addError(new FormError(sprintf('User "%s" was not found.', $userLogin)));
-                    }
-                } else {
-                    $form->addError(new FormError('Group member parameters login and short_description are mandatory.'));
-                }
-
-                return $bandMemberRepository->getOrCreateByBandAndUser($band, $user, $shortDescription);
-            },
-            $form->get(self::ATTRIBUTE_MEMBERS)->getData()
-        );
+        if ($form->isValid()) {
+            return new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+        } else {
+            return new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
+        }
     }
 }

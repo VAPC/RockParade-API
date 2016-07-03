@@ -21,3 +21,7 @@ services:
         class: AppBundle\Entity\Repository\RoleRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Role']
+
+    rockparade.band:
+        class: AppBundle\Service\BandService
+        arguments: ['@rockparade.band_repository', '@rockparade.band_member_repository', '@rockparade.user_repository']
