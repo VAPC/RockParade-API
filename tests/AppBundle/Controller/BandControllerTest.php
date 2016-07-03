@@ -189,7 +189,7 @@ class BandControllerTest extends FunctionalTester
     public function addMember_POSTBandMembersWithNewMember_bandMemberAdded()
     {
         $parameters = [
-            'user'              => self::BAND_USER_LOGIN_SECOND,
+            'login'             => self::BAND_USER_LOGIN_SECOND,
             'short_description' => self::USER_DESCRIPTION_SHORT_SECOND,
             'description'       => self::USER_DESCRIPTION_SECOND,
         ];

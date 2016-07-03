@@ -191,7 +191,7 @@ class BandController extends RestController
      *     section="Band",
      *     requirements={
      *         {
-     *             "name"="user",
+     *             "name"="login",
      *             "dataType"="string",
      *             "requirement"="true",
      *             "description"="user login"
@@ -228,7 +228,7 @@ class BandController extends RestController
             if (!$band) {
                 $response = $this->createBandNotFoundErrorResult($name);
             } else {
-                $newUserLogin = $form->get('user')->getData();
+                $newUserLogin = $form->get('login')->getData();
                 $newUser = $this->get('rockparade.user_repository')->findOneByLogin($newUserLogin);
 
                 if (!$newUser) {
@@ -310,7 +310,7 @@ class BandController extends RestController
     private function createFormBandMember(): Form
     {
         $formBuilder = $this->createFormBuilder(new BandMemberDTO());
-        $formBuilder->add('user', TextType::class);
+        $formBuilder->add('login', TextType::class);
         $formBuilder->add('short_description', TextType::class);
         $formBuilder->add('description', TextareaType::class);
 

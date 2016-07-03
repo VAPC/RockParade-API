@@ -11,9 +11,9 @@ class BandMemberDTO
 {
     /**
      * @var string
-     * @Assert\NotBlank(message="Parameter 'user' is mandatory")
+     * @Assert\NotBlank(message="Parameter 'login' is mandatory")
      */
-    public $user;
+    public $login;
 
     /**
      * @var string
