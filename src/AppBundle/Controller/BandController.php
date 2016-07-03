@@ -338,7 +338,7 @@ class BandController extends RestController
         return $formBuilder->getForm();
     }
 
-    private function getLocationFromForm(FormInterface $form): string
+    private function createLocationByNameFieldInForm(FormInterface $form): string
     {
         $bandName = $form->get('name')->getData();
 
@@ -353,7 +353,7 @@ class BandController extends RestController
     private function createResponseFromCreateForm(FormInterface $form): AbstractApiResponse
     {
         if ($form->isValid()) {
-            return new CreatedApiResponse($this->getLocationFromForm($form));
+            return new CreatedApiResponse($this->createLocationByNameFieldInForm($form));
         } else {
             return new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
         }
