@@ -174,7 +174,7 @@ class BandControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function getMembers_GETBandMembers_listBandMembers()
+    public function listMembersAction_GETBandMembers_listBandMembers()
     {
         $this->followRedirects();
 
@@ -189,7 +189,7 @@ class BandControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function addMember_POSTBandMembersWithNewMember_bandMemberAdded()
+    public function addMemberAction_POSTBandMembersWithNewMember_bandMemberAdded()
     {
         $parameters = [
             'login'             => self::BAND_USER_LOGIN_SECOND,
@@ -207,7 +207,7 @@ class BandControllerTest extends FunctionalTester
     }
     
     /** @test */
-    public function deleteMember_DELETEBandNameMemberLogin_bandMemberDeleted()
+    public function deleteMemberAction_DELETEBandNameMemberLogin_bandMemberDeleted()
     {
         $this->sendDeleteRequest('/band/Banders/member/bander');
         $this->assertEquals(204, $this->getResponseCode());
