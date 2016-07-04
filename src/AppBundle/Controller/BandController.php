@@ -2,8 +2,9 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\DTO\BandMemberDTO;
+use AppBundle\Entity\DTO\CreateBandMemberDTO;
 use AppBundle\Entity\DTO\CreateBand;
+use AppBundle\Entity\DTO\UpdateBandMemberDTO;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
@@ -50,7 +51,7 @@ class BandController extends RestController
 
     /**
      * View band by name
-     * @Route("/{name}", name="band_view")
+     * @Route("/{bandName}", name="band_view")
      * @Method("GET")
      * @ApiDoc(
      *     section="Band",
@@ -59,17 +60,17 @@ class BandController extends RestController
      *         404="Band with given name was not found",
      *     }
      * )
-     * @param string $name band name
+     * @param string $bandName band name
      */
-    public function viewAction(string $name): Response
+    public function viewAction(string $bandName): Response
     {
         $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneByName($name);
+        $band = $bandRepository->findOneByName($bandName);
 
         if ($band) {
             $response = new ApiResponse($band, Response::HTTP_OK);
         } else {
-            $response = $this->createBandNotFoundErrorResult($name);
+            $response = $this->createBandNotFoundErrorResult($bandName);
         }
 
         return $this->respond($response);
@@ -118,7 +119,7 @@ class BandController extends RestController
 
     /**
      * Edit band
-     * @Route("/{name}", name="band_edit")
+     * @Route("/{bandName}", name="band_edit")
      * @Method("PUT")
      * @ApiDoc(
      *     section="Band",
@@ -147,13 +148,13 @@ class BandController extends RestController
      *         400="Validation error",
      *     }
      * )
-     * @param string $name band name
+     * @param string $bandName band name
      */
-    public function editAction(Request $request, string $name): Response
+    public function editAction(Request $request, string $bandName): Response
     {
         /** @var BandRepository $bandRepository */
         $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneByName($name);
+        $band = $bandRepository->findOneByName($bandName);
 
         $form = $this->createFormBandCreate();
         $this->processForm($request, $form);
@@ -164,7 +165,7 @@ class BandController extends RestController
 
     /**
      * List all band members
-     * @Route("/{name}/members", name="band_members")
+     * @Route("/{bandName}/members", name="band_members")
      * @Method("GET")
      * @ApiDoc(
      *     section="Band",
@@ -174,13 +175,13 @@ class BandController extends RestController
      *     }
      * )
      */
-    public function listMembersAction(string $name): Response
+    public function listMembersAction(string $bandName): Response
     {
         $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneByName($name);
+        $band = $bandRepository->findOneByName($bandName);
 
         if (!$band) {
-            $response = $this->createBandNotFoundErrorResult($name);
+            $response = $this->createBandNotFoundErrorResult($bandName);
         } else {
             $response = new ApiResponse($band->getMembers(), Response::HTTP_OK);
         }
@@ -190,7 +191,7 @@ class BandController extends RestController
 
     /**
      * Add member to band
-     * @Route("/{name}/members", name="band_member_add")
+     * @Route("/{bandName}/members", name="band_member_add")
      * @Method("POST")
      * @ApiDoc(
      *     section="Band",
@@ -219,19 +220,19 @@ class BandController extends RestController
      *         400="Validation error",
      *     }
      * )
-     * @param string $name band name
+     * @param string $bandName band name
      */
-    public function addMemberAction(Request $request, string $name): Response
+    public function addMemberAction(Request $request, string $bandName): Response
     {
-        $form = $this->createFormBandMember();
+        $form = $this->createFormCreateBandMember();
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
             $bandRepository = $this->get('rockparade.band_repository');
-            $band = $bandRepository->findOneByName($name);
+            $band = $bandRepository->findOneByName($bandName);
 
             if (!$band) {
-                $response = $this->createBandNotFoundErrorResult($name);
+                $response = $this->createBandNotFoundErrorResult($bandName);
             } else {
                 $newUserLogin = $form->get('login')->getData();
                 $newUser = $this->get('rockparade.user_repository')->findOneByLogin($newUserLogin);
@@ -264,7 +265,7 @@ class BandController extends RestController
 
     /**
      * Delete member from band
-     * @Route("/{name}/member/{userLogin}", name="band_member_delete")
+     * @Route("/{bandName}/member/{userLogin}", name="band_member_delete")
      * @Method("DELETE")
      * @ApiDoc(
      *     section="Band",
@@ -273,13 +274,13 @@ class BandController extends RestController
      *         404="Band or user was not found",
      *     }
      * )
-     * @param string $name band name
+     * @param string $bandName band name
      * @param string $userLogin member login
      */
-    public function deleteMemberAction(string $name, string $userLogin)
+    public function deleteMemberAction(string $bandName, string $userLogin)
     {
         $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneByName($name);
+        $band = $bandRepository->findOneByName($bandName);
 
         if ($band) {
             $userRepository = $this->get('rockparade.user_repository');
@@ -288,28 +289,72 @@ class BandController extends RestController
             if ($user) {
                 $bandMemberRepository = $this->get('rockparade.band_member_repository');
                 $bandMember = $bandMemberRepository->findByBandAndUser($band, $user);
-                $band->removeMember($bandMember);
-                $bandRepository->flush();
 
-                $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+                if ($bandMember) {
+                    $band->removeMember($bandMember);
+                    $bandRepository->flush();
+
+                    $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+                } else {
+                    $response = $this->createBandMemberNotFoundErrorResult($userLogin, $bandName);
+                }
             } else {
                 $response = $this->createUserNotFoundErrorResult($userLogin);
             }
         } else {
-            $response = $this->createBandNotFoundErrorResult($name);
+            $response = $this->createBandNotFoundErrorResult($bandName);
         }
 
         return $this->respond($response);
     }
-
-    private function createFormBandMember(): Form
+    
+    /**
+     * Update band member
+     * @Route("/{bandName}/member/{userLogin}", name="band_member_update")
+     * @Method("PUT")
+     * @ApiDoc(
+     *     section="Band",
+     *     statusCodes={
+     *         204="Band member was successfully updated",
+     *         404="Band or user was not found",
+     *     }
+     * )
+     * @param string $bandName band name
+     * @param string $userLogin member login
+     */
+    public function updateMemberAction(Request $request, string $bandName, string $userLogin)
     {
-        $formBuilder = $this->createFormBuilder(new BandMemberDTO());
-        $formBuilder->add('login', TextType::class);
-        $formBuilder->add('short_description', TextType::class);
-        $formBuilder->add('description', TextareaType::class);
+        $bandRepository = $this->get('rockparade.band_repository');
+        $band = $bandRepository->findOneByName($bandName);
 
-        return $formBuilder->getForm();
+        if ($band) {
+            $userRepository = $this->get('rockparade.user_repository');
+            $user = $userRepository->findOneByLogin($userLogin);
+
+            if ($user) {
+                $bandMemberRepository = $this->get('rockparade.band_member_repository');
+                $bandMember = $bandMemberRepository->findByBandAndUser($band, $user);
+                
+                if ($bandMember) {
+                    $form = $this->createFormUpdateBandMember();
+                    $this->processForm($request, $form);
+                    $form = $this->get('rockparade.band')->processFormAndUpdateBandMember($form, $bandMember);
+                    
+                    $bandRepository->flush();
+
+                    $response = $this->createResponseFromUpdateForm($form);
+                } else {
+                    $response = $this->createBandMemberNotFoundErrorResult($userLogin, $bandName);
+                }
+
+            } else {
+                $response = $this->createUserNotFoundErrorResult($userLogin);
+            }
+        } else {
+            $response = $this->createBandNotFoundErrorResult($bandName);
+        }
+
+        return $this->respond($response);
     }
 
     private function createBandNotFoundErrorResult(string $bandName): ApiError
@@ -328,6 +373,14 @@ class BandController extends RestController
         );
     }
 
+    private function createBandMemberNotFoundErrorResult(string $userLogin, string $bandName): ApiError
+    {
+        return new ApiError(
+            sprintf('Band member with login "%s" was not found for band "%s".', $userLogin, $bandName),
+            Response::HTTP_NOT_FOUND
+        );
+    }
+
     private function createFormBandCreate(): Form
     {
         $formBuilder = $this->createFormBuilder(new CreateBand());
@@ -342,7 +395,7 @@ class BandController extends RestController
     {
         $bandName = $form->get('name')->getData();
 
-        return $this->generateUrl('band_view', ['name' => $bandName]);
+        return $this->generateUrl('band_view', ['bandName' => $bandName]);
     }
 
     /**
@@ -369,5 +422,24 @@ class BandController extends RestController
         } else {
             return new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    private function createFormUpdateBandMember(): FormInterface
+    {
+        $formBuilder = $this->createFormBuilder(new UpdateBandMemberDTO());
+        $formBuilder->add('short_description', TextType::class);
+        $formBuilder->add('description', TextareaType::class);
+
+        return $formBuilder->getForm();
+    }
+
+    private function createFormCreateBandMember(): FormInterface
+    {
+        $formBuilder = $this->createFormBuilder(new CreateBandMemberDTO());
+        $formBuilder->add('login', TextType::class);
+        $formBuilder->add('short_description', TextType::class);
+        $formBuilder->add('description', TextareaType::class);
+
+        return $formBuilder->getForm();
     }
 }

@@ -58,4 +58,14 @@ class BandMember
     {
         return $this->user;
     }
+
+    public function setShortDescription(string $shortDescription)
+    {
+        $this->shortDescription = $shortDescription;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
+    }
 }

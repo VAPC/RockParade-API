@@ -142,4 +142,15 @@ class BandService
 
         return $errors;
     }
+
+    public function processFormAndUpdateBandMember(FormInterface $form, BandMember $bandMember): FormInterface
+    {
+        $shortDescription = $form->get('short_description')->getData();
+        $description = $form->get('description')->getData();
+
+        $bandMember->setShortDescription($shortDescription);
+        $bandMember->setDescription($description);
+
+        return $form;
+    }
 }
