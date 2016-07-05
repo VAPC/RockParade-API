@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+//    "outFile": "../../web/app.js",
+    "sourceMap": true,
+    "pretty": true,
+    "module": "es6",
+    "isolatedModules": false
+  },
+  "files": [
+    "ts/**/*.ts",
+    "includes/**/*.ts"
+  ]
+}

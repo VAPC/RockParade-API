@@ -1,0 +1,33 @@
+{
+  "name": "rockparade",
+  "version": "0.0.1",
+  "description": "Social network for musicians and concert organizers",
+  "main": "index.js",
+  "scripts": {
+    "gulp": "gulp tdd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vehsamrak/RockParade.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vehsamrak/RockParade/issues"
+  },
+  "homepage": "https://github.com/Vehsamrak/RockParade#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "jasmine-core": "^2.4.1",
+    "karma": "^1.1.0",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
+    "karma-mocha-reporter": "^2.0.4",
+    "karma-rollup-preprocessor": "^2.0.2",
+    "karma-sourcemap-loader": "^0.3.7",
+    "require-dir": "^0.3.0",
+    "rollup": "^0.33.0",
+    "rollup-plugin-typescript": "^0.7.6",
+    "typescript": "^1.8.10"
+  }
+}
