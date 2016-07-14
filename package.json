@@ -1,0 +1,25 @@
+{
+  "name": "rock-parade",
+  "version": "0.0.1",
+  "description": "RockParade",
+  "main": "index.html",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vehsamrak/RockParade.git"
+  },
+  "author": "SlonWorks LLC",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vehsamrak/RockParade/issues"
+  },
+  "homepage": "https://github.com/Vehsamrak/RockParade#readme",
+  "dependencies": {
+    "angular": "^1.5.7"
+  }
+}
