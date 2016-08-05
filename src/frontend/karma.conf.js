@@ -15,6 +15,7 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
+            'ts/**/*.ts',
             'test/**/*.spec.ts'
         ],
 
@@ -26,6 +27,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
+            'ts/**/*.ts': ['rollup', 'sourcemap'],
             'test/**/*.spec.ts': ['rollup', 'sourcemap']
         },
 
@@ -34,6 +36,9 @@ module.exports = function (config) {
                 plugins: [
                     require('rollup-plugin-typescript')()
                 ]
+            },
+            bundle: {
+                format: 'iife'
             }
         },
 

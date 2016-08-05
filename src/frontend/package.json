@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Vehsamrak/RockParade#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-util": "^3.0.7",
     "jasmine-core": "^2.4.1",
     "karma": "^1.1.0",
     "karma-chrome-launcher": "^1.0.1",
@@ -27,7 +28,19 @@
     "karma-sourcemap-loader": "^0.3.7",
     "require-dir": "^0.3.0",
     "rollup": "^0.33.0",
+    "rollup-plugin-buble": "^0.12.1",
+    "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-typescript": "^0.7.6",
     "typescript": "^1.8.10"
+  },
+  "dependencies": {
+    "@angular/common": "2.0.0-rc.4",
+    "@angular/core": "2.0.0-rc.4",
+    "@angular/http": "2.0.0-rc.4",
+    "@angular/platform-browser": "2.0.0-rc.4",
+    "@angular/platform-browser-dynamic": "2.0.0-rc.4",
+    "@angular/router": "3.0.0-beta.1",
+    "rxjs-es": "^5.0.0-beta.10",
+    "zone.js": "^0.6.12"
   }
 }
