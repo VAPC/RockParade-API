@@ -9,7 +9,7 @@
     "isolatedModules": false
   },
   "files": [
-    "ts/**/*.ts",
+    "app/**/*.ts",
     "includes/**/*.ts"
   ]
 }

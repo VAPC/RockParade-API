@@ -10,7 +10,7 @@ const globals = {
 
 gulp.task('script', function () {
     return rollup({
-        entry: 'ts/app/main.ts',
+        entry: 'app/bootstrap.ts',
         plugins: [
             typescript()
         ],

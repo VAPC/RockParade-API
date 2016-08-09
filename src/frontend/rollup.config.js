@@ -1,7 +1,7 @@
 import typescript from './gulp/rollup-plugin-ts';
 
 export default {
-    entry: './ts/app/main.ts',
+    entry: './app/app/main.app',
 
     plugins: [
         typescript()
