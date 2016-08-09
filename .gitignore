@@ -38,6 +38,8 @@ composer.phar
 
 # JS and CSS compiled files
 /web/assets/*
+/web/app.js
+/web/vendor.js
 
 # PhpUnit
 /phpunit.xml

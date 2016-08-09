@@ -15,31 +15,21 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'ts/**/*.ts',
-            'test/**/*.spec.ts'
+            '../../web/angular2-polyfills.js',
+            '../../web/vendor.js',
+            'test/tmp/test.js'
         ],
 
 
         // list of files to exclude
-        exclude: [],
+        exclude: [
+        ],
 
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'ts/**/*.ts': ['rollup', 'sourcemap'],
-            'test/**/*.spec.ts': ['rollup', 'sourcemap']
-        },
-
-        rollupPreprocessor: {
-            rollup: {
-                plugins: [
-                    require('rollup-plugin-typescript')()
-                ]
-            },
-            bundle: {
-                format: 'iife'
-            }
+            '**/*.js': ['sourcemap']
         },
 
         // test results reporter to use

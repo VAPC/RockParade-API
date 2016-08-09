@@ -31,7 +31,8 @@ gulp.task('vendor', () => {
        return bundle.write({
            format: 'iife',
            moduleName: 'ng',
-           dest: '../../web/vendor.js'
+           dest: '../../web/vendor.js',
+           sourceMap: 'inline'
        });
    }).catch(err => {
        throw new PluginError('rollup', err.toString());
