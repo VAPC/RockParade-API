@@ -52,6 +52,8 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget",
+            "AppBundle\\Command\\Composer\\ComposerScripter::createDatabase",
+            "AppBundle\\Command\\Composer\\ComposerScripter::updateDatabaseSchema",
             "AppBundle\\Command\\Composer\\ComposerScripter::loadFixtures"
         ],
         "post-update-cmd": [
@@ -60,7 +62,10 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget",
+            "AppBundle\\Command\\Composer\\ComposerScripter::createDatabase",
+            "AppBundle\\Command\\Composer\\ComposerScripter::updateDatabaseSchema",
+            "AppBundle\\Command\\Composer\\ComposerScripter::loadFixtures"
         ]
     },
     "extra": {
