@@ -4,14 +4,12 @@
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-//    "outFile": "../../web/app.js",
-    "sourceMap": true,
     "pretty": true,
     "module": "es6",
     "isolatedModules": false
   },
   "files": [
-    "ts/**/*.ts",
+    "app/**/*.ts",
     "includes/**/*.ts"
   ]
 }
