@@ -21,6 +21,7 @@ class BandMember
      * @ORM\JoinColumn(name="user_id", referencedColumnName="login")
      * @Serializer\Accessor("getUserLogin")
      * @Serializer\Type("string")
+     * @Serializer\SerializedName("login")
      */
     private $user;
 
@@ -56,5 +57,15 @@ class BandMember
     public function getUser(): User
     {
         return $this->user;
+    }
+
+    public function setShortDescription(string $shortDescription)
+    {
+        $this->shortDescription = $shortDescription;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
     }
 }

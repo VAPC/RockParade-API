@@ -20,10 +20,14 @@ class BandControllerTest extends FunctionalTester
     const BAND_USER_LOGIN_FIRST = 'bander';
     const BAND_USER_LOGIN_SECOND = 'derban';
     const BAND_USER_LOGIN_THIRD = 'rocker';
-    const USER_DESCRIPTION_SHORT = 'hard rocker guitarist';
-    const USER_DESCRIPTION = 'Hard rocker was the second musician in this band.';
+    const USER_DESCRIPTION_SHORT_FIRST = 'first description';
+    const USER_DESCRIPTION_SHORT_SECOND = 'hard rocker guitarist';
+    const USER_DESCRIPTION_FIRST = 'Long description of first user';
+    const USER_DESCRIPTION_SECOND = 'Hard rocker was the second musician in this band.';
     const BAND_MEMBER_FIRST_SHORT_DESCRIPTION = 'bass guitar';
     const BAND_MEMBER_FIRST_DESCRIPTION = 'loremus unitus';
+    const BAND_MEMBER_SECOND_DESCRIPTION = 'secondus shortus';
+    const BAND_MEMBER_SECOND_SHORT_DESCRIPTION = 'violin';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -70,8 +74,14 @@ class BandControllerTest extends FunctionalTester
             'name'        => self::BAND_NAME_SECOND,
             'description' => self::BAND_DESCRIPTION_SECOND,
             'members'     => [
-                self::BAND_USER_LOGIN_FIRST,
-                self::BAND_USER_LOGIN_SECOND,
+                [
+                    'login'             => self::BAND_USER_LOGIN_FIRST,
+                    'short_description' => self::USER_DESCRIPTION_SHORT_FIRST,
+                ],
+                [
+                    'login'             => self::BAND_USER_LOGIN_SECOND,
+                    'short_description' => self::USER_DESCRIPTION_SHORT_SECOND,
+                ],
             ],
         ];
 
@@ -89,8 +99,10 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals(200, $listBandsResponseCode);
         $this->assertEquals(self::BAND_NAME_SECOND, $bandListContents['data'][2]['name']);
         $this->assertEquals(self::BAND_DESCRIPTION_SECOND, $bandListContents['data'][2]['description']);
-        $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][2]['members']);
-        $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][2]['members']);
+        $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][2]['members'][0]['login']);
+        $this->assertContains(self::USER_DESCRIPTION_SHORT_FIRST, $bandListContents['data'][2]['members'][0]['short_description']);
+        $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][2]['members'][1]['login']);
+        $this->assertContains(self::USER_DESCRIPTION_SHORT_SECOND, $bandListContents['data'][2]['members'][1]['short_description']);
     }
 
     /** @test */
@@ -143,7 +155,10 @@ class BandControllerTest extends FunctionalTester
             'name'        => self::BAND_NAME_FIRST_EDITED,
             'description' => self::BAND_DESCRIPTION_FIRST_EDITED,
             'members'     => [
-                self::BAND_USER_LOGIN_THIRD,
+                [
+                    'login'             => self::BAND_USER_LOGIN_THIRD,
+                    'short_description' => self::USER_DESCRIPTION_SHORT_SECOND,
+                ],
             ],
         ];
 
@@ -161,7 +176,7 @@ class BandControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function getMembers_GETBandMembers_listBandMembers()
+    public function listMembersAction_GETBandMembers_listBandMembers()
     {
         $this->followRedirects();
 
@@ -170,18 +185,18 @@ class BandControllerTest extends FunctionalTester
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $listBandsResponseCode);
-        $this->assertEquals(self::BAND_USER_LOGIN_FIRST, $contents['data'][0]['user']);
+        $this->assertEquals(self::BAND_USER_LOGIN_FIRST, $contents['data'][0]['login']);
         $this->assertEquals(self::BAND_MEMBER_FIRST_DESCRIPTION, $contents['data'][0]['description']);
         $this->assertEquals(self::BAND_MEMBER_FIRST_SHORT_DESCRIPTION, $contents['data'][0]['short_description']);
     }
 
     /** @test */
-    public function addMember_POSTBandMembersWithNewMember_bandMemberAdded()
+    public function addMemberAction_POSTBandNameMembersRequestWithNewMember_bandMemberAdded()
     {
         $parameters = [
-            'user'              => self::BAND_USER_LOGIN_SECOND,
-            'short_description' => self::USER_DESCRIPTION_SHORT,
-            'description'       => self::USER_DESCRIPTION,
+            'login'             => self::BAND_USER_LOGIN_SECOND,
+            'short_description' => self::USER_DESCRIPTION_SHORT_SECOND,
+            'description'       => self::USER_DESCRIPTION_SECOND,
         ];
 
         $this->sendPostRequest('/band/Banders/members', $parameters);
@@ -189,12 +204,12 @@ class BandControllerTest extends FunctionalTester
 
         $this->sendGetRequest('/band/Banders/members');
         $contents = $this->getResponseContents();
-        $this->assertEquals('derban', $contents['data'][1]['user']);
+        $this->assertEquals('derban', $contents['data'][1]['login']);
         $this->assertEquals('hard rocker guitarist', $contents['data'][1]['short_description']);
     }
     
     /** @test */
-    public function deleteMember_DELETEBandNameMemberLogin_bandMemberDeleted()
+    public function deleteMemberAction_DELETEBandNameMemberLoginRequest_bandMemberDeleted()
     {
         $this->sendDeleteRequest('/band/Banders/member/bander');
         $this->assertEquals(204, $this->getResponseCode());
@@ -202,5 +217,31 @@ class BandControllerTest extends FunctionalTester
         $this->sendGetRequest('/band/Banders/members');
         $contents = $this->getResponseContents();
         $this->assertEmpty($contents['data']);
+    }
+    
+    /** @test */
+    public function editMemberAction_PUTBandNameMemberLoginRequest_bandMemberUpdatedWithNewParameters()
+    {
+        $this->followRedirects();
+        $parameters = [
+            'short_description' => self::BAND_MEMBER_SECOND_SHORT_DESCRIPTION,
+            'description'       => self::BAND_MEMBER_SECOND_DESCRIPTION,
+        ];
+
+        $this->sendGetRequest('/band/Banders/members');
+        $contents = $this->getResponseContents();
+        $this->assertEquals(self::BAND_USER_LOGIN_FIRST, $contents['data'][0]['login']);
+        $this->assertEquals(self::BAND_MEMBER_FIRST_DESCRIPTION, $contents['data'][0]['description']);
+        $this->assertEquals(self::BAND_MEMBER_FIRST_SHORT_DESCRIPTION, $contents['data'][0]['short_description']);
+
+        $this->sendPutRequest('/band/Banders/member/bander', $parameters);
+        $this->assertEquals(204, $this->getResponseCode());
+
+        $this->sendGetRequest('/band/Banders/members');
+        $contents = $this->getResponseContents();
+        $this->assertEquals(self::BAND_USER_LOGIN_FIRST, $contents['data'][0]['login']);
+        $this->assertEquals(self::BAND_MEMBER_SECOND_DESCRIPTION, $contents['data'][0]['description']);
+        $this->assertEquals(self::BAND_MEMBER_SECOND_SHORT_DESCRIPTION, $contents['data'][0]['short_description']);
+
     }
 }

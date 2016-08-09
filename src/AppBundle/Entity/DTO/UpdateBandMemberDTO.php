@@ -7,14 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @author Vehsamrak
  */
-class BandMemberDTO
+class UpdateBandMemberDTO
 {
-    /**
-     * @var string
-     * @Assert\NotBlank(message="Parameter 'user' is mandatory")
-     */
-    public $user;
-
     /**
      * @var string
      * @Assert\NotBlank(message="Parameter 'short_description' is mandatory")
