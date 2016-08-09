@@ -1,3 +1,8 @@
+project_setup:
+  before:
+    - sudo service start mysql || true
+    - mysql -e "CREATE DATABASE rockparade"
+
 build:
   environment:
     php:
