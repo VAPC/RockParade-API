@@ -13,7 +13,7 @@ const nested = require('postcss-nested');
 const inlineSvg = require('postcss-inline-svg');
 
 gulp.task('style', () => {
-    return gulp.src('app/**/*.css')
+    return gulp.src('app/**/*.scss')
         .pipe(cached('style'))
         .pipe(sourcemaps.init())
         .pipe(postcss([
@@ -30,7 +30,7 @@ gulp.task('style', () => {
 });
 
 gulp.task('style:watch', ['style'], () => {
-    watch(['app/**/*.css'], (file) => {
+    watch(['app/**/*.scss'], (file) => {
         delete cached.caches.style[file.path];
         remember.forget('style', file.path);
         run('style', (err) => !err && reload());
