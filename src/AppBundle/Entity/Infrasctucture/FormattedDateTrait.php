@@ -5,12 +5,12 @@ namespace AppBundle\Entity\Infrasctucture;
 /**
  * @author Vehsamrak
  */
-trait FormattedRegistrationDateTrait
+trait FormattedDateTrait
 {
     /**
      * @return string
      */
-    public function getRegistrationDate(): string
+    public function getDate(): string
     {
         return $this->registrationDate->format('Y-m-d H:i:s');
     }

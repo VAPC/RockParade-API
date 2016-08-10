@@ -22,6 +22,11 @@ services:
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Role']
 
+    rockparade.event_repository:
+        class: AppBundle\Entity\Repository\EventRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ['AppBundle\Entity\Event']
+
     rockparade.band:
         class: AppBundle\Service\BandService
         arguments: ['@rockparade.band_repository', '@rockparade.band_member_repository', '@rockparade.user_repository']

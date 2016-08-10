@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
+use AppBundle\Entity\Infrasctucture\FormattedDateTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
@@ -19,7 +19,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
  */
 class Band
 {
-    use FormattedRegistrationDateTrait;
+    use FormattedDateTrait;
     
     /**
      * @var string
@@ -31,7 +31,7 @@ class Band
     /**
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime")
-     * @Accessor(getter="getRegistrationDate")
+     * @Accessor(getter="getDate")
      * @SerializerType("string")
      */
     protected $registrationDate;
