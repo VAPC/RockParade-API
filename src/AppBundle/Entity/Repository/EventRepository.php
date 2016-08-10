@@ -9,4 +9,8 @@ use AppBundle\Entity\Infrasctucture\AbstractRepository;
 class EventRepository extends AbstractRepository
 {
 
+    public function findOneById(int $id)
+    {
+        return $this->find($id);
+    }
 }

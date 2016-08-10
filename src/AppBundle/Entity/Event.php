@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Infrasctucture\FormattedDateTrait;
+use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
 use JMS\Serializer\Annotation\Accessor;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Type as SerializerType;
@@ -14,8 +14,6 @@ use JMS\Serializer\Annotation\Type as SerializerType;
  */
 class Event
 {
-
-    use FormattedDateTrait;
 
     /**
      * @var int
@@ -44,4 +42,12 @@ class Event
      * @ORM\Column(name="description", type="text")
      */
     protected $description;
+
+    /**
+     * @return string
+     */
+    public function getDate(): string
+    {
+        return $this->date->format('Y-m-d H:i:s');
+    }
 }
