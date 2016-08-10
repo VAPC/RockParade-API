@@ -30,11 +30,11 @@ app/config/parameters.yml
 composer.phar
 
 # PhpStorm
-.idea/
+/.idea/
 
 # Node and Bower modules
-node_modules/
-bower_components/
+/node_modules/
+/bower_components/
 
 # JS and CSS compiled files
 /web/assets/*
