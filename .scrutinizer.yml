@@ -12,6 +12,7 @@ build:
 
 checks:
   php: true
+  javascript: true
 
 filter:
   excluded_paths:
