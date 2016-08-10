@@ -20,4 +20,24 @@ class ComposerScripter extends ScriptHandler
 
         static::executeCommand($event, $consoleDir, 'rock:fixture:load');
     }
+
+    /**
+     * Creating database
+     */
+    public static function createDatabase(Event $event)
+    {
+        $consoleDir = static::getConsoleDir($event, 'Creates the configured database');
+
+        static::executeCommand($event, $consoleDir, 'doctrine:database:create --if-not-exists');
+    }
+
+    /**
+     * Update database schema
+     */
+    public static function updateDatabaseSchema(Event $event)
+    {
+        $consoleDir = static::getConsoleDir($event, 'Creates the configured database');
+
+        static::executeCommand($event, $consoleDir, 'doctrine:schema:update --force');
+    }
 }

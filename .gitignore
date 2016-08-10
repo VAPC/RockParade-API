@@ -38,6 +38,9 @@ bower_components/
 
 # JS and CSS compiled files
 /web/assets/*
+/web/app.js
+/web/app.css
+/web/vendor.js
 
 # PhpUnit
 /phpunit.xml
