@@ -9,8 +9,24 @@ use AppBundle\Entity\Infrasctucture\AbstractRepository;
 class EventRepository extends AbstractRepository
 {
 
+    /**
+     * @return Event|null
+     */
     public function findOneById(int $id)
     {
         return $this->find($id);
+    }
+
+    /**
+     * @return Event|object|null
+     */
+    public function findOneByNameAndDate(string $name, \DateTime $date)
+    {
+        return $this->findOneBy(
+            [
+                'name' => $name,
+                'date' => $date,
+            ]
+        );
     }
 }
