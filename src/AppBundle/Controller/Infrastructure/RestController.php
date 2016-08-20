@@ -7,6 +7,7 @@ use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\HttpLocationInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,15 +47,21 @@ class RestController extends Controller
     }
 
     /**
-     * @param FormInterface $form
      * @return string[]
      */
     protected function getFormErrors(FormInterface $form): array
     {
+        /** @var string[] $errors */
         $errors = [];
 
+        /** @var FormError $error */
         foreach ($form->getErrors(true) as $error) {
-            $errors[] = $error->getMessage();
+            $parametersString = join(',', $error->getMessageParameters());
+            if (!$parametersString || $parametersString === 'null') {
+                $errors[] = $error->getMessage();
+            } else {
+                $errors[] = sprintf('%s - %s', $parametersString, $error->getMessage());
+            }
         }
 
         return $errors;
