@@ -5,8 +5,10 @@ namespace AppBundle\Controller;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
+use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\CreatedApiResponse;
+use AppBundle\Response\EmptyApiResponse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -15,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,6 +43,7 @@ class EventController extends RestController
      */
     public function listAction(): Response
     {
+        /** @var EventRepository $eventRepository */
         $eventRepository = $this->get('rockparade.event_repository');
         $response = new ApiResponse($eventRepository->findAll(), Response::HTTP_OK);
 
@@ -61,6 +65,7 @@ class EventController extends RestController
      */
     public function viewAction(string $eventId): Response
     {
+        /** @var EventRepository $eventRepository */
         $eventRepository = $this->get('rockparade.event_repository');
         $event = $eventRepository->findOneById($eventId);
 
@@ -74,6 +79,7 @@ class EventController extends RestController
     }
 
     /**
+     * Create new event
      * @Route("")
      * @Method("POST")
      * @ApiDoc(
@@ -111,8 +117,9 @@ class EventController extends RestController
 
         if ($form->isValid()) {
             $newEvent = $this->createEventByForm($form);
-            $eventRepository = $this->get('rockparade.event_repository');
 
+            /** @var EventRepository $eventRepository */
+            $eventRepository = $this->get('rockparade.event_repository');
             $eventRepository->persist($newEvent);
 
             try {
@@ -121,6 +128,78 @@ class EventController extends RestController
             } catch (UniqueConstraintViolationException $exception) {
                 $form->addError(new FormError('Event must have unique name and date.'));
                 $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
+            }
+
+        } else {
+            $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->respond($response);
+    }
+
+    /**
+     * Edit event
+     * @Route("/{eventId}", name="event_edit")
+     * @Method("PUT")
+     * @ApiDoc(
+     *     section="Event",
+     *     requirements={
+     *         {
+     *             "name"="name",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="event name"
+     *         },
+     *         {
+     *             "name"="date",
+     *             "dataType"="date (yyyy-MM-dd HH:mm)",
+     *             "requirement"="true",
+     *             "description"="event date"
+     *         },
+     *         {
+     *             "name"="description",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="event description"
+     *         },
+     *     },
+     *     statusCodes={
+     *         204="Event was edited with new data",
+     *         400="Validation error",
+     *         404="Event with given id was not found",
+     *     }
+     * )
+     * @param int $eventId event id
+     */
+    public function editAction(Request $request, int $eventId): Response
+    {
+        $form = $this->createEventCreationForm();
+        $this->processForm($request, $form);
+
+        if ($form->isValid()) {
+            /** @var EventRepository $eventRepository */
+            $eventRepository = $this->get('rockparade.event_repository');
+            /** @var Event $event */
+            $event = $eventRepository->findOneById($eventId);
+
+            if (!$event) {
+                $response = $this->createEventNotFoundErrorResult($eventId);
+            } else {
+                $eventName = $form->get('name')->getData();
+                /** @var \DateTime $eventDate */
+                $eventDate = $form->get('date')->getData();
+                $eventDescription = $form->get('description')->getData();
+
+                $event->setName($eventName);
+                $event->setDate($eventDate);
+                $event->setDescription($eventDescription);
+
+                try {
+                    $eventRepository->flush();
+                    $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+                } catch (UniqueConstraintViolationException $exception) {
+                    $response = new ApiError(['Event must have unique name and date.'], Response::HTTP_BAD_REQUEST);
+                }
             }
 
         } else {
@@ -140,6 +219,7 @@ class EventController extends RestController
 
     private function createEventCreationForm(): FormInterface
     {
+        /** @var FormBuilder $formBuilder */
         $formBuilder = $this->createFormBuilder(new CreateEventDTO());
         $formBuilder->add('name', TextType::class);
         $formBuilder->add(
