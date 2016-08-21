@@ -24,10 +24,18 @@ class AbstractRepository extends EntityRepository
     }
 
     /**
-     * @param $entity
+     * @param object $entity
      */
     public function persist($entity)
     {
         $this->_em->persist($entity);
+    }
+
+    /**
+     * @param object $entity
+     */
+    public function remove($entity)
+    {
+        $this->_em->remove($entity);
     }
 }
