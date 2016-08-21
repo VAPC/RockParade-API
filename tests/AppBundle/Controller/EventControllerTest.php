@@ -102,4 +102,15 @@ class EventControllerTest extends FunctionalTester
         $this->assertEquals($parameters['date'], $responseData['date']);
         $this->assertEquals($parameters['description'], $responseData['description']);
     }
+    
+    /** @test */
+    public function deleteAction_DELETEEventIdRequest_eventDeletedFromDb()
+    {
+        $this->sendDeleteRequest('/event/1');
+        $this->assertEquals(204, $this->getResponseCode());
+
+        $this->sendGetRequest('/event/1');
+        $contents = $this->getResponseContents();
+        $this->assertContains('Event with id "1" was not found.', $contents['errors']);
+    }
 }

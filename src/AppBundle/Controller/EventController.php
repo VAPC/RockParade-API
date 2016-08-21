@@ -209,6 +209,38 @@ class EventController extends RestController
         return $this->respond($response);
     }
 
+    /**
+     * Delete event
+     * @Route("/{eventId}", name="event_delete")
+     * @Method("DELETE")
+     * @ApiDoc(
+     *     section="Event",
+     *     statusCodes={
+     *         204="Event was deleted",
+     *         404="Event with given id was not found",
+     *     }
+     * )
+     * @param int $eventId event id
+     */
+    public function deleteEvent(int $eventId): Response
+    {
+        /** @var EventRepository $eventRepository */
+        $eventRepository = $this->get('rockparade.event_repository');
+        $event = $eventRepository->findOneById($eventId);
+
+        if ($event) {
+            $eventRepository->remove($event);
+            $eventRepository->flush();
+
+            $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+        } else {
+            $response = $this->createEventNotFoundErrorResult($eventId);
+        }
+
+
+        return $this->respond($response);
+    }
+
     private function createEventNotFoundErrorResult(int $eventId): ApiError
     {
         return new ApiError(
