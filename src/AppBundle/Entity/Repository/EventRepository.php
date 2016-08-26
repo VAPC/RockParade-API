@@ -12,7 +12,7 @@ class EventRepository extends AbstractRepository
     /**
      * @return Event|null
      */
-    public function findOneById(int $id)
+    public function findOneById(string $id)
     {
         return $this->find($id);
     }

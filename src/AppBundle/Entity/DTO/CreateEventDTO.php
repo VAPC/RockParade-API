@@ -17,7 +17,7 @@ class CreateEventDTO
 
     /**
      * @var \DateTime
-     * @Assert\NotBlank(message="Parameter is mandatory: date.")
+     * @Assert\NotBlank(message="Parameter is mandatory: date (yyyy-MM-dd HH:mm).")
      */
     public $date;
 

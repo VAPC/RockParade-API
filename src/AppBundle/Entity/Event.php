@@ -2,8 +2,9 @@
 
 namespace AppBundle\Entity;
 
-use JMS\Serializer\Annotation\Accessor;
+use AppBundle\Service\IdGenerator;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\Type as SerializerType;
 
 /**
@@ -16,9 +17,8 @@ class Event
 
     /**
      * @var int
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="string", length=8)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
@@ -44,6 +44,7 @@ class Event
 
     public function __construct(string $name, \DateTime $date, string $description)
     {
+        $this->id = IdGenerator::generateId();
         $this->date = $date;
         $this->name = $name;
         $this->description = $description;
@@ -54,7 +55,7 @@ class Event
         return $this->date->format('Y-m-d H:i:s');
     }
 
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }

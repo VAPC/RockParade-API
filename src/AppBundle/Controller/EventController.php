@@ -93,7 +93,7 @@ class EventController extends RestController
      *         },
      *         {
      *             "name"="date",
-     *             "dataType"="date (yyyy-MM-dd HH:mm)",
+     *             "dataType"="date (dd-MM-yyyy HH:mm)",
      *             "requirement"="true",
      *             "description"="event date"
      *         },
@@ -152,7 +152,7 @@ class EventController extends RestController
      *         },
      *         {
      *             "name"="date",
-     *             "dataType"="date (yyyy-MM-dd HH:mm)",
+     *             "dataType"="date (dd-MM-yyyy HH:mm)",
      *             "requirement"="true",
      *             "description"="event date"
      *         },
@@ -169,9 +169,9 @@ class EventController extends RestController
      *         404="Event with given id was not found",
      *     }
      * )
-     * @param int $eventId event id
+     * @param string $eventId event id
      */
-    public function editAction(Request $request, int $eventId): Response
+    public function editAction(Request $request, string $eventId): Response
     {
         $form = $this->createEventCreationForm();
         $this->processForm($request, $form);
@@ -220,9 +220,9 @@ class EventController extends RestController
      *         404="Event with given id was not found",
      *     }
      * )
-     * @param int $eventId event id
+     * @param string $eventId event id
      */
-    public function deleteEvent(int $eventId): Response
+    public function deleteEvent(string $eventId): Response
     {
         /** @var EventRepository $eventRepository */
         $eventRepository = $this->get('rockparade.event_repository');
@@ -241,7 +241,7 @@ class EventController extends RestController
         return $this->respond($response);
     }
 
-    private function createEventNotFoundErrorResult(int $eventId): ApiError
+    private function createEventNotFoundErrorResult(string $eventId): ApiError
     {
         return new ApiError(
             sprintf('Event with id "%s" was not found.', $eventId),
@@ -267,7 +267,7 @@ class EventController extends RestController
         return $formBuilder->getForm();
     }
 
-    private function createLocationById(int $eventId): string
+    private function createLocationById(string $eventId): string
     {
         return $this->generateUrl('event_view', ['eventId' => $eventId]);
     }
