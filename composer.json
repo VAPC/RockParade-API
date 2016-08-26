@@ -33,7 +33,8 @@
         "incenteev/composer-parameter-handler": "^2.0",
         "jms/serializer-bundle": "^1.1",
         "nelmio/api-doc-bundle": "^2.12",
-        "myclabs/php-enum": "^1.4"
+        "myclabs/php-enum": "^1.4",
+        "sweelix/guid": "1.0.0"
     },
     "require-dev": {
         "ext-sqlite3": "*",
