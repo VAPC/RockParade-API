@@ -28,6 +28,12 @@ class RoleController extends RestController
      * List all available user roles
      * @Route("s/", name="roles_list")
      * @Method("GET")
+     * @ApiDoc(
+     *     section="Role",
+     *     statusCodes={
+     *         200="OK",
+     *     }
+     * )
      * @return Response
      */
     public function listAction(): Response
@@ -49,6 +55,28 @@ class RoleController extends RestController
      * Assign roles to user
      * @Route("/assign", name="roles_assign")
      * @Method("POST")
+     * @ApiDoc(
+     *     section="Role",
+     *     requirements={
+     *         {
+     *             "name"="login",
+     *             "dataType"="string",
+     *             "requirement"="\w",
+     *             "description"="user login"
+     *         },
+     *         {
+     *             "name"="roles",
+     *             "dataType"="array",
+     *             "requirement"="\w",
+     *             "description"="applicable roles"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Roles were assigned to user",
+     *         400="Mandatory parameters are missed or not all provided roles are valid",
+     *         404="User with provided login was not found",
+     *     }
+     * )
      * @param Request $request
      * @return Response
      */
