@@ -30,3 +30,7 @@ services:
     rockparade.band:
         class: AppBundle\Service\BandService
         arguments: ['@rockparade.band_repository', '@rockparade.band_member_repository', '@rockparade.user_repository']
+
+    rockparade.response_factory:
+        class: AppBundle\Service\HttpResponseFactory
+        arguments: ['@jms_serializer']

@@ -18,15 +18,12 @@ use Symfony\Component\HttpFoundation\Response;
 class RestController extends Controller
 {
 
-    const FORMAT_JSON = 'json';
-
     const TYPE_JSON = 'application/json';
 
     public function respond(AbstractApiResponse $apiResponse): Response
     {
-        $serializedData = $this->serialize($apiResponse);
+        $response = $this->get('rockparade.response_factory')->createResponse($apiResponse);
 
-        $response = new Response($serializedData, $apiResponse->getHttpCode());
         $this->setLocation($response, $apiResponse);
         $this->setJsonContentType($response);
 
@@ -73,16 +70,6 @@ class RestController extends Controller
         $options['allow_extra_fields'] = true;
 
         return parent::createFormBuilder($data, $options);
-    }
-
-    private function serialize(AbstractApiResponse $apiResponse): string
-    {
-        if (!$apiResponse instanceof EmptyApiResponse) {
-            $serializer = $this->get('jms_serializer');
-            $serializedData = $serializer->serialize($apiResponse, self::FORMAT_JSON);
-        }
-
-        return $serializedData ?? '';
     }
 
     private function setLocation(Response $response, AbstractApiResponse $apiResponse)
