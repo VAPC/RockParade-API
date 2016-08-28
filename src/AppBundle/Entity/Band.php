@@ -80,22 +80,6 @@ class Band
         $this->members->removeElement($bandMember);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
     public function setName(string $name)
     {
         $this->name = $name;

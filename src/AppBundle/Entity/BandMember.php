@@ -54,11 +54,6 @@ class BandMember
         $this->description = $description;
     }
 
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
     public function setShortDescription(string $shortDescription)
     {
         $this->shortDescription = $shortDescription;
