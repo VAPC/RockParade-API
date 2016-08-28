@@ -37,7 +37,7 @@ class RoleController extends RestController
      * @param int $limit Limit results. Default is 50
      * @param int $offset Starting serial number of result collection. Default is 0
      */
-    public function listAction(int $limit = null, int $offset = null): Response
+    public function listAction($limit = null, $offset = null): Response
     {
         return $this->respond(
             $this->createCollectionResponse(

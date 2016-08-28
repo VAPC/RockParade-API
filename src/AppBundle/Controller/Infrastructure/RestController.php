@@ -76,16 +76,15 @@ class RestController extends Controller
     /**
      * Create collection api response with total, limit and offset parameters
      */
-    protected function createCollectionResponse(AbstractRepository $repository, $limit = null, $offset = null): CollectionApiResponse
+    protected function createCollectionResponse(AbstractRepository $repository, $limit, $offset): CollectionApiResponse
     {
-        // Doctrine can handle correctly only null limits (not 0 or empty string)
-        if (!$limit) { $limit = null; }
-        if (!$offset) { $offset = null; }
+        $limit = (int) filter_var($limit, FILTER_VALIDATE_INT);
+        $offset = (int) filter_var($offset, FILTER_VALIDATE_INT);
 
         $entities = $repository->findAllWithLimitAndOffset($limit, $offset);
         $entitiesQuantity = $repository->countAll();
 
-        $response = new CollectionApiResponse($entities, Response::HTTP_OK, $entitiesQuantity);
+        $response = new CollectionApiResponse($entities, Response::HTTP_OK, $entitiesQuantity, $limit, $offset);
 
         return $response;
     }
