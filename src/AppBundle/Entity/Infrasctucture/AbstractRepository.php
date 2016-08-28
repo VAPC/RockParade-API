@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityRepository;
 /**
  * @author Vehsamrak
  */
-class AbstractRepository extends EntityRepository
+abstract class AbstractRepository extends EntityRepository
 {
 
     /**
@@ -37,5 +37,30 @@ class AbstractRepository extends EntityRepository
     public function remove($entity)
     {
         $this->_em->remove($entity);
+    }
+
+    /**
+     * @param int $limit
+     * @param int $offset
+     * @return object[] Entity array
+     */
+    public function findAllWithLimitAndOffset(int $limit = null, int $offset = null): array
+    {
+        return $this->findBy(
+            [],
+            null,
+            $limit,
+            $offset
+        );
+    }
+
+    public function countAll(): int
+    {
+        $ids = $this->getClassMetadata()->getIdentifierFieldNames();
+        $id = reset($ids);
+        $queryBuilder = $this->createQueryBuilder('entity');
+        $queryBuilder->select($queryBuilder->expr()->count('entity.' . $id));
+
+        return $queryBuilder->getQuery()->getSingleScalarResult();
     }
 }
