@@ -105,16 +105,4 @@ class Band
     {
         $this->description = $description;
     }
-
-//    /**
-//     * @return []
-//     */
-//    public function getMembers(): array
-//    {
-//        return array_map(function (BandMember $bandMember) {
-//            return $bandMember->getUser()->getLogin();
-//        },
-//            $this->members->toArray()
-//        );
-//    }
 }
