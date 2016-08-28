@@ -101,7 +101,7 @@ class BandController extends RestController
      *             "description"="band description"
      *         },
      *         {
-     *             "name"="users",
+     *             "name"="members",
      *             "dataType"="array",
      *             "requirement"="true",
      *             "description"="logins and short descriptions of band musicians"
