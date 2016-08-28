@@ -319,6 +319,20 @@ class BandController extends RestController
      * @Method("PUT")
      * @ApiDoc(
      *     section="Band",
+     *     requirements={
+     *         {
+     *             "name"="short_description",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="short description of role in band"
+     *         },
+     *         {
+     *             "name"="description",
+     *             "dataType"="string",
+     *             "requirement"="false",
+     *             "description"="long description of musician"
+     *         },
+     *     },
      *     statusCodes={
      *         204="Band member was successfully updated",
      *         404="Band or user was not found",

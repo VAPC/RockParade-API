@@ -223,7 +223,7 @@ class BandControllerTest extends FunctionalTester
     }
     
     /** @test */
-    public function editMemberAction_PUTBandNameMemberLoginRequest_bandMemberUpdatedWithNewParameters()
+    public function updateMemberAction_PUTBandNameMemberLoginRequest_bandMemberUpdatedWithNewParameters()
     {
         $this->followRedirects();
         $parameters = [

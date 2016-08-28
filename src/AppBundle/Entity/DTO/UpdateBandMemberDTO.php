@@ -14,7 +14,7 @@ class UpdateBandMemberDTO
      * @Assert\NotBlank(message="Parameter 'short_description' is mandatory")
      */
     private $shortDescription;
-    
+
     /**
      * @var string
      */

@@ -148,8 +148,13 @@ class BandService
         $shortDescription = $form->get('short_description')->getData();
         $description = $form->get('description')->getData();
 
-        $bandMember->setShortDescription($shortDescription);
-        $bandMember->setDescription($description);
+        if ($shortDescription) {
+            $bandMember->setShortDescription($shortDescription);
+        }
+
+        if ($description) {
+            $bandMember->setDescription($description);
+        }
 
         return $form;
     }
