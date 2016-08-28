@@ -2,8 +2,9 @@
 
 namespace AppBundle\Controller\Infrastructure;
 
+use AppBundle\Entity\Infrasctucture\AbstractRepository;
+use AppBundle\Response\CollectionApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
-use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\HttpLocationInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormBuilder;
@@ -70,6 +71,23 @@ class RestController extends Controller
         $options['allow_extra_fields'] = true;
 
         return parent::createFormBuilder($data, $options);
+    }
+
+    /**
+     * Create collection api response with total, limit and offset parameters
+     */
+    protected function createCollectionResponse(AbstractRepository $repository, $limit = null, $offset = null): CollectionApiResponse
+    {
+        // Doctrine can handle correctly only null limits (not 0 or empty string)
+        if (!$limit) { $limit = null; }
+        if (!$offset) { $offset = null; }
+
+        $entities = $repository->findAllWithLimitAndOffset($limit, $offset);
+        $entitiesQuantity = $repository->countAll();
+
+        $response = new CollectionApiResponse($entities, Response::HTTP_OK, $entitiesQuantity);
+
+        return $response;
     }
 
     private function setLocation(Response $response, AbstractApiResponse $apiResponse)

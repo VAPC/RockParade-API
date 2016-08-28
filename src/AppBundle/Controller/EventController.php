@@ -30,9 +30,10 @@ use AppBundle\Response\ApiResponse;
  */
 class EventController extends RestController
 {
+
     /**
      * List all events
-     * @Route("s/", name="events_list")
+     * @Route("s/{limit}/{offset}", name="events_list")
      * @Method("GET")
      * @ApiDoc(
      *     section="Event",
@@ -40,14 +41,18 @@ class EventController extends RestController
      *         200="OK",
      *     }
      * )
+     * @param int $limit Limit results. Default is 50
+     * @param int $offset Starting serial number of result collection. Default is 0
      */
-    public function listAction(): Response
+    public function listAction(int $limit = null, int $offset = null): Response
     {
-        /** @var EventRepository $eventRepository */
-        $eventRepository = $this->get('rockparade.event_repository');
-        $response = new ApiResponse($eventRepository->findAll(), Response::HTTP_OK);
-
-        return $this->respond($response);
+        return $this->respond(
+            $this->createCollectionResponse(
+                $this->get('rockparade.event_repository'),
+                $limit,
+                $offset
+            )
+        );
     }
 
     /**

@@ -52,6 +52,9 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals(200, $listBandsResponseCode);
         $this->assertEquals(self::BAND_NAME_FIRST, $contents['data'][0]['name']);
         $this->assertEquals(self::BAND_DESCRIPTION_FIRST, $contents['data'][0]['description']);
+        $this->assertTrue(array_key_exists('total', $contents));
+        $this->assertTrue(array_key_exists('limit', $contents));
+        $this->assertTrue(array_key_exists('offset', $contents));
     }
 
     /** @test */

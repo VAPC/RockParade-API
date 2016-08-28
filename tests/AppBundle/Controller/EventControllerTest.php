@@ -122,6 +122,21 @@ class EventControllerTest extends FunctionalTester
         $this->assertContains(sprintf('Event with id "%s" was not found.', $existingEventId), $contents['errors']);
     }
 
+    /** @test */
+    public function listAction_GETRequest_listOfEventsReturned()
+    {
+        $this->followRedirects();
+
+        $this->sendGetRequest('/events');
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertTrue(array_key_exists('data', $contents));
+        $this->assertTrue(array_key_exists('limit', $contents));
+        $this->assertTrue(array_key_exists('offset', $contents));
+        $this->assertTrue(array_key_exists('total', $contents));
+    }
+
     /**
      * @return \AppBundle\Entity\Event|null|object
      */

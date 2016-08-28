@@ -2,10 +2,7 @@
 
 namespace AppBundle\Fixture;
 
-use AppBundle\Entity\Band;
-use AppBundle\Entity\BandMember;
 use AppBundle\Entity\Event;
-use AppBundle\Entity\User;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -20,6 +17,7 @@ class EventFixture implements FixtureInterface
     {
         $entities = [
             new Event('Test Event', new \DateTime('2187-03-03 10:10'), 'Great event, please come!'),
+            new Event('Second Test Event', new \DateTime('1969-03-03 10:10'), 'Woodstocky old event!'),
         ];
 
         foreach ($entities as $entity) {

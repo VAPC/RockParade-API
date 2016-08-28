@@ -32,7 +32,7 @@ class BandController extends RestController
 {
     /**
      * List all registered bands
-     * @Route("s/", name="bands_list")
+     * @Route("s/{limit}/{offset}", name="bands_list")
      * @Method("GET")
      * @ApiDoc(
      *     section="Band",
@@ -40,13 +40,18 @@ class BandController extends RestController
      *         200="OK",
      *     }
      * )
+     * @param int $limit Limit results. Default is 50
+     * @param int $offset Starting serial number of result collection. Default is 0
      */
-    public function listAction(): Response
+    public function listAction(int $limit = null, int $offset = null): Response
     {
-        $bandRepository = $this->get('rockparade.band_repository');
-        $response = new ApiResponse($bandRepository->findAll(), Response::HTTP_OK);
-
-        return $this->respond($response);
+        return $this->respond(
+            $this->createCollectionResponse(
+                $this->get('rockparade.band_repository'),
+                $limit,
+                $offset
+            )
+        );
     }
 
     /**

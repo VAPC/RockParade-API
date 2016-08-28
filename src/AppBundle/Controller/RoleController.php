@@ -26,7 +26,7 @@ class RoleController extends RestController
 
     /**
      * List all available user roles
-     * @Route("s/", name="roles_list")
+     * @Route("s/{limit}/{offset}", name="roles_list")
      * @Method("GET")
      * @ApiDoc(
      *     section="Role",
@@ -34,21 +34,18 @@ class RoleController extends RestController
      *         200="OK",
      *     }
      * )
-     * @return Response
+     * @param int $limit Limit results. Default is 50
+     * @param int $offset Starting serial number of result collection. Default is 0
      */
-    public function listAction(): Response
+    public function listAction(int $limit = null, int $offset = null): Response
     {
-        $rolesRepository = $this->get('rockparade.role_repository');
-        $roles = $rolesRepository->findAll();
-
-        foreach ($roles as $key => $role) {
-            $roles[$role->getName()] = $role;
-            unset($roles[$key]);
-        }
-
-        $response = new ApiResponse($roles, Response::HTTP_OK);
-
-        return $this->respond($response);
+        return $this->respond(
+            $this->createCollectionResponse(
+                $this->get('rockparade.role_repository'),
+                $limit,
+                $offset
+            )
+        );
     }
 
     /**

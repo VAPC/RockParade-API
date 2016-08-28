@@ -39,7 +39,11 @@ class RoleControllerTest extends FunctionalTester
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(200, $responseCode);
-        $this->assertEquals('Администратор', $contents['data']['admin']['description']);
+        $this->assertEquals('Администратор', $contents['data'][0]['description']);
+        $this->assertTrue(array_key_exists('data', $contents));
+        $this->assertTrue(array_key_exists('limit', $contents));
+        $this->assertTrue(array_key_exists('offset', $contents));
+        $this->assertTrue(array_key_exists('total', $contents));
     }
 
     /** @test */
@@ -55,8 +59,8 @@ class RoleControllerTest extends FunctionalTester
         $this->sendGetRequest('/roles');
         $contents = $this->getResponseContents();
         $this->assertEquals(200, $responseCode);
-        $this->assertTrue(in_array(self::USER_LOGIN_FIRST, $contents['data']['admin']['users']));
-        $this->assertTrue(in_array(self::USER_LOGIN_FIRST, $contents['data']['musician']['users']));
+        $this->assertTrue(in_array(self::USER_LOGIN_FIRST, $contents['data'][0]['users']));
+        $this->assertTrue(in_array(self::USER_LOGIN_FIRST, $contents['data'][2]['users']));
     }
 
     /** @test */
