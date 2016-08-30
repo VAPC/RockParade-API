@@ -66,7 +66,12 @@ class LoginController extends RestController
     {
         $vkAuthorizationCode = $request->get('code');
 
-        $response = new ApiResponse($this->requestTokenByCode($vkAuthorizationCode), Response::HTTP_OK);
+        $response = new ApiResponse(
+            [
+                'token' => $this->requestTokenByCode($vkAuthorizationCode),
+            ],
+            Response::HTTP_OK
+        );
 
         return $this->respond($response);
     }
@@ -87,7 +92,7 @@ class LoginController extends RestController
         );
     }
 
-    private function requestTokenByCode(string $vkAuthorizationCode): array
+    private function requestTokenByCode(string $vkAuthorizationCode): string
     {
         $parameters = [
             'client_id'     => $this->getParameter('vkontakte.client_id'),
