@@ -17,6 +17,7 @@ class LoginController extends Controller
 
     const VK_AUTHORIZATION_URL = 'https://oauth.vk.com/authorize';
     const VK_DISPLAY_POPUP = 'popup';
+    const VK_DISPLAY_PAGE = 'page';
     const VK_RESPONSE_TYPE_CODE = 'code';
 
     /**
@@ -27,7 +28,7 @@ class LoginController extends Controller
         $parameters = [
             'client_id'     => $this->getParameter('vkontakte.client_id'),
             'redirect_uri'  => $this->generateUrl('login_vk_oauth_callback', [], UrlGeneratorInterface::ABSOLUTE_URL),
-            'display'       => self::VK_DISPLAY_POPUP,
+            'display'       => self::VK_DISPLAY_PAGE,
             'response_type' => self::VK_RESPONSE_TYPE_CODE,
             'v'             => $this->getParameter('vkontakte.version'),
             'scope'         => $this->getPermissionMask(),
@@ -48,7 +49,8 @@ class LoginController extends Controller
      */
     public function vkOAuthCallbackAction(Request $request)
     {
-        var_dump($request);
+        var_dump($request->get('code'));
+
 
         return new Response('Success!');
     }
