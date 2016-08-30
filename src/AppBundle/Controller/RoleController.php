@@ -2,13 +2,10 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Role;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Repository\RoleRepository;
-use AppBundle\Entity\User;
 use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Response\ApiError;
-use AppBundle\Response\ApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
