@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Response\ApiResponse;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +25,17 @@ class LoginController extends RestController
     const VK_RESPONSE_TYPE_CODE = 'code';
 
     /**
+     * Login with Vkontakte OAuth.
+     * Client should follow received location to authorize on vkontakte site.
+     * If success, "token" will be received.
      * @Route("/vk", name="login_vk")
+     * @Method("GET")
+     * @ApiDoc(
+     *     section="Login",
+     *     statusCodes={
+     *         302="Redirect to vkontakte login page",
+     *     }
+     * )
      */
     public function vkAction()
     {
@@ -48,6 +60,7 @@ class LoginController extends RestController
 
     /**
      * @Route("/vk/callback", name="login_vk_oauth_callback")
+     * @Method("GET")
      */
     public function vkOAuthCallbackAction(Request $request)
     {
@@ -89,7 +102,11 @@ class LoginController extends RestController
             http_build_query($parameters)
         );
 
-        return json_decode(file_get_contents($vkontakteRequestTokenUrl), true);
+        $result = json_decode(file_get_contents($vkontakteRequestTokenUrl), true);
+
+        //TODO: create new or get existing user from received credentials
+
+        return $result['access_token'];
     }
 
     private function generateVkCallbackUrl(): string
