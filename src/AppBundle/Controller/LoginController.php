@@ -53,12 +53,7 @@ class LoginController extends RestController
     {
         $vkAuthorizationCode = $request->get('code');
 
-        $response = new ApiResponse(
-            [
-                'token' => $this->requestTokenByCode($vkAuthorizationCode),
-            ],
-            Response::HTTP_OK
-        );
+        $response = new ApiResponse($this->requestTokenByCode($vkAuthorizationCode), Response::HTTP_OK);
 
         return $this->respond($response);
     }
