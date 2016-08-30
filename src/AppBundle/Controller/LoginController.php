@@ -85,7 +85,6 @@ class LoginController extends RestController
         return join(
             ',',
             [
-                'nohttps',
                 'email',
                 'offline',
             ]
