@@ -1,0 +1,11 @@
+@startuml
+Frontend -> Backend: GET /login
+Backend --> Frontend: VK authentication URL
+Frontend -> VK: GET vk.com/vk_authentication
+VK --> Frontend: VK login form
+Frontend -> VK: login form submitted
+VK --> Backend: activation code
+Backend -> VK: request token by code
+VK --> Backend: VK token
+Backend --> Frontend: Rockparade token
+@enduml
