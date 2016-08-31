@@ -8,4 +8,5 @@ parameters:
     # A secret key that's used to generate certain security-related tokens
     secret:             ThisTokenIsNotSoSecretChangeIt
 
-    vkontakte.client_secret: Kq16KVA7ODwZnFXjcIex
+    vkontakte.client_id: 5612175
+    vkontakte.client_secret: askForApplicationKey

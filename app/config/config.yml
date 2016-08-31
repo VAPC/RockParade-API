@@ -6,7 +6,6 @@ imports:
 parameters:
     locale: ru
     vkontakte.version: 5.53
-    vkontakte.client_id: 5611457
 
 framework:
     #esi:             ~
