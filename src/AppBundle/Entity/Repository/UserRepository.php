@@ -45,4 +45,16 @@ class UserRepository extends AbstractRepository
             ]
         );
     }
+
+    /**
+     * @return User|object|null
+     */
+    public function findUserByToken(string $token)
+    {
+        return $this->findOneBy(
+            [
+                'token' => $token,
+            ]
+        );
+    }
 }

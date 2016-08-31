@@ -42,3 +42,16 @@ services:
     rockparade.vkontakte:
         class: AppBundle\Service\Vkontakte\VkontakteClient
         arguments: ['%vkontakte.version%', '%vkontakte.client_id%', '%vkontakte.client_secret%']
+
+    rockparade.user_provider:
+        class: AppBundle\Service\Security\UserProvider
+        arguments: ['@rockparade.user_repository']
+
+    rockparade.token_authenticator:
+         class: AppBundle\Service\Security\TokenAuthenticator
+         arguments: ['@rockparade.user_repository']
+
+    rockparade.event_listener.exception:
+        class: AppBundle\EventListener\ExceptionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }

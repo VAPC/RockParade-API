@@ -4,9 +4,7 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
 use AppBundle\Service\HashGenerator;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\SerializedName;
@@ -82,15 +80,8 @@ class User implements UserInterface
     private $registrationDate;
 
     /**
-     * @var Role[]|ArrayCollection
-     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
-     * @ORM\JoinTable(
-     *     name="users_roles",
-     *     joinColumns={@ORM\JoinColumn(name="user_login", referencedColumnName="login")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="role_name", referencedColumnName="name")}
-     *     )
-     * @Accessor(getter="getRolesNames")
-     * @SerializerType("array")
+     * @ORM\Column(name="roles", type="simple_array", nullable=true)
+     * @Serializer\Exclude()
      */
     private $roles;
 
@@ -110,7 +101,6 @@ class User implements UserInterface
         $this->email = $email;
         $this->description = $description;
         $this->registrationDate = new \DateTime();
-        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -121,33 +111,15 @@ class User implements UserInterface
         return $this->login;
     }
 
-    /**
-     * @return PersistentCollection|Role[]
-     */
-    public function getRoles(): PersistentCollection
+    /** {@inheritDoc} */
+    public function getRoles(): array
     {
-        return $this->roles;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getRolesNames(): array
-    {
-        return array_map(
-            function (Role $role) {
-                return $role->getName();
-            },
-            $this->getRoles()->toArray()
+        return array_merge(
+            $this->roles,
+            [
+                'ROLE_USER',
+            ]
         );
-    }
-
-    /**
-     * @param Role $role
-     */
-    public function addRole(Role $role)
-    {
-        $this->roles->add($role);
     }
 
     public function setVkToken(string $vkToken)
