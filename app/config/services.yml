@@ -41,4 +41,4 @@ services:
 
     rockparade.vkontakte:
         class: AppBundle\Service\Vkontakte\VkontakteClient
-        arguments: [%vkontakte.version%, %vkontakte.client_id%, %vkontakte.client_secret%]
+        arguments: ['%vkontakte.version%', '%vkontakte.client_id%', '%vkontakte.client_secret%']

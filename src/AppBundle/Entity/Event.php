@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Service\IdGenerator;
+use AppBundle\Service\HashGenerator;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\Type as SerializerType;
@@ -44,7 +44,7 @@ class Event
 
     public function __construct(string $name, \DateTime $date, string $description)
     {
-        $this->id = IdGenerator::generateId();
+        $this->id = HashGenerator::generate();
         $this->date = $date;
         $this->name = $name;
         $this->description = $description;

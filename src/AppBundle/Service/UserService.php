@@ -19,24 +19,35 @@ class UserService
     /** @var VkontakteClient */
     private $vkontakteClient;
 
-    public function __construct(VkontakteClient $vkontakteClient, UserRepository $userRepository)
+    public function __construct(
+        VkontakteClient $vkontakteClient,
+        UserRepository $userRepository
+    )
     {
         $this->userRepository = $userRepository;
         $this->vkontakteClient = $vkontakteClient;
     }
 
-    public function createOrUpdateUser(AccessToken $token): User
+    public function createOrUpdateUser(AccessToken $vkToken): User
     {
-        $userVkId = $token->userVkId;
+        $userVkId = $vkToken->userVkId;
         $user = $this->userRepository->findUserByVkId($userVkId);
+        $vkTokenHash = $vkToken->getTokenHash();
 
         if ($user) {
-            $user->setVkToken($token);
+            $user->updateToken();
+            $user->setVkToken($vkTokenHash);
         } else {
-            $id = IdGenerator::generateId();
-            $name = $this->vkontakteClient->getUserName($token);
+            $id = HashGenerator::generate();
+            $name = $this->vkontakteClient->getUserName($vkTokenHash);
 
-            $user = new User($id, $name, $userVkId, $token->getTokenHash(), $token->userEmail);
+            $user = new User(
+                $id,
+                $name,
+                $userVkId,
+                $vkTokenHash,
+                $vkToken->userEmail
+            );
 
             $this->userRepository->persist($user);
         }

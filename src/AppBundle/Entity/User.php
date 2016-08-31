@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
+use AppBundle\Service\HashGenerator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
@@ -19,6 +20,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 class User
 {
 
+    const TOKEN_LENGTH = 32;
     use FormattedRegistrationDateTrait;
 
     /**
@@ -62,6 +64,13 @@ class User
     private $vkToken;
 
     /**
+     * @var string
+     * @ORM\Column(name="token", type="string", length=32, nullable=false)
+     * @Serializer\Exclude()
+     */
+    private $token;
+
+    /**
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime", nullable=false)
      * @SerializedName("registration_date")
@@ -96,6 +105,7 @@ class User
         $this->name = $name;
         $this->vkontakteId = $vkontakteId;
         $this->vkToken = $vkToken;
+        $this->token = HashGenerator::generate(self::TOKEN_LENGTH);
         $this->email = $email;
         $this->description = $description;
         $this->registrationDate = new \DateTime();
@@ -139,5 +149,15 @@ class User
     public function setVkToken(string $vkToken)
     {
         $this->vkToken = $vkToken;
+    }
+
+    public function updateToken()
+    {
+        $this->token = HashGenerator::generate(self::TOKEN_LENGTH);
+    }
+
+    public function getToken(): string
+    {
+        return $this->token;
     }
 }

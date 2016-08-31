@@ -69,17 +69,17 @@ class LoginController extends RestController
         $vkontakteClient = $this->get('rockparade.vkontakte');
 
         try {
-            $token = $vkontakteClient->getTokenByCode($vkAuthorizationCode, $this->generateVkCallbackUrl());
+            $vkontakteToken = $vkontakteClient->getTokenByCode($vkAuthorizationCode, $this->generateVkCallbackUrl());
         } catch (ClientException $e) {
             return $this->redirectToRoute('login_vk');
         }
 
         $userService = $this->get('rockparade.user');
-        $userService->createOrUpdateUser($token);
+        $user = $userService->createOrUpdateUser($vkontakteToken);
 
         $response = new ApiResponse(
             [
-                'token' => $token->getTokenHash(),
+                'token' => $user->getToken(),
             ],
             Response::HTTP_OK
         );
