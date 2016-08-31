@@ -11,17 +11,19 @@ use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type as SerializerType;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\UserRepository")
  */
-class User
+class User implements UserInterface
 {
 
-    const TOKEN_LENGTH = 32;
     use FormattedRegistrationDateTrait;
+
+    const TOKEN_LENGTH = 32;
 
     /**
      * @var string
@@ -51,7 +53,7 @@ class User
 
     /**
      * @var string
-     * @ORM\Column(name="vkontakte_id", type="string", length=50, nullable=false)
+     * @ORM\Column(name="vkontakte_id", type="string", length=50, nullable=false, unique=true)
      * @Serializer\Exclude()
      */
     private $vkontakteId;
@@ -65,7 +67,7 @@ class User
 
     /**
      * @var string
-     * @ORM\Column(name="token", type="string", length=32, nullable=false)
+     * @ORM\Column(name="token", type="string", length=32, nullable=false, unique=true)
      * @Serializer\Exclude()
      */
     private $token;
@@ -99,8 +101,7 @@ class User
         string $vkToken,
         string $email = null,
         string $description = null
-    )
-    {
+    ) {
         $this->login = $login;
         $this->name = $name;
         $this->vkontakteId = $vkontakteId;
@@ -133,9 +134,12 @@ class User
      */
     public function getRolesNames(): array
     {
-        return array_map(function (Role $role) {
-            return $role->getName();
-        }, $this->getRoles()->toArray());
+        return array_map(
+            function (Role $role) {
+                return $role->getName();
+            },
+            $this->getRoles()->toArray()
+        );
     }
 
     /**
@@ -159,5 +163,20 @@ class User
     public function getToken(): string
     {
         return $this->token;
+    }
+
+    /** {@inheritDoc} */
+    public function getPassword() {}
+
+    /** {@inheritDoc} */
+    public function getSalt() {}
+
+    /** {@inheritDoc} */
+    public function eraseCredentials() {}
+
+    /** {@inheritDoc} */
+    public function getUsername(): string
+    {
+        return $this->getLogin();
     }
 }
