@@ -56,10 +56,10 @@ class User
 
     /**
      * @var string
-     * @ORM\Column(name="vk_access_token", type="string", length=255, nullable=false)
+     * @ORM\Column(name="vk_token", type="string", length=85, nullable=false)
      * @Serializer\Exclude()
      */
-    private $vkAccessToken;
+    private $vkToken;
 
     /**
      * @var \DateTime
@@ -83,16 +83,11 @@ class User
      */
     private $roles;
 
-    /**
-     * @param string $login
-     * @param string $name
-     * @param string|null $description
-     */
     public function __construct(
         string $login,
         string $name,
         int $vkontakteId,
-        string $vkAccessToken,
+        string $vkToken,
         string $email = null,
         string $description = null
     )
@@ -100,7 +95,7 @@ class User
         $this->login = $login;
         $this->name = $name;
         $this->vkontakteId = $vkontakteId;
-        $this->vkAccessToken = $vkAccessToken;
+        $this->vkToken = $vkToken;
         $this->email = $email;
         $this->description = $description;
         $this->registrationDate = new \DateTime();
@@ -141,8 +136,8 @@ class User
         $this->roles->add($role);
     }
 
-    public function setVkAccessToken(string $vkAccessToken)
+    public function setVkToken(string $vkToken)
     {
-        $this->vkAccessToken = $vkAccessToken;
+        $this->vkToken = $vkToken;
     }
 }

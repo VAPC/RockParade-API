@@ -121,27 +121,27 @@ class LoginController extends RestController
         $result = json_decode($httpResponse->getBody(), true);
 
         $userVkId = $result['user_id'];
-        $vkAccessToken = $result['access_token'];
+        $vkToken = $result['access_token'];
         $userEmail = $result['email'] ?? null;
 
         $userRepository = $this->get('rockparade.user_repository');
         $user = $userRepository->findUserByVkId($userVkId);
 
         if ($user) {
-            $user->setVkAccessToken($vkAccessToken);
+            $user->setVkToken($vkToken);
         } else {
             $id = IdGenerator::generateId();
             $vkontakteClient = $this->get('rockparade.vkontakte');
-            $name = $vkontakteClient->getUserName($vkAccessToken);
+            $name = $vkontakteClient->getUserName($vkToken);
 
-            $user = new User($id, $name, $userVkId, $vkAccessToken, $userEmail);
+            $user = new User($id, $name, $userVkId, $vkToken, $userEmail);
 
             $userRepository->persist($user);
         }
 
         $userRepository->flush();
 
-        return $vkAccessToken;
+        return $vkToken;
     }
 
     private function generateVkCallbackUrl(): string
