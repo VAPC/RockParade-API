@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Response\ApiResponse;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -66,9 +68,15 @@ class LoginController extends RestController
     {
         $vkAuthorizationCode = $request->get('code');
 
+        try {
+            $token = $this->requestVkTokenByCode($vkAuthorizationCode);
+        } catch (ClientException $e) {
+            return $this->redirectToRoute('login_vk');
+        }
+
         $response = new ApiResponse(
             [
-                'token' => $this->requestTokenByCode($vkAuthorizationCode),
+                'token' => $token,
             ],
             Response::HTTP_OK
         );
@@ -91,7 +99,7 @@ class LoginController extends RestController
         );
     }
 
-    private function requestTokenByCode(string $vkAuthorizationCode): string
+    private function requestVkTokenByCode(string $vkAuthorizationCode): string
     {
         $parameters = [
             'client_id'     => $this->getParameter('vkontakte.client_id'),
@@ -106,11 +114,16 @@ class LoginController extends RestController
             http_build_query($parameters)
         );
 
-        $result = json_decode(file_get_contents($vkontakteRequestTokenUrl), true);
+        $client = new Client();
+        $httpResponse = $client->request('GET', $vkontakteRequestTokenUrl);
+        $result = json_decode($httpResponse->getBody(), true);
 
         //TODO: create new or get existing user from received credentials
+        $userVkId = $result['user_id'];
+        $vkAccessToken = $result['access_token'];
+        $userEmail = $result['email'] ?? null;
 
-        return $result['access_token'];
+        return $vkAccessToken;
     }
 
     private function generateVkCallbackUrl(): string
