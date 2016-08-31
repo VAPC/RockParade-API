@@ -17,14 +17,14 @@ class BandFixture implements FixtureInterface
     /** {@inheritDoc} */
     public function load(ObjectManager $manager)
     {
-        $user = new User('bander', 'Bander');
+        $user = new User('bander', 'Bander', 1, '');
         $band = new Band('Banders', 'Band description.');
         $bandMember = new BandMember($band, $user, 'bass guitar', 'loremus unitus');
 
         $entities = [
             $user,
-            new User('derban', 'Derban'),
-            new User('rocker', 'Hard Rocker'),
+            new User('derban', 'Derban', 1, ''),
+            new User('rocker', 'Hard Rocker', 1, ''),
             $band,
             new Band('Existing Band', 'Second Band description.'),
             $bandMember,

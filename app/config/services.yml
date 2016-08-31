@@ -31,6 +31,14 @@ services:
         class: AppBundle\Service\BandService
         arguments: ['@rockparade.band_repository', '@rockparade.band_member_repository', '@rockparade.user_repository']
 
+    rockparade.user:
+        class: AppBundle\Service\UserService
+        arguments: ['@rockparade.user_repository']
+
     rockparade.response_factory:
         class: AppBundle\Service\HttpResponseFactory
         arguments: ['@jms_serializer']
+
+    rockparade.vkontakte:
+        class: AppBundle\Service\VkontakteClient
+        arguments: [%vkontakte.version%]

@@ -16,8 +16,8 @@ class UserFixture implements FixtureInterface
     public function load(ObjectManager $manager)
     {
         $users = [
-            new User('first', 'Mr. First', 'The very first test user.'),
-            new User('second', 'Mr. Second', 'The second test user.'),
+            new User('first', 'Mr. First', 1, '', null, 'The very first test user.'),
+            new User('second', 'Mr. Second', 1, '', null, 'The second test user.'),
         ];
 
         foreach ($users as $user) {

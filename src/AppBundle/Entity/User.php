@@ -36,9 +36,30 @@ class User
 
     /**
      * @var string
+     * @ORM\Column(name="email", type="string", length=255, nullable=true, unique=true)
+     * @Serializer\Exclude()
+     */
+    private $email;
+
+    /**
+     * @var string
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
+
+    /**
+     * @var string
+     * @ORM\Column(name="vkontakte_id", type="string", length=50, nullable=false)
+     * @Serializer\Exclude()
+     */
+    private $vkontakteId;
+
+    /**
+     * @var string
+     * @ORM\Column(name="vk_access_token", type="string", length=255, nullable=false)
+     * @Serializer\Exclude()
+     */
+    private $vkAccessToken;
 
     /**
      * @var \DateTime
@@ -67,10 +88,20 @@ class User
      * @param string $name
      * @param string|null $description
      */
-    public function __construct(string $login, string $name, string $description = null)
+    public function __construct(
+        string $login,
+        string $name,
+        int $vkontakteId,
+        string $vkAccessToken,
+        string $email = null,
+        string $description = null
+    )
     {
         $this->login = $login;
         $this->name = $name;
+        $this->vkontakteId = $vkontakteId;
+        $this->vkAccessToken = $vkAccessToken;
+        $this->email = $email;
         $this->description = $description;
         $this->registrationDate = new \DateTime();
         $this->roles = new ArrayCollection();
@@ -108,5 +139,10 @@ class User
     public function addRole(Role $role)
     {
         $this->roles->add($role);
+    }
+
+    public function setVkAccessToken(string $vkAccessToken)
+    {
+        $this->vkAccessToken = $vkAccessToken;
     }
 }

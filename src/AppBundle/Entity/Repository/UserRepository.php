@@ -11,7 +11,7 @@ class UserRepository extends AbstractRepository
 
     /**
      * @param string $userLogin
-     * @return User|null
+     * @return User|object|null
      */
     public function findOneByLogin(string $userLogin)
     {
@@ -23,14 +23,25 @@ class UserRepository extends AbstractRepository
     }
 
     /**
-     * @param string $userName
-     * @return User|null
+     * @return User|object|null
      */
     public function findOneByName(string $userName)
     {
         return $this->findOneBy(
             [
                 'name' => $userName,
+            ]
+        );
+    }
+
+    /**
+     * @return User|object|null
+     */
+    public function findUserByVkId(int $vkId)
+    {
+        return $this->findOneBy(
+            [
+                'vkontakteId' => $vkId,
             ]
         );
     }

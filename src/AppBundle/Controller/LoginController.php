@@ -3,7 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
+use AppBundle\Entity\User;
 use AppBundle\Response\ApiResponse;
+use AppBundle\Service\IdGenerator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -118,10 +120,26 @@ class LoginController extends RestController
         $httpResponse = $client->request('GET', $vkontakteRequestTokenUrl);
         $result = json_decode($httpResponse->getBody(), true);
 
-        //TODO: create new or get existing user from received credentials
         $userVkId = $result['user_id'];
         $vkAccessToken = $result['access_token'];
         $userEmail = $result['email'] ?? null;
+
+        $userRepository = $this->get('rockparade.user_repository');
+        $user = $userRepository->findUserByVkId($userVkId);
+
+        if ($user) {
+            $user->setVkAccessToken($vkAccessToken);
+        } else {
+            $id = IdGenerator::generateId();
+            $vkontakteClient = $this->get('rockparade.vkontakte');
+            $name = $vkontakteClient->getUserName($vkAccessToken);
+
+            $user = new User($id, $name, $userVkId, $vkAccessToken, $userEmail);
+
+            $userRepository->persist($user);
+        }
+
+        $userRepository->flush();
 
         return $vkAccessToken;
     }
