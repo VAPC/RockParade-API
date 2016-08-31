@@ -13,9 +13,8 @@ class VkontakteClient
 {
 
     const API_URL = 'https://api.vk.com/method/';
-    /**
-     * @var float
-     */
+
+    /** @var float */
     private $version;
 
     public function __construct(float $version)
