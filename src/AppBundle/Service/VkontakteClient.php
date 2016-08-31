@@ -5,6 +5,8 @@ namespace AppBundle\Service;
 use GuzzleHttp\Client;
 
 /**
+ * Vkontakte API facade
+ * @link https://vk.com/dev/methods
  * @author Vehsamrak
  */
 class VkontakteClient
