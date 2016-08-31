@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Service\Vkontakte;
 
 use GuzzleHttp\Client;
 

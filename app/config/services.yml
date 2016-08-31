@@ -40,5 +40,5 @@ services:
         arguments: ['@jms_serializer']
 
     rockparade.vkontakte:
-        class: AppBundle\Service\VkontakteClient
+        class: AppBundle\Service\Vkontakte\VkontakteClient
         arguments: [%vkontakte.version%]
