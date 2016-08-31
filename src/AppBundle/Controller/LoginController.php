@@ -3,10 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
-use AppBundle\Entity\User;
 use AppBundle\Response\ApiResponse;
-use AppBundle\Service\IdGenerator;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -23,7 +20,6 @@ class LoginController extends RestController
 {
 
     const VK_AUTHORIZATION_URL = 'https://oauth.vk.com/authorize';
-    const VK_REQUEST_TOKEN_URL = 'https://oauth.vk.com/access_token';
     const VK_DISPLAY_POPUP = 'popup';
     const VK_DISPLAY_PAGE = 'page';
     const VK_RESPONSE_TYPE_CODE = 'code';
@@ -63,22 +59,27 @@ class LoginController extends RestController
     }
 
     /**
+     * Vkontakte OAuth callback url
      * @Route("/vk/callback", name="login_vk_oauth_callback")
      * @Method("GET")
      */
     public function vkOAuthCallbackAction(Request $request)
     {
         $vkAuthorizationCode = $request->get('code');
+        $vkontakteClient = $this->get('rockparade.vkontakte');
 
         try {
-            $token = $this->requestVkTokenByCode($vkAuthorizationCode);
+            $token = $vkontakteClient->getTokenByCode($vkAuthorizationCode, $this->generateVkCallbackUrl());
         } catch (ClientException $e) {
             return $this->redirectToRoute('login_vk');
         }
 
+        $userService = $this->get('rockparade.user');
+        $userService->createOrUpdateUser($token);
+
         $response = new ApiResponse(
             [
-                'token' => $token,
+                'token' => $token->getTokenHash(),
             ],
             Response::HTTP_OK
         );
@@ -99,49 +100,6 @@ class LoginController extends RestController
                 'offline',
             ]
         );
-    }
-
-    private function requestVkTokenByCode(string $vkAuthorizationCode): string
-    {
-        $parameters = [
-            'client_id'     => $this->getParameter('vkontakte.client_id'),
-            'client_secret' => $this->getParameter('vkontakte.client_secret'),
-            'redirect_uri'  => $this->generateVkCallbackUrl(),
-            'code'          => $vkAuthorizationCode,
-        ];
-
-        $vkontakteRequestTokenUrl = sprintf(
-            '%s?%s',
-            self::VK_REQUEST_TOKEN_URL,
-            http_build_query($parameters)
-        );
-
-        $client = new Client();
-        $httpResponse = $client->request('GET', $vkontakteRequestTokenUrl);
-        $result = json_decode($httpResponse->getBody(), true);
-
-        $userVkId = $result['user_id'];
-        $vkToken = $result['access_token'];
-        $userEmail = $result['email'] ?? null;
-
-        $userRepository = $this->get('rockparade.user_repository');
-        $user = $userRepository->findUserByVkId($userVkId);
-
-        if ($user) {
-            $user->setVkToken($vkToken);
-        } else {
-            $id = IdGenerator::generateId();
-            $vkontakteClient = $this->get('rockparade.vkontakte');
-            $name = $vkontakteClient->getUserName($vkToken);
-
-            $user = new User($id, $name, $userVkId, $vkToken, $userEmail);
-
-            $userRepository->persist($user);
-        }
-
-        $userRepository->flush();
-
-        return $vkToken;
     }
 
     private function generateVkCallbackUrl(): string

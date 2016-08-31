@@ -33,7 +33,7 @@ services:
 
     rockparade.user:
         class: AppBundle\Service\UserService
-        arguments: ['@rockparade.user_repository']
+        arguments: ['@rockparade.vkontakte', '@rockparade.user_repository']
 
     rockparade.response_factory:
         class: AppBundle\Service\HttpResponseFactory
@@ -41,4 +41,4 @@ services:
 
     rockparade.vkontakte:
         class: AppBundle\Service\Vkontakte\VkontakteClient
-        arguments: [%vkontakte.version%]
+        arguments: [%vkontakte.version%, %vkontakte.client_id%, %vkontakte.client_secret%]

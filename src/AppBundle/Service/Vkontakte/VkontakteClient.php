@@ -13,13 +13,48 @@ class VkontakteClient
 {
 
     const API_URL = 'https://api.vk.com/method/';
+    const VK_REQUEST_TOKEN_URL = 'https://oauth.vk.com/access_token';
 
     /** @var float */
     private $version;
 
-    public function __construct(float $version)
+    /** @var string */
+    private $vkClientId;
+
+    /** @var string */
+    private $vkSecret;
+
+    public function __construct(float $version, string $vkClientId, string $vkSecret)
     {
         $this->version = $version;
+        $this->vkClientId = $vkClientId;
+        $this->vkSecret = $vkSecret;
+    }
+
+    public function getTokenByCode(string $vkAuthorizationCode, string $callbackUrl): AccessToken
+    {
+        $parameters = [
+            'client_id'     => $this->vkClientId,
+            'client_secret' => $this->vkSecret,
+            'redirect_uri'  => $callbackUrl,
+            'code'          => $vkAuthorizationCode,
+        ];
+
+        $vkontakteRequestTokenUrl = sprintf(
+            '%s?%s',
+            self::VK_REQUEST_TOKEN_URL,
+            http_build_query($parameters)
+        );
+
+        $client = new Client();
+        $httpResponse = $client->request('GET', $vkontakteRequestTokenUrl);
+        $result = json_decode($httpResponse->getBody(), true);
+
+        $userVkId = $result['user_id'];
+        $vkToken = $result['access_token'];
+        $userEmail = $result['email'] ?? null;
+
+        return new AccessToken($userVkId, $vkToken, $userEmail);
     }
 
     public function getUserName(string $token)
