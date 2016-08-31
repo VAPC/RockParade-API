@@ -2,7 +2,6 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Fixture\RoleFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,7 +25,7 @@ class LoadFixturesCommand extends ContainerAwareCommand
         $entityManager = $doctrineService->getManager();
 
         $fixtures = [
-            new RoleFixture(),
+            // add fixtures if needed
         ];
 
         foreach ($fixtures as $fixture) {
