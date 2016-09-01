@@ -52,7 +52,7 @@ class VkontakteClient
 
         $userVkId = $result['user_id'];
         $vkToken = $result['access_token'];
-        $userEmail = $result['email'] ?? null;
+        $userEmail = $result['email'] ?? '';
 
         return new AccessToken($userVkId, $vkToken, $userEmail);
     }
