@@ -91,13 +91,14 @@ class User implements UserInterface
         int $vkontakteId,
         string $vkToken,
         string $email = null,
-        string $description = null
+        string $description = null,
+        string $token = null
     ) {
         $this->login = $login;
         $this->name = $name;
         $this->vkontakteId = $vkontakteId;
         $this->vkToken = $vkToken;
-        $this->token = HashGenerator::generate(self::TOKEN_LENGTH);
+        $this->token = $token ?: HashGenerator::generate(self::TOKEN_LENGTH);
         $this->email = $email;
         $this->description = $description;
         $this->registrationDate = new \DateTime();

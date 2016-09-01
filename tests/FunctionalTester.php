@@ -12,13 +12,20 @@ use Symfony\Component\HttpKernel\Client;
  */
 abstract class FunctionalTester extends WebTestCase
 {
+    const TEST_TOKEN = 'test-token';
+
     /** @var Client */
     protected $httpClient;
 
     /** {@inheritDoc} */
     protected function setUp()
     {
-        $this->httpClient = $this->makeClient();
+        $this->httpClient = $this->makeClient(
+            false,
+            [
+                'HTTP_AUTH_TOKEN' => self::TEST_TOKEN,
+            ]
+        );
     }
 
     /** {@inheritDoc} */

@@ -12,11 +12,13 @@ use Doctrine\Common\Persistence\ObjectManager;
 class UserFixture implements FixtureInterface
 {
 
+    const TEST_TOKEN = 'test-token';
+
     /** {@inheritDoc} */
     public function load(ObjectManager $manager)
     {
         $users = [
-            new User('first', 'Mr. First', 4, '', null, 'The very first test user.'),
+            new User('first', 'Mr. First', 4, '', null, 'The very first test user.', self::TEST_TOKEN),
             new User('second', 'Mr. Second', 5, '', null, 'The second test user.'),
         ];
 

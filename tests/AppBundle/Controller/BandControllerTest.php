@@ -3,6 +3,7 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Fixture\BandFixture;
+use AppBundle\Fixture\UserFixture;
 use Tests\FunctionalTester;
 
 /**
@@ -34,6 +35,7 @@ class BandControllerTest extends FunctionalTester
     {
         $this->loadFixtures(
             [
+                UserFixture::class,
                 BandFixture::class,
             ]
         );

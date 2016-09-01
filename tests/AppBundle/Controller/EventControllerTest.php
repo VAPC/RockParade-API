@@ -3,6 +3,7 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Fixture\EventFixture;
+use AppBundle\Fixture\UserFixture;
 use Tests\FunctionalTester;
 
 /**
@@ -23,6 +24,7 @@ class EventControllerTest extends FunctionalTester
     {
         $this->loadFixtures(
             [
+                UserFixture::class,
                 EventFixture::class,
             ]
         );
