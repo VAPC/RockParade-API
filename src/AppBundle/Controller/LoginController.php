@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Response\ApiResponse;
+use AppBundle\Service\Security\TokenAuthenticator;
 use GuzzleHttp\Exception\ClientException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -79,7 +80,7 @@ class LoginController extends RestController
 
         $response = new ApiResponse(
             [
-                'token' => $user->getToken(),
+                TokenAuthenticator::TOKEN_HEADER => $user->getToken(),
             ],
             Response::HTTP_OK
         );

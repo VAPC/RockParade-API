@@ -47,4 +47,16 @@ class UserControllerTest extends FunctionalTester
         $this->assertEquals(404, $responseCode);
         $this->assertContains('User with login "notexistinguser" was not found.', $contents['errors']);
     }
+
+    /** @test */
+    public function viewCurrentAction_GETUserRequest_currentUserInfo()
+    {
+        $this->sendGetRequest('/user');
+        $contents = $this->getResponseContents();
+        $responseCode = $this->getResponseCode();
+
+        $this->assertEquals(200, $responseCode);
+        $this->assertEquals(self::USER_LOGIN_FIRST, $contents['data']['login']);
+        $this->assertEquals(self::USER_NAME_FIRST, $contents['data']['name']);
+    }
 }

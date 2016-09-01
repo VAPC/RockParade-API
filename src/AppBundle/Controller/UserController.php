@@ -48,11 +48,41 @@ class UserController extends RestController
         return $this->respond($response);
     }
 
+    /**
+     * View current user
+     * @Route("", name="user_view_current")
+     * @Method("GET")
+     * @ApiDoc(
+     *     section="User",
+     *     statusCodes={
+     *         200="Current user is logged in",
+     *     }
+     * )
+     * @param string $login user login
+     */
+    public function viewCurrentAction(): Response
+    {
+        $user = $this->getUser();
+
+        if ($user) {
+            $response = new ApiResponse($user, Response::HTTP_OK);
+        } else {
+            $response = $this->createUserNotLoggedInErrorResult();
+        }
+
+        return $this->respond($response);
+    }
+
     private function createUserNotFoundErrorResult(string $userLogin): ApiError
     {
         return new ApiError(
             sprintf('User with login "%s" was not found.', $userLogin),
             Response::HTTP_NOT_FOUND
         );
+    }
+
+    private function createUserNotLoggedInErrorResult(): ApiError
+    {
+        return new ApiError('You are not logged in.', Response::HTTP_UNAUTHORIZED);
     }
 }
