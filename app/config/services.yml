@@ -2,55 +2,66 @@ parameters:
 #    parameter_name: value
 
 services:
+
+    # Loggers
+    rockparade.api_logger:
+        class: Monolog\Logger
+        arguments: ['api']
+        calls:
+            - [pushHandler, ['@rockparade.api_handler']]
+    rockparade.api_handler:
+        class: Monolog\Handler\StreamHandler
+        arguments: [ '%kernel.logs_dir%/api.log']
+        calls:
+            - [setFormatter, ['@rockparade.log_formatter']]
+    rockparade.log_formatter:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] %%message%%\n"
+
+    # Repositories
     rockparade.user_repository:
         class: AppBundle\Entity\Repository\UserRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\User']
-
     rockparade.band_repository:
         class: AppBundle\Entity\Repository\BandRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Band']
-
     rockparade.band_member_repository:
         class: AppBundle\Entity\Repository\BandMemberRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\BandMember']
-
     rockparade.role_repository:
         class: AppBundle\Entity\Repository\RoleRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Role']
-
     rockparade.event_repository:
         class: AppBundle\Entity\Repository\EventRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Event']
 
+    # Services
     rockparade.band:
         class: AppBundle\Service\BandService
         arguments: ['@rockparade.band_repository', '@rockparade.band_member_repository', '@rockparade.user_repository']
-
     rockparade.user:
         class: AppBundle\Service\UserService
         arguments: ['@rockparade.vkontakte', '@rockparade.user_repository']
-
     rockparade.response_factory:
         class: AppBundle\Service\HttpResponseFactory
         arguments: ['@jms_serializer']
-
     rockparade.vkontakte:
         class: AppBundle\Service\Vkontakte\VkontakteClient
         arguments: ['%vkontakte.version%', '%vkontakte.client_id%', '%vkontakte.client_secret%']
-
     rockparade.user_provider:
         class: AppBundle\Service\Security\UserProvider
         arguments: ['@rockparade.user_repository']
-
     rockparade.token_authenticator:
          class: AppBundle\Service\Security\TokenAuthenticator
-         arguments: ['@rockparade.user_repository']
+         arguments: ['@rockparade.user_repository', '@rockparade.api_logger']
 
+    # Event listeners
     rockparade.event_listener.exception:
         class: AppBundle\EventListener\ExceptionListener
         tags:

@@ -80,6 +80,7 @@ class User implements UserInterface
     private $registrationDate;
 
     /**
+     * @var array
      * @ORM\Column(name="roles", type="simple_array", nullable=true)
      * @Serializer\Exclude()
      */
