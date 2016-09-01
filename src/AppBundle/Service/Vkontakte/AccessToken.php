@@ -17,7 +17,7 @@ class AccessToken
     /** @var string */
     private $tokenHash;
 
-    public function __construct(int $userVkId, string $tokenHash, string $userEmail)
+    public function __construct(int $userVkId, string $tokenHash, string $userEmail = null)
     {
         $this->userVkId = $userVkId;
         $this->tokenHash = $tokenHash;
