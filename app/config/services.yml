@@ -81,4 +81,4 @@ services:
         class: AppBundle\EventListener\ControllerListener
         arguments: ['@security.token_storage', '@rockparade.api_logger', '%kernel.environment%']
         tags:
-            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+            - { name: kernel.event_listener, event: kernel.controller, method: beforeController }

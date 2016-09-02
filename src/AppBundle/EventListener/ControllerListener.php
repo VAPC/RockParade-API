@@ -30,7 +30,7 @@ class ControllerListener
         $this->environment = $environment;
     }
 
-    public function onKernelController(FilterControllerEvent $event)
+    public function beforeController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
 
