@@ -50,7 +50,7 @@ class ControllerListener
 
         $message = sprintf(
             '[%s] %s %s',
-            $user instanceof User ? $user->getLogin() : $user,
+            $user instanceof User ? $user->getLogin() : $request->getClientIp(),
             $request->getMethod(),
             $request->getPathInfo()
         );
