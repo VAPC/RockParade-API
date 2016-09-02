@@ -26,13 +26,9 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     /** @var UserRepository */
     private $userRepository;
 
-    /** @var Logger */
-    private $logger;
-
-    public function __construct(UserRepository $userRepository, Logger $logger)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->logger = $logger;
     }
 
     /** {@inheritDoc} */
@@ -98,18 +94,6 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     /** {@inheritDoc} */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        /** @var User $user */
-        $user = $token->getUser();
-
-        $message = sprintf(
-            '[%s] %s %s',
-            $user->getLogin(),
-            $request->getMethod(),
-            $request->getPathInfo()
-        );
-
-        $this->logger->addInfo($message);
-
         return null;
     }
 

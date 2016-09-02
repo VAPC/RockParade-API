@@ -10,3 +10,5 @@ parameters:
 
     vkontakte.client_id: 5612175
     vkontakte.client_secret: askForApplicationKey
+
+    admin_email: your@email.net

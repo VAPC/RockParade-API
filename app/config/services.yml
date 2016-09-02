@@ -18,6 +18,16 @@ services:
         class: Monolog\Formatter\LineFormatter
         arguments:
             - "[%%datetime%%] %%message%%\n"
+    rockparade.exception_logger:
+        class: Monolog\Logger
+        arguments: ['api']
+        calls:
+            - [pushHandler, ['@rockparade.exception_logger_handler']]
+    rockparade.exception_logger_handler:
+        class: Monolog\Handler\StreamHandler
+        arguments: [ '%kernel.logs_dir%/exceptions.log']
+        calls:
+            - [setFormatter, ['@rockparade.log_formatter']]
 
     # Repositories
     rockparade.user_repository:
@@ -59,10 +69,16 @@ services:
         arguments: ['@rockparade.user_repository']
     rockparade.token_authenticator:
          class: AppBundle\Service\Security\TokenAuthenticator
-         arguments: ['@rockparade.user_repository', '@rockparade.api_logger']
+         arguments: ['@rockparade.user_repository']
 
     # Event listeners
     rockparade.event_listener.exception:
         class: AppBundle\EventListener\ExceptionListener
+        arguments: ['%kernel.environment%', '%admin_email%', '@rockparade.exception_logger']
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+    rockparade.event_listener.controller:
+        class: AppBundle\EventListener\ControllerListener
+        arguments: ['@security.token_storage', '@rockparade.api_logger', '%kernel.environment%']
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
