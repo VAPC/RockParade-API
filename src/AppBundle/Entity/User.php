@@ -100,7 +100,7 @@ class User implements UserInterface
         $this->vkontakteId = $vkontakteId;
         $this->vkToken = $vkToken;
         $this->token = $token ?: HashGenerator::generate(self::TOKEN_LENGTH);
-        $this->email = $email;
+        $this->email = $email ?: null;
         $this->description = $description;
         $this->registrationDate = new \DateTime();
     }
