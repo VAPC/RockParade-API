@@ -7,6 +7,7 @@ use AppBundle\Enum\Environment;
 use Monolog\Logger;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @author Vehsamrak
@@ -44,8 +45,9 @@ class ControllerListener
             return;
         }
 
+        $token = $this->tokenStorage->getToken();
         /** @var User|string $user */
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user = $token instanceof TokenInterface ? $token->getUser() : null;
         $request = $event->getRequest();
 
         $message = sprintf(
