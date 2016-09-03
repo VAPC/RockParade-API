@@ -66,4 +66,6 @@ swiftmailer:
     password:  ~
     spool:     { type: memory }
 
-nelmio_api_doc: ~
+nelmio_api_doc:
+    motd:
+        template: AppBundle::apiDocumentation/motd.html.twig
