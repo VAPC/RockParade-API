@@ -128,8 +128,6 @@ class EventControllerTest extends FunctionalTester
     /** @test */
     public function listAction_GETRequest_listOfEventsReturned()
     {
-        $this->followRedirects();
-
         $this->sendGetRequest('/events');
         $contents = $this->getResponseContents();
 
@@ -138,6 +136,26 @@ class EventControllerTest extends FunctionalTester
         $this->assertTrue(array_key_exists('limit', $contents));
         $this->assertTrue(array_key_exists('offset', $contents));
         $this->assertTrue(array_key_exists('total', $contents));
+    }
+
+    /** @test */
+    public function findLikeAction_GETEventsLikeTestRequest_listOfFoundEventsReturned()
+    {
+        $this->sendGetRequest('/events/like/test');
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertEquals(2, $contents['total']);
+    }
+
+    /** @test */
+    public function findLikeAction_GETEventsLikeFoobarRequest_noEventsReturned()
+    {
+        $this->sendGetRequest('/events/like/foobar');
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertEquals(0, $contents['total']);
     }
 
     /**

@@ -29,4 +29,17 @@ class EventRepository extends AbstractRepository
             ]
         );
     }
+
+    /**
+     * @return Event|object|null
+     */
+    public function findLike(string $likeString)
+    {
+        $queryBuilder = $this->createQueryBuilder('event');
+        $queryBuilder->select('event');
+        $queryBuilder->where('event.name LIKE :eventName');
+        $queryBuilder->setParameter('eventName', '%' . $likeString . '%');
+
+        return $queryBuilder->getQuery()->getArrayResult();
+    }
 }

@@ -7,6 +7,7 @@ use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Response\ApiError;
+use AppBundle\Response\CollectionApiResponse;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -30,6 +31,34 @@ use AppBundle\Response\ApiResponse;
  */
 class EventController extends RestController
 {
+
+    /**
+     * Find events by name part
+     * @Route("s/like/{searchString}/{limit}/{offset}", name="events_find_like")
+     * @Method("GET")
+     * @ApiDoc(
+     *     section="Event",
+     *     statusCodes={
+     *         200="OK",
+     *     }
+     * )
+     * @param string $searchString Search string
+     * @param int $limit Limit results. Default is 50
+     * @param int $offset Starting serial number of result collection. Default is 0
+     */
+    public function findLikeAction($searchString = null, $limit = null, $offset = null)
+    {
+        $eventRepository = $this->get('rockparade.event_repository');
+        $events = $eventRepository->findLike($searchString);
+        $total = count($events);
+
+        $limit = (int) filter_var($limit, FILTER_VALIDATE_INT);
+        $offset = (int) filter_var($offset, FILTER_VALIDATE_INT);
+
+        $response = new CollectionApiResponse($events, Response::HTTP_OK, $total, $limit, $offset);
+
+        return $this->respond($response);
+    }
 
     /**
      * List all events
