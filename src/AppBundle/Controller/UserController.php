@@ -10,6 +10,7 @@ use AppBundle\Response\ApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -52,6 +53,7 @@ class UserController extends RestController
      * View current user
      * @Route("", name="user_view_current")
      * @Method("GET")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="User",
      *     statusCodes={

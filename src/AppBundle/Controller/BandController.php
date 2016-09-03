@@ -86,6 +86,7 @@ class BandController extends RestController
      * Create new band
      * @Route("", name="band_create")
      * @Method("POST")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Band",
      *     requirements={
@@ -113,7 +114,6 @@ class BandController extends RestController
      *         400="Validation error",
      *     }
      * )
-     * @Security("has_role('ROLE_USER')")
      */
     public function createAction(Request $request): Response
     {
@@ -128,6 +128,7 @@ class BandController extends RestController
      * Edit band
      * @Route("/{bandName}", name="band_edit")
      * @Method("PUT")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Band",
      *     requirements={
@@ -156,7 +157,6 @@ class BandController extends RestController
      *     }
      * )
      * @param string $bandName band name
-     * @Security("has_role('ROLE_USER')")
      */
     public function editAction(Request $request, string $bandName): Response
     {
@@ -201,6 +201,7 @@ class BandController extends RestController
      * Add member to band
      * @Route("/{bandName}/members", name="band_member_add")
      * @Method("POST")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Band",
      *     requirements={
@@ -275,6 +276,7 @@ class BandController extends RestController
      * Delete member from band
      * @Route("/{bandName}/member/{userLogin}", name="band_member_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Band",
      *     statusCodes={
@@ -320,6 +322,7 @@ class BandController extends RestController
      * Update band member
      * @Route("/{bandName}/member/{userLogin}", name="band_member_update")
      * @Method("PUT")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Band",
      *     requirements={

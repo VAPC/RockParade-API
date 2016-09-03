@@ -87,6 +87,7 @@ class EventController extends RestController
      * Create new event
      * @Route("")
      * @Method("POST")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Event",
      *     requirements={
@@ -114,7 +115,6 @@ class EventController extends RestController
      *         400="Validation error",
      *     }
      * )
-     * @Security("has_role('ROLE_USER')")
      */
     public function createAction(Request $request): Response
     {
@@ -147,6 +147,7 @@ class EventController extends RestController
      * Edit event
      * @Route("/{eventId}", name="event_edit")
      * @Method("PUT")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Event",
      *     requirements={
@@ -219,6 +220,7 @@ class EventController extends RestController
      * Delete event
      * @Route("/{eventId}", name="event_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
