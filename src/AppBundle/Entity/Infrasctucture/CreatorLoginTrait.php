@@ -10,15 +10,13 @@ use AppBundle\Entity\User;
 trait CreatorLoginTrait
 {
 
-    public function getCreatorLogin(): string
+    /**
+     * @return null|string
+     */
+    public function getCreatorLogin()
     {
         return $this->creator instanceof User
             ? $this->creator->getLogin()
-            : $this->getDefaultCreatorLogin();
-    }
-
-    private function getDefaultCreatorLogin()
-    {
-        return 'creator unknown';
+            : null;
     }
 }
