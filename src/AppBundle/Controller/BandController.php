@@ -10,6 +10,7 @@ use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use AppBundle\Service\BandService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Form;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Response\ApiError;
@@ -112,12 +113,13 @@ class BandController extends RestController
      *         400="Validation error",
      *     }
      * )
+     * @Security("has_role('ROLE_USER')")
      */
     public function createAction(Request $request): Response
     {
         $form = $this->createFormBandCreate();
         $this->processForm($request, $form);
-        $form = $this->get('rockparade.band')->processFormAndCreateBand($form);
+        $form = $this->get('rockparade.band')->processFormAndCreateBand($form, $this->getUser());
 
         return $this->respond($this->createResponseFromCreateForm($form));
     }
@@ -154,6 +156,7 @@ class BandController extends RestController
      *     }
      * )
      * @param string $bandName band name
+     * @Security("has_role('ROLE_USER')")
      */
     public function editAction(Request $request, string $bandName): Response
     {
@@ -163,7 +166,7 @@ class BandController extends RestController
 
         $form = $this->createFormBandCreate();
         $this->processForm($request, $form);
-        $form = $this->get('rockparade.band')->processFormAndUpdateBand($form, $band);
+        $form = $this->get('rockparade.band')->processFormAndUpdateBand($form, $band, $this->getUser());
 
         return $this->respond($this->createResponseFromUpdateForm($form));
     }

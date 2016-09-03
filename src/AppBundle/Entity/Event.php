@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Infrasctucture\CreatorLoginTrait;
 use AppBundle\Service\HashGenerator;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Accessor;
@@ -15,7 +16,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 class Event
 {
 
-    const DEFAULT_CREATOR = 'creator unknown';
+    use CreatorLoginTrait;
 
     /**
      * @var int
@@ -90,10 +91,5 @@ class Event
     public function setDescription(string $description)
     {
         $this->description = $description;
-    }
-
-    public function getCreatorLogin(): string
-    {
-        return $this->creator ? $this->creator->getLogin() : self::DEFAULT_CREATOR;
     }
 }

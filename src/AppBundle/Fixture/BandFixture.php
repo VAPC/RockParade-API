@@ -18,7 +18,7 @@ class BandFixture implements FixtureInterface
     public function load(ObjectManager $manager)
     {
         $user = new User('bander', 'Bander', 1, '');
-        $band = new Band('Banders', 'Band description.');
+        $band = new Band('Banders', $user, 'Band description.');
         $bandMember = new BandMember($band, $user, 'bass guitar', 'loremus unitus');
 
         $entities = [
@@ -26,7 +26,7 @@ class BandFixture implements FixtureInterface
             new User('derban', 'Derban', 2, ''),
             new User('rocker', 'Hard Rocker', 3, ''),
             $band,
-            new Band('Existing Band', 'Second Band description.'),
+            new Band('Existing Band', $user, 'Second Band description.'),
             $bandMember,
         ];
 

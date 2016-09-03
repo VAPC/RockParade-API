@@ -7,9 +7,6 @@ namespace AppBundle\Entity\Infrasctucture;
  */
 trait FormattedRegistrationDateTrait
 {
-    /**
-     * @return string
-     */
     public function getRegistrationDate(): string
     {
         return $this->registrationDate->format('Y-m-d H:i:s');

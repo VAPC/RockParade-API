@@ -94,6 +94,13 @@ class User implements UserInterface
      */
     private $events;
 
+    /**
+     * @var Band[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Band", mappedBy="creator")
+     * @SerializerType("array")
+     */
+    private $createdBands;
+
     public function __construct(
         string $login,
         string $name,
@@ -112,6 +119,7 @@ class User implements UserInterface
         $this->description = $description;
         $this->registrationDate = new \DateTime();
         $this->events = new ArrayCollection();
+        $this->createdBands = new ArrayCollection();
     }
 
     /**

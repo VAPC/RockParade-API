@@ -7,6 +7,7 @@ use AppBundle\Entity\BandMember;
 use AppBundle\Entity\Repository\BandMemberRepository;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\Repository\UserRepository;
+use AppBundle\Entity\User;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 
@@ -36,23 +37,22 @@ class BandService
         $this->userRepository = $userRepository;
     }
 
-    public function processFormAndCreateBand(FormInterface $form): FormInterface
+    public function processFormAndCreateBand(FormInterface $form, User $creator): FormInterface
     {
-        return $this->createOrUpdateBand($form);
+        return $this->createOrUpdateBand($form, $creator);
     }
 
-    public function processFormAndUpdateBand(FormInterface $form, Band $band): FormInterface
+    public function processFormAndUpdateBand(FormInterface $form, Band $band, User $creator): FormInterface
     {
-        return $this->createOrUpdateBand($form, $band);
+        return $this->createOrUpdateBand($form, $creator, $band);
     }
 
     /**
      * Create or update band. If no Band object passed, new one will be created
-     * @param Band|null $band
      */
-    private function createOrUpdateBand(FormInterface $form, Band $band = null): FormInterface
+    private function createOrUpdateBand(FormInterface $form, User $creator, Band $band = null): FormInterface
     {
-        $this->createOrUpdateBandUsingForm($form, $band);
+        $this->createOrUpdateBandUsingForm($form, $creator, $band);
         $this->bandRepository->flush();
 
         return $form;
@@ -60,6 +60,7 @@ class BandService
 
     private function createOrUpdateBandUsingForm(
         FormInterface $form,
+        User $creator,
         Band $band = null
     ) {
         if (!$form->isValid()) {
@@ -87,7 +88,7 @@ class BandService
             $band->setName($bandNewName);
             $band->setDescription($description);
         } else {
-            $band = new Band($bandNewName, $description);
+            $band = new Band($bandNewName, $creator, $description);
             $this->bandRepository->persist($band);
         }
 

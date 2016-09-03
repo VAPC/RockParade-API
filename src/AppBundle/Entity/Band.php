@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Infrasctucture\CreatorLoginTrait;
 use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,6 +21,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 class Band
 {
     use FormattedRegistrationDateTrait;
+    use CreatorLoginTrait;
     
     /**
      * @var string
@@ -51,15 +53,21 @@ class Band
     private $members;
 
     /**
-     * @param string $name
-     * @param string $description
+     * @var User
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="createdBands")
+     * @ORM\JoinColumn(name="creator", referencedColumnName="login")
+     * @Accessor(getter="getCreatorLogin")
+     * @SerializerType("string")
      */
-    public function __construct(string $name, string $description = null)
+    private $creator;
+
+    public function __construct(string $name, User $creator, string $description = null)
     {
         $this->registrationDate = new \DateTime();
         $this->name = $name;
         $this->description = $description;
         $this->members = new ArrayCollection();
+        $this->creator = $creator;
     }
 
     /**
