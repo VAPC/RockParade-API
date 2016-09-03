@@ -17,6 +17,7 @@ use Symfony\Component\Form\FormInterface;
 class BandService
 {
     const ATTRIBUTE_MEMBERS = 'members';
+    const CREATOR_DEFAULT_MEMBER_SHORT_DESCRIPTION = 'Founder';
 
     /** @var BandRepository */
     private $bandRepository;
@@ -93,6 +94,7 @@ class BandService
         }
 
         $bandMembers = $this->getBandMembersFromForm($band, $form);
+        $bandMembers[] = $this->createBandMemberFromCreator($band, $creator);
 
         foreach ($bandMembers as $bandMember) {
             $band->addMember($bandMember);
@@ -158,5 +160,14 @@ class BandService
         }
 
         return $form;
+    }
+
+    private function createBandMemberFromCreator(Band $band, User $creator): BandMember
+    {
+        return $this->bandMemberRepository->getOrCreateByBandAndUser(
+            $band,
+            $creator,
+            self::CREATOR_DEFAULT_MEMBER_SHORT_DESCRIPTION
+        );
     }
 }
