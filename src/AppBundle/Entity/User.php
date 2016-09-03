@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
 use AppBundle\Service\HashGenerator;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Accessor;
@@ -86,6 +87,13 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * @var Event[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Event", mappedBy="creator")
+     * @SerializerType("array")
+     */
+    private $events;
+
     public function __construct(
         string $login,
         string $name,
@@ -103,6 +111,7 @@ class User implements UserInterface
         $this->email = $email ?: null;
         $this->description = $description;
         $this->registrationDate = new \DateTime();
+        $this->events = new ArrayCollection();
     }
 
     /**

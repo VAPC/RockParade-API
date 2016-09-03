@@ -18,6 +18,7 @@ class EventControllerTest extends FunctionalTester
     const EVENT_DESCRIPTION_FIRST = 'first event description';
     const EVENT_NAME_FIXTURE_FIRST = 'Test Event';
     const EVENT_DATE_FIXTURE_FIRST = '2187-03-03 10:10';
+    const USER_LOGIN_EXECUTOR = 'first';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -45,8 +46,7 @@ class EventControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTEventWithNameAndDateAndDescriptionRequest_eventCretedAndSavedToDbAndLocationReturned(
-    )
+    public function createAction_POSTEventWithNameAndDateAndDescriptionRequest_eventCretedAndSavedToDbAndLocationReturned()
     {
         $createEventData = [
             'name'        => self::EVENT_NAME_FIRST,
@@ -70,6 +70,7 @@ class EventControllerTest extends FunctionalTester
         $this->assertEquals($createEventData['name'], $responseData['name']);
         $this->assertEquals($createEventData['date'], $responseData['date']);
         $this->assertEquals($createEventData['description'], $responseData['description']);
+        $this->assertEquals(self::USER_LOGIN_EXECUTOR, $responseData['creator']);
     }
 
     /** @test */

@@ -15,12 +15,14 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 class Event
 {
 
+    const DEFAULT_CREATOR = 'creator unknown';
+
     /**
      * @var int
      * @ORM\Column(name="id", type="string", length=8)
      * @ORM\Id
      */
-    protected $id;
+    private $id;
 
     /**
      * @var \DateTime
@@ -28,26 +30,41 @@ class Event
      * @Accessor(getter="getDate")
      * @SerializerType("string")
      */
-    protected $date;
+    private $date;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
      */
-    protected $name;
+    private $name;
 
     /**
      * @var string
      * @ORM\Column(name="description", type="text")
      */
-    protected $description;
+    private $description;
 
-    public function __construct(string $name, \DateTime $date, string $description)
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="events")
+     * @ORM\JoinColumn(name="creator", referencedColumnName="login")
+     * @Accessor(getter="getCreatorLogin")
+     * @SerializerType("string")
+     */
+    private $creator;
+
+    public function __construct(
+        string $name,
+        User $creator,
+        \DateTime $date,
+        string $description
+    )
     {
-        $this->id = HashGenerator::generate();
-        $this->date = $date;
         $this->name = $name;
+        $this->creator = $creator;
+        $this->date = $date;
         $this->description = $description;
+        $this->id = HashGenerator::generate();
     }
 
     public function getDate(): string
@@ -60,27 +77,23 @@ class Event
         return $this->id;
     }
 
-    /**
-     * @param \DateTime $date
-     */
     public function setDate(\DateTime $date)
     {
         $this->date = $date;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name)
     {
         $this->name = $name;
     }
 
-    /**
-     * @param string $description
-     */
     public function setDescription(string $description)
     {
         $this->description = $description;
+    }
+
+    public function getCreatorLogin(): string
+    {
+        return $this->creator ? $this->creator->getLogin() : self::DEFAULT_CREATOR;
     }
 }

@@ -26,7 +26,7 @@ class Band
      * @ORM\Id
      * @ORM\Column(name="name", type="string", length=255)
      */
-    protected $name;
+    private $name;
 
     /**
      * @var \DateTime
@@ -34,13 +34,13 @@ class Band
      * @Accessor(getter="getRegistrationDate")
      * @SerializerType("string")
      */
-    protected $registrationDate;
+    private $registrationDate;
 
     /**
      * @var string
      * @ORM\Column(name="description", type="text", nullable=true)
      */
-    protected $description;
+    private $description;
 
     /**
      * @var BandMember[]|ArrayCollection
@@ -48,7 +48,7 @@ class Band
      * @Accessor(getter="getMembers")
      * @SerializerType("array")
      */
-    protected $members;
+    private $members;
 
     /**
      * @param string $name

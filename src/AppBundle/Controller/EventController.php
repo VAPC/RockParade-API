@@ -13,6 +13,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -113,6 +114,7 @@ class EventController extends RestController
      *         400="Validation error",
      *     }
      * )
+     * @Security("has_role('ROLE_USER')")
      */
     public function createAction(Request $request): Response
     {
@@ -280,7 +282,8 @@ class EventController extends RestController
     {
         /** @var CreateEventDTO $createEventDTO */
         $createEventDTO = $form->getData();
+        $creator = $this->getUser();
 
-        return new Event($createEventDTO->name, $createEventDTO->date, $createEventDTO->description);
+        return new Event($createEventDTO->name, $creator, $createEventDTO->date, $createEventDTO->description);
     }
 }
