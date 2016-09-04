@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\User;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Response\ApiError;
@@ -11,7 +10,6 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -60,7 +58,6 @@ class UserController extends RestController
      *         200="Current user is logged in",
      *     }
      * )
-     * @param string $login user login
      */
     public function viewCurrentAction(): Response
     {

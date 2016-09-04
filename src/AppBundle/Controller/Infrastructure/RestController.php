@@ -75,6 +75,8 @@ class RestController extends Controller
 
     /**
      * Create collection api response with total, limit and offset parameters
+     * @param integer|null $limit
+     * @param integer|null $offset
      */
     protected function createCollectionResponse(AbstractRepository $repository, $limit, $offset): CollectionApiResponse
     {
