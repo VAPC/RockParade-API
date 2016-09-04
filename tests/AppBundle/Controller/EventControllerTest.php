@@ -181,7 +181,7 @@ class EventControllerTest extends FunctionalTester
 
         $this->assertEquals(200, $this->getResponseCode());
         $this->assertEquals(2, $contents['total']);
-        $this->assertEquals(0, $contents['limit']);
+        $this->assertEquals(50, $contents['limit']);
         $this->assertEquals(1, $contents['offset']);
         $this->assertCount(1, $contents['data']);
     }

@@ -8,6 +8,8 @@ namespace AppBundle\Response;
 class CollectionApiResponse extends ApiResponse
 {
 
+    const DEFAULT_LIMIT = 50;
+
     /** @var int */
     private $total;
 
@@ -22,7 +24,7 @@ class CollectionApiResponse extends ApiResponse
         parent::__construct($data, $httpCode);
 
         $this->total = $total;
-        $this->limit = $limit;
+        $this->limit = $limit ?: self::DEFAULT_LIMIT;
         $this->offset = $offset;
     }
 }
