@@ -9,28 +9,28 @@ class AccessToken
 {
 
     /** @var int */
-    public $userVkId;
+    public $userVkontakteId;
 
     /** @var string */
     public $userEmail;
 
     /** @var string */
-    private $tokenHash;
+    private $vkontakteTokenHash;
 
-    public function __construct(int $userVkId, string $tokenHash, string $userEmail = '')
+    public function __construct(int $userVkontakteId, string $vkontakteTokenHash, string $userEmail = '')
     {
-        $this->userVkId = $userVkId;
-        $this->tokenHash = $tokenHash;
+        $this->userVkontakteId = $userVkontakteId;
+        $this->vkontakteTokenHash = $vkontakteTokenHash;
         $this->userEmail = $userEmail;
     }
 
-    public function __toString(): string
+    public function getVkontakteTokenHash(): string
     {
-        return $this->tokenHash;
+        return $this->vkontakteTokenHash;
     }
 
-    public function getTokenHash(): string
+    public function getUserVkontakteId(): int
     {
-        return $this->tokenHash;
+        return $this->userVkontakteId;
     }
 }

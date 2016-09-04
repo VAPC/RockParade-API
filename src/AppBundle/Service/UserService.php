@@ -30,9 +30,9 @@ class UserService
 
     public function createOrUpdateUser(AccessToken $vkToken): User
     {
-        $userVkId = $vkToken->userVkId;
+        $userVkId = $vkToken->getUserVkontakteId();
         $user = $this->userRepository->findUserByVkId($userVkId);
-        $vkTokenHash = $vkToken->getTokenHash();
+        $vkTokenHash = $vkToken->getVkontakteTokenHash();
 
         if ($user) {
             $user->updateToken();
@@ -52,7 +52,7 @@ class UserService
             $this->userRepository->persist($user);
         }
 
-        $this->userRepository->flush();
+        $this->userRepository->flush($user);
 
         return $user;
     }

@@ -170,4 +170,9 @@ class User implements UserInterface
     {
         return $this->getLogin();
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }
