@@ -50,12 +50,22 @@ class EventController extends RestController
     {
         $eventRepository = $this->get('rockparade.event_repository');
         $events = $eventRepository->findLike($searchString);
-        $total = count($events);
+        $total = $events->count();
 
         $limit = (int) filter_var($limit, FILTER_VALIDATE_INT);
         $offset = (int) filter_var($offset, FILTER_VALIDATE_INT);
 
-        $response = new CollectionApiResponse($events, Response::HTTP_OK, $total, $limit, $offset);
+        if ($limit || $offset) {
+            $events = $events->slice($offset, $limit ?: null);
+        }
+
+        $response = new CollectionApiResponse(
+            $events,
+            Response::HTTP_OK,
+            $total,
+            $limit,
+            $offset
+        );
 
         return $this->respond($response);
     }

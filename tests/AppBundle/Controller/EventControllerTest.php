@@ -146,6 +146,7 @@ class EventControllerTest extends FunctionalTester
 
         $this->assertEquals(200, $this->getResponseCode());
         $this->assertEquals(2, $contents['total']);
+        $this->assertCount(2, $contents['data']);
     }
 
     /** @test */
@@ -156,6 +157,33 @@ class EventControllerTest extends FunctionalTester
 
         $this->assertEquals(200, $this->getResponseCode());
         $this->assertEquals(0, $contents['total']);
+        $this->assertCount(0, $contents['data']);
+    }
+
+    /** @test */
+    public function findLikeAction_GETEventsLikeTestLimit1Request_oneEventReturned()
+    {
+        $this->sendGetRequest('/events/like/test/1');
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertEquals(2, $contents['total']);
+        $this->assertEquals(1, $contents['limit']);
+        $this->assertEquals(0, $contents['offset']);
+        $this->assertCount(1, $contents['data']);
+    }
+
+    /** @test */
+    public function findLikeAction_GETEventsLikeTestLimitNullOffset1Request_oneEventReturned()
+    {
+        $this->sendGetRequest('/events/like/test/null/1');
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertEquals(2, $contents['total']);
+        $this->assertEquals(0, $contents['limit']);
+        $this->assertEquals(1, $contents['offset']);
+        $this->assertCount(1, $contents['data']);
     }
 
     /**
