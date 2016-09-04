@@ -1,7 +1,7 @@
 security:
     providers:
-        user_provider:
-            id: rockparade.user_provider
+        in_memory:
+            memory: ~
 
     firewalls:
         dev:
