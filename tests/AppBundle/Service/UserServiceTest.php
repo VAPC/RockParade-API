@@ -27,9 +27,9 @@ class UserServiceTest extends WebTestCase
         $userService = $this->createUserService();
 
         $user = $userService->createOrUpdateUser($accessToken);
+
         \Phake::verify($user)->updateToken();
         \Phake::verify($user)->setVkToken(self::VKONTAKTE_TOKEN);
-
         $this->assertInstanceOf(User::class, $user);
     }
 
