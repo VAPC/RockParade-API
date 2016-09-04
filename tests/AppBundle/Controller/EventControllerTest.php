@@ -14,7 +14,7 @@ class EventControllerTest extends FunctionalTester
 
     const EVENT_NAME_FIRST = 'first event';
     const EVENT_NAME_SECOND = 'first renamed event';
-    const EVENT_DATE_FIRST = '2000-08-08 18:18:00';
+    const EVENT_DATE_FIRST = '2000-08-08 18:18';
     const EVENT_DESCRIPTION_FIRST = 'first event description';
     const EVENT_NAME_FIXTURE_FIRST = 'Test Event';
     const EVENT_DATE_FIXTURE_FIRST = '2187-03-03 10:10';
