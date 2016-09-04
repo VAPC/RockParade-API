@@ -1,9 +1,9 @@
 RockParade
 ==========
 
-[![Build Status](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/build-status/master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Vehsamrak/RockParade/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/VAPC/RockParade-API/badges/build.png?b=master)](https://scrutinizer-ci.com/g/VAPC/RockParade-API/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/VAPC/RockParade-API/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/VAPC/RockParade-API/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VAPC/RockParade-API/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VAPC/RockParade-API/?branch=master)
 
 Conversation
 ============
