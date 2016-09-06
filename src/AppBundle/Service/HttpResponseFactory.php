@@ -3,8 +3,10 @@
 namespace AppBundle\Service;
 
 use AppBundle\Response\EmptyApiResponse;
+use AppBundle\Response\FileResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use JMS\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -24,8 +26,13 @@ class HttpResponseFactory
     public function createResponse(AbstractApiResponse $apiResponse): Response
     {
         $serializedData = $this->serialize($apiResponse);
-        $response = new Response($serializedData, $apiResponse->getHttpCode());
 
+        if ($apiResponse instanceof FileResponse) {
+            $response = new BinaryFileResponse($apiResponse->getFile(), $apiResponse->getHttpCode());
+        } else {
+            $response = new Response($serializedData, $apiResponse->getHttpCode());
+        }
+        
         return $response;
     }
 

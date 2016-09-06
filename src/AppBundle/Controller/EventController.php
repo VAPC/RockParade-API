@@ -6,10 +6,12 @@ use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Repository\EventRepository;
+use AppBundle\Exception\UnsupportedTypeException;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\CollectionApiResponse;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
+use AppBundle\Response\LocationApiResponse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -284,6 +286,103 @@ class EventController extends RestController
             $response = $this->createEventNotFoundErrorResult($eventId);
         }
 
+        return $this->respond($response);
+    }
+
+    /**
+     * Add image to event
+     * @Route("/{eventId}/image", name="event_image_add")
+     * @Method("POST")
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *     section="Event",
+     *     statusCodes={
+     *         404="Event with given id was not found",
+     *     }
+     * )
+     * @param string $eventId event id
+     */
+    public function addImageAction(Request $request, string $eventId): Response
+    {
+        /** @var EventRepository $eventRepository */
+        $eventRepository = $this->get('rockparade.event_repository');
+        $event = $eventRepository->findOneById($eventId);
+
+        if ($event) {
+            $image = $request->get('image');
+
+            $imageName = $image['name'] ?: null;
+            $imageContent = $image['content'] ?? null;
+
+            if (!$image || !$imageName || !$imageContent) {
+                $response = new ApiError(
+                    'Parameters are mandatory: image[name] and image[content].',
+                    Response::HTTP_BAD_REQUEST
+                );
+            } else {
+                try {
+                    $imageExtensionChecker = $this->get('rockparade.image_extension_checker');
+                    $imageExtension = $imageExtensionChecker->getExtensionFromBase64File($imageContent);
+                    $imageName = sprintf('%s.%s', $imageName, $imageExtension);
+
+                    $imageLocation = $this->generateUrl(
+                        'event_image_view',
+                        [
+                            'eventId'   => $eventId,
+                            'imageName' => $imageName,
+                        ]
+                    );
+
+                    $fileService = $this->get('rockparade.file_service');
+                    $fileService->createBase64Image($imageName, $imageContent, $event);
+
+                    $response = new LocationApiResponse(Response::HTTP_OK, $imageLocation);
+                } catch (UnsupportedTypeException $exception) {
+                    $response = new ApiError(
+                        'Only images of types png, gif and jpeg are supported.',
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+            }
+        } else {
+            $response = $this->createEventNotFoundErrorResult($eventId);
+        }
+
+        return $this->respond($response);
+    }
+
+    /**
+     * Get event image
+     * @Route("/{eventId}/image/{imageName}", name="event_image_view")
+     * @Method("GET")
+     * @ApiDoc(
+     *     section="Event",
+     *     statusCodes={
+     *         404="Event with given id was not found",
+     *         404="Image with given name was not found",
+     *     }
+     * )
+     * @param string $eventId event id
+     * @param string $imageName image name
+     */
+    public function viewImageAction(string $eventId, string $imageName): Response
+    {
+        /** @var EventRepository $eventRepository */
+        $eventRepository = $this->get('rockparade.event_repository');
+        $event = $eventRepository->findOneById($eventId);
+
+        if ($event) {
+            $image = $event->getImageWithName($imageName);
+            $apiResponseFactory = $this->get('rockparade.api_response_factory');
+
+            if ($image) {
+                $response = $apiResponseFactory->createResponse($image);
+            } else {
+                $response = $apiResponseFactory->createNotFoundResponse();
+            }
+        } else {
+            $response = $this->createEventNotFoundErrorResult($eventId);
+        }
 
         return $this->respond($response);
     }

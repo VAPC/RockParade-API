@@ -21,7 +21,7 @@ app/phpunit.xml
 /vendor/
 /web/bundles/
 web/uploads/*
-!/var/upload/.gitkeep
+!/var/upload/images/.gitkeep
 
 # Configuration files
 app/config/parameters.ini

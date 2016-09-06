@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Infrastructure;
 
 use AppBundle\Entity\Infrasctucture\AbstractRepository;
 use AppBundle\Response\CollectionApiResponse;
+use AppBundle\Response\FileResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use AppBundle\Response\Infrastructure\HttpLocationInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,14 +20,14 @@ use Symfony\Component\HttpFoundation\Response;
 class RestController extends Controller
 {
 
-    const TYPE_JSON = 'application/json';
+    const MIME_TYPE_JSON = 'application/json';
 
     public function respond(AbstractApiResponse $apiResponse): Response
     {
         $response = $this->get('rockparade.response_factory')->createResponse($apiResponse);
 
         $this->setLocation($response, $apiResponse);
-        $this->setJsonContentType($response);
+        $this->setContentType($apiResponse, $response);
 
         return $response;
     }
@@ -39,7 +40,7 @@ class RestController extends Controller
     protected function processForm(Request $request, FormInterface $form)
     {
         $formData = json_decode($request->getContent(), true) ?? $request->request->all();
-        $clearMissing = $request->getMethod() != 'PATCH';
+        $clearMissing = $request->getMethod() != Request::METHOD_PATCH;
 
         $form->submit($formData, $clearMissing);
     }
@@ -98,8 +99,10 @@ class RestController extends Controller
         }
     }
 
-    private function setJsonContentType(Response $response)
+    private function setContentType(AbstractApiResponse $apiResponse, Response $response)
     {
-        $response->headers->set('Content-Type', self::TYPE_JSON);
+        if (!$apiResponse instanceof FileResponse) {
+            $response->headers->set('Content-Type', self::MIME_TYPE_JSON);
+        }
     }
 }

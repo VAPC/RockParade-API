@@ -4,9 +4,10 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\Infrasctucture\CreatorLoginTrait;
 use AppBundle\Service\HashGenerator;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Accessor;
-use JMS\Serializer\Annotation\Type as SerializerType;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Table(name="events", uniqueConstraints={@ORM\UniqueConstraint(name="unique_events_date_name", columns={"date", "name"})})
@@ -28,8 +29,6 @@ class Event
     /**
      * @var \DateTime
      * @ORM\Column(name="date", type="datetime")
-     * @Accessor(getter="getDate")
-     * @SerializerType("string")
      */
     private $date;
 
@@ -49,10 +48,23 @@ class Event
      * @var User
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="events")
      * @ORM\JoinColumn(name="creator", referencedColumnName="login")
-     * @Accessor(getter="getCreatorLogin")
-     * @SerializerType("string")
      */
     private $creator;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Image")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
+     */
+
+    /**
+     * @var Image[]|ArrayCollection
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Image")
+     * @ORM\JoinTable(name="event_images",
+     *      joinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
+     *      )
+     */
+    private $images;
 
     public function __construct(
         string $name,
@@ -66,6 +78,7 @@ class Event
         $this->date = $date;
         $this->description = $description;
         $this->id = HashGenerator::generate();
+        $this->images = new ArrayCollection();
     }
 
     public function getDate(): string
@@ -83,13 +96,50 @@ class Event
         $this->date = $date;
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function setName(string $name)
     {
         $this->name = $name;
     }
 
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
     public function setDescription(string $description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return Image[]|PersistentCollection
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    /**
+     * @return Image|null
+     */
+    public function getImageWithName(string $imageName)
+    {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq('name', $imageName));
+        $criteria->setMaxResults(1);
+
+        /** @var ArrayCollection $imagesCollection */
+        $imagesCollection = $this->images->matching($criteria);
+
+        return $imagesCollection->first();
+    }
+
+    public function addImage(Image $image)
+    {
+        $this->images->add($image);
     }
 }

@@ -50,6 +50,10 @@ services:
         class: AppBundle\Entity\Repository\EventRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Event']
+    rockparade.image_repository:
+        class: AppBundle\Entity\Repository\ImageRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ['AppBundle\Entity\Image']
 
     # Services
     rockparade.band:
@@ -65,8 +69,16 @@ services:
         class: AppBundle\Service\Vkontakte\VkontakteClient
         arguments: ['%vkontakte.version%', '%vkontakte.client_id%', '%vkontakte.client_secret%']
     rockparade.token_authenticator:
-         class: AppBundle\Service\Security\TokenAuthenticator
-         arguments: ['@rockparade.user_repository']
+        class: AppBundle\Service\Security\TokenAuthenticator
+        arguments: ['@rockparade.user_repository']
+    rockparade.image_extension_checker:
+        class: AppBundle\Service\File\ImageExtensionChecker
+    rockparade.file_service:
+        class: AppBundle\Service\File\FileService
+        arguments: ['%kernel.root_dir%', '@rockparade.image_repository']
+    rockparade.api_response_factory:
+        class: AppBundle\Response\ApiResponseFactory
+        arguments: ['%kernel.root_dir%']
 
     # Event listeners
     rockparade.event_listener.exception:
@@ -79,3 +91,9 @@ services:
         arguments: ['@security.token_storage', '@rockparade.api_logger', '%kernel.environment%']
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: beforeController }
+    rockparade.event_listener.serializer:
+        class: AppBundle\EventListener\SerializerListener
+        arguments: ['@router']
+        scope: request
+        tags:
+            - { name: jms_serializer.subscribing_handler }
