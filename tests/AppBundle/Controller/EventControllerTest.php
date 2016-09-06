@@ -229,8 +229,12 @@ class EventControllerTest extends FunctionalTester
         $createdImage = $this->getLastImage();
 
         $this->assertEquals(200, $this->getResponseCode());
-        $this->assertEquals(
-            sprintf('/event/%s/image/%s', $eventId, rawurlencode($createdImage->getName())),
+        $this->assertRegExp(
+            sprintf(
+                '/^http(.*)event\/%s\/image\/%s$/',
+                $eventId,
+                rawurlencode($createdImage->getName())
+            ),
             $responseLocation
         );
 
