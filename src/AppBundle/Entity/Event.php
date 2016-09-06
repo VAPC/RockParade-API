@@ -58,7 +58,7 @@ class Event
 
     /**
      * @var Image[]|ArrayCollection
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Image")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Image", orphanRemoval=true)
      * @ORM\JoinTable(name="event_images",
      *      joinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
@@ -135,11 +135,16 @@ class Event
         /** @var ArrayCollection $imagesCollection */
         $imagesCollection = $this->images->matching($criteria);
 
-        return $imagesCollection->first();
+        return $imagesCollection->first() ?: null;
     }
 
     public function addImage(Image $image)
     {
         $this->images->add($image);
+    }
+
+    public function removeImage(Image $image)
+    {
+        $this->images->removeElement($image);
     }
 }

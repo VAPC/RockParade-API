@@ -3,6 +3,7 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Entity\Event;
+use AppBundle\Entity\Image;
 use AppBundle\Fixture\EventFixture;
 use AppBundle\Fixture\UserFixture;
 use Tests\FunctionalTester;
@@ -233,7 +234,21 @@ class EventControllerTest extends FunctionalTester
         );
 
         $this->sendGetRequest($responseLocation);
-        $contents = $this->getResponseContents();
+
+        $this->assertEquals(200, $this->getResponseCode());
+    }
+
+    /** @test */
+    public function deleteImageAction_DELETEEventIdImageNameRequest_imageDeleted()
+    {
+        $event = $this->getFixtureEvent();
+        $eventId = $event->getId();
+        /** @var Image $eventImage */
+        $eventImage = $event->getImages()->first();
+        $eventImageName = $eventImage->getId();
+        $requestString = sprintf('/event/%s/image/%s', $eventId, $eventImageName);
+
+        $this->sendDeleteRequest($requestString);
 
         $this->assertEquals(200, $this->getResponseCode());
     }

@@ -75,7 +75,7 @@ class SerializerListener implements SubscribingHandlerInterface
     }
 
     /**
-     * @return string[]|null
+     * @return array|null
      */
     private function getImages(Event $event)
     {
@@ -86,7 +86,10 @@ class SerializerListener implements SubscribingHandlerInterface
 
             return array_map(
                 function (Image $image) use ($eventId) {
-                    return $this->generateImageUrl($eventId, $image->getName());
+                    return [
+                        'id'  => $image->getId(),
+                        'url' => $this->generateImageUrl($eventId, $image->getName()),
+                    ];
                 },
                 $images->toArray()
             );

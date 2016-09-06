@@ -6,6 +6,7 @@ use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Repository\EventRepository;
+use AppBundle\Entity\Repository\ImageRepository;
 use AppBundle\Exception\UnsupportedTypeException;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\CollectionApiResponse;
@@ -378,6 +379,46 @@ class EventController extends RestController
             if ($image) {
                 $response = $apiResponseFactory->createResponse($image);
             } else {
+                $response = $apiResponseFactory->createNotFoundResponse();
+            }
+        } else {
+            $response = $this->createEventNotFoundErrorResult($eventId);
+        }
+
+        return $this->respond($response);
+    }
+
+    /**
+     * Delete event image
+     * @Route("/{eventId}/image/{imageId}", name="event_image_delete")
+     * @Method("DELETE")
+     * @ApiDoc(
+     *     section="Event",
+     *     statusCodes={
+     *         404="Event with given id was not found",
+     *         404="Image with given id was not found",
+     *     }
+     * )
+     * @param string $eventId event id
+     * @param string $imageId image id
+     */
+    public function deleteImageAction(string $eventId, string $imageId)
+    {
+        /** @var EventRepository $eventRepository */
+        $eventRepository = $this->get('rockparade.event_repository');
+        /** @var ImageRepository $imageRepository */
+        $imageRepository = $this->get('rockparade.image_repository');
+        $event = $eventRepository->findOneById($eventId);
+
+        if ($event) {
+            $image = $imageRepository->findOneById($imageId);
+
+            if ($image) {
+                $event->removeImage($image);
+                $eventRepository->flush();
+                $response = new EmptyApiResponse(Response::HTTP_OK);
+            } else {
+                $apiResponseFactory = $this->get('rockparade.api_response_factory');
                 $response = $apiResponseFactory->createNotFoundResponse();
             }
         } else {
