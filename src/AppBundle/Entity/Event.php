@@ -20,7 +20,7 @@ class Event
     use CreatorLoginTrait;
 
     /**
-     * @var int
+     * @var string
      * @ORM\Column(name="id", type="string", length=8)
      * @ORM\Id
      */
@@ -70,14 +70,15 @@ class Event
         string $name,
         User $creator,
         \DateTime $date,
-        string $description
+        string $description,
+        HashGenerator $hashGenerator = null
     )
     {
         $this->name = $name;
         $this->creator = $creator;
         $this->date = $date;
         $this->description = $description;
-        $this->id = HashGenerator::generate();
+        $this->id = $hashGenerator ? $hashGenerator::generate() : HashGenerator::generate();
         $this->images = new ArrayCollection();
     }
 
