@@ -98,7 +98,7 @@ class EventService
             $imageName = $imageData['name'] ?: null;
             $imageContent = $imageData['content'] ?? null;
 
-            if (!$imageData || !$imageName || !$imageContent) {
+            if (empty($imageData) || !$imageName || !$imageContent) {
                 $response = new ApiError(
                     'Parameters are mandatory: image[name] and image[content].',
                     Response::HTTP_BAD_REQUEST
