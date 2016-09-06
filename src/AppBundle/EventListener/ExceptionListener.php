@@ -55,6 +55,8 @@ class ExceptionListener
                 $bugSerialNumber,
                 $this->adminEmail
             );
+        } elseif ($exception instanceof HttpExceptionInterface && $exception->getStatusCode() < 500) {
+            $errorMessage = $exception->getMessage();
         } else {
             $errorMessage = sprintf(
                 '%s in %s at line %s',
