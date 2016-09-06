@@ -9,6 +9,7 @@ use AppBundle\Entity\Repository\ImageRepository;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\CollectionApiResponse;
 use AppBundle\Response\EmptyApiResponse;
+use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -155,15 +156,7 @@ class EventController extends RestController
      */
     public function createAction(Request $request): Response
     {
-        $form = $this->createEventCreationForm();
-        $this->processForm($request, $form);
-
-        if ($form->isValid()) {
-            $eventService = $this->get('rockparade.event');
-            $response = $eventService->createEventByForm($form, $this->getUser());
-        } else {
-            $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
-        }
+        $response = $this->createOrUpdateEvent($request);
 
         return $this->respond($response);
     }
@@ -205,15 +198,7 @@ class EventController extends RestController
      */
     public function editAction(Request $request, string $eventId): Response
     {
-        $form = $this->createEventCreationForm();
-        $this->processForm($request, $form);
-
-        if ($form->isValid()) {
-            $eventService = $this->get('rockparade.event');
-            $response = $eventService->editEventByForm($form, $eventId);
-        } else {
-            $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
-        }
+        $response = $this->createOrUpdateEvent($request, $eventId);
 
         return $this->respond($response);
     }
@@ -367,5 +352,24 @@ class EventController extends RestController
         $formBuilder->add('description', TextareaType::class);
 
         return $formBuilder->getForm();
+    }
+
+    private function createOrUpdateEvent(Request $request, string $eventId = null): AbstractApiResponse
+    {
+        $form = $this->createEventCreationForm();
+        $this->processForm($request, $form);
+
+        if ($form->isValid()) {
+            $eventService = $this->get('rockparade.event');
+            if ($eventId) {
+                $response = $eventService->editEventByForm($form, $eventId);
+            } else {
+                $response = $eventService->createEventByForm($form, $this->getUser());
+            }
+        } else {
+            $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
+        }
+
+        return $response;
     }
 }
