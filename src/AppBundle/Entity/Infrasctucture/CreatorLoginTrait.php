@@ -6,6 +6,7 @@ use AppBundle\Entity\User;
 
 /**
  * @author Vehsamrak
+ * @property $creator
  */
 trait CreatorLoginTrait
 {

@@ -4,6 +4,7 @@ namespace AppBundle\Entity\Infrasctucture;
 
 /**
  * @author Vehsamrak
+ * @property $registrationDate
  */
 trait FormattedRegistrationDateTrait
 {
