@@ -47,13 +47,19 @@ class SerializerListener implements SubscribingHandlerInterface
     ): array
     {
         if ($entity instanceof Event) {
+
             $serializedData = [
                 'id'          => $entity->getId(),
                 'date'        => $entity->getDate(),
                 'name'        => $entity->getName(),
                 'description' => $entity->getDescription(),
-                'creator'     => $entity->getCreatorLogin(),
             ];
+
+            $creatorLogin = $entity->getCreatorLogin();
+
+            if ($creatorLogin) {
+            	$serializedData['creator'] = $creatorLogin;
+            }
 
             $images = $this->getImages($entity);
 
