@@ -114,7 +114,8 @@ class EventService
                         [
                             'eventId'   => $eventId,
                             'imageName' => $image->getName(),
-                        ]
+                        ],
+                        Router::ABSOLUTE_URL
                     );
 
                     $response = new LocationApiResponse(Response::HTTP_OK, $imageLocation);
