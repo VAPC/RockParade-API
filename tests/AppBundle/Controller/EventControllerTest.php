@@ -236,6 +236,8 @@ class EventControllerTest extends FunctionalTester
 
         $this->sendGetRequest($responseLocation);
 
+        var_dump($this->getResponseContents());
+
         $this->assertEquals(200, $this->getResponseCode());
         $this->deleteUploadedFile();
     }
