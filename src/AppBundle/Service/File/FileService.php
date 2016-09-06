@@ -24,13 +24,13 @@ class FileService
         $this->filePath = realpath($applicationRootPath . '/../var/upload');
     }
 
-    public function createBase64Image(string $fileName, string $fileContents, $entity)
+    public function createBase64Image(string $fileName, string $fileContents, $entity): Image
     {
         $image = new Image($fileName);
         $this->imageRepository->persist($image);
 
         $imagesPath = $this->filePath . '/images';
-        $filePath = sprintf('%s%s%s', $imagesPath, DIRECTORY_SEPARATOR, $fileName);
+        $filePath = sprintf('%s%s%s', $imagesPath, DIRECTORY_SEPARATOR, $image->getName());
         file_put_contents($filePath, base64_decode($fileContents));
 
         if ($entity instanceof Event) {
@@ -38,5 +38,7 @@ class FileService
         }
 
         $this->imageRepository->flush();
+
+        return $image;
     }
 }

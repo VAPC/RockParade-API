@@ -226,16 +226,18 @@ class EventControllerTest extends FunctionalTester
 
         $this->sendPostRequest($requestString, $parameters);
         $responseLocation = $this->getResponseLocation();
+        $createdImage = $this->getLastImage();
 
         $this->assertEquals(200, $this->getResponseCode());
         $this->assertEquals(
-            sprintf('/event/%s/image/%s.png', $eventId, rawurlencode(self::IMAGE_NAME)),
+            sprintf('/event/%s/image/%s', $eventId, rawurlencode($createdImage->getName())),
             $responseLocation
         );
 
         $this->sendGetRequest($responseLocation);
 
         $this->assertEquals(200, $this->getResponseCode());
+        $this->deleteUploadedFile();
     }
 
     /** @test */
@@ -245,7 +247,7 @@ class EventControllerTest extends FunctionalTester
         $eventId = $event->getId();
         /** @var Image $eventImage */
         $eventImage = $event->getImages()->first();
-        $eventImageName = $eventImage->getId();
+        $eventImageName = $eventImage->getName();
         $requestString = sprintf('/event/%s/image/%s', $eventId, $eventImageName);
 
         $this->sendDeleteRequest($requestString);
@@ -262,5 +264,23 @@ class EventControllerTest extends FunctionalTester
                     ->get('rockparade.event_repository')
                     ->findLike(self::EVENT_NAME_FIXTURE_FIRST)
                     ->first();
+    }
+
+    private function getLastImage(): Image
+    {
+        $allImages = $this->getContainer()
+                          ->get('rockparade.image_repository')
+                          ->findAll();
+
+        return array_pop($allImages);
+    }
+
+    private function deleteUploadedFile()
+    {
+        $applicationRootDirectory = $this->getContainer()->getParameter('kernel.root_dir');
+        $fileDirectory = realpath($applicationRootDirectory . '/../var/upload/images');
+        $lastImage = $this->getLastImage();
+        $filename = $fileDirectory . '/' . $lastImage->getName();
+        unlink($filename);
     }
 }

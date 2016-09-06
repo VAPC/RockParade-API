@@ -15,15 +15,8 @@ class Image
 {
 
     /**
-     * @var int
-     * @ORM\Column(name="id", type="string", length=32)
-     * @ORM\Id
-     * @Serializer\Exclude()
-     */
-    private $id;
-
-    /**
      * @var string
+     * @ORM\Id
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
@@ -31,13 +24,7 @@ class Image
     public function __construct(string $name, HashGenerator $hashGenerator = null)
     {
         $hashGenerator = $hashGenerator ?: new HashGenerator();
-        $this->id = $hashGenerator::generate(32);
-        $this->name = $name;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
+        $this->name = sprintf('%s-%s', $hashGenerator::generate(32), $name);
     }
 
     public function getName(): string

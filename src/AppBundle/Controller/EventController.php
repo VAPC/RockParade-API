@@ -326,16 +326,17 @@ class EventController extends RestController
                     $imageExtension = $imageExtensionChecker->getExtensionFromBase64File($imageContent);
                     $imageName = sprintf('%s.%s', $imageName, $imageExtension);
 
+                    $fileService = $this->get('rockparade.file_service');
+                    $image = $fileService->createBase64Image($imageName, $imageContent, $event);
+
                     $imageLocation = $this->generateUrl(
                         'event_image_view',
                         [
                             'eventId'   => $eventId,
-                            'imageName' => $imageName,
+                            'imageName' => $image->getName(),
                         ]
                     );
 
-                    $fileService = $this->get('rockparade.file_service');
-                    $fileService->createBase64Image($imageName, $imageContent, $event);
 
                     $response = new LocationApiResponse(Response::HTTP_OK, $imageLocation);
                 } catch (UnsupportedTypeException $exception) {

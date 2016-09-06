@@ -86,10 +86,7 @@ class SerializerListener implements SubscribingHandlerInterface
 
             return array_map(
                 function (Image $image) use ($eventId) {
-                    return [
-                        'id'  => $image->getId(),
-                        'url' => $this->generateImageUrl($eventId, $image->getName()),
-                    ];
+                    return $this->generateImageUrl($eventId, $image->getName());
                 },
                 $images->toArray()
             );

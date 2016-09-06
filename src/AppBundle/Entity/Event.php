@@ -61,7 +61,7 @@ class Event
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Image", orphanRemoval=true)
      * @ORM\JoinTable(name="event_images",
      *      joinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="image_name", referencedColumnName="name", unique=true)}
      *      )
      */
     private $images;
