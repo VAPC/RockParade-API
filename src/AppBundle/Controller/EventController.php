@@ -244,6 +244,7 @@ class EventController extends RestController
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
+     *         403="Only event creator can add images",
      *         404="Event with given id was not found",
      *     }
      * )
@@ -252,7 +253,7 @@ class EventController extends RestController
     public function addImageAction(Request $request, string $eventId): Response
     {
         $eventService = $this->get('rockparade.event');
-        $response = $eventService->addImageToEvent($eventId, $request->get('image'));
+        $response = $eventService->addImageToEvent($eventId, $this->getUser(), $request->get('image'));
 
         return $this->respond($response);
     }
@@ -302,6 +303,7 @@ class EventController extends RestController
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
+     *         403="Only event creator can delete images",
      *         404="Event with given id was not found",
      *         404="Image with given id was not found",
      *     }
@@ -318,15 +320,19 @@ class EventController extends RestController
         $event = $eventRepository->findOneById($eventId);
 
         if ($event) {
-            $image = $imageRepository->findOneById($imageId);
-
-            if ($image) {
-                $event->removeImage($image);
-                $eventRepository->flush();
-                $response = new EmptyApiResponse(Response::HTTP_OK);
+            if ($this->getUser()->getLogin() !== $event->getCreator()->getLogin()) {
+                $response = new ApiError('Only event creator can delete images.', Response::HTTP_FORBIDDEN);
             } else {
-                $apiResponseFactory = $this->get('rockparade.api_response_factory');
-                $response = $apiResponseFactory->createNotFoundResponse();
+                $image = $imageRepository->findOneById($imageId);
+
+                if ($image) {
+                    $event->removeImage($image);
+                    $eventRepository->flush();
+                    $response = new EmptyApiResponse(Response::HTTP_OK);
+                } else {
+                    $apiResponseFactory = $this->get('rockparade.api_response_factory');
+                    $response = $apiResponseFactory->createNotFoundResponse();
+                }
             }
         } else {
             $eventService = $this->get('rockparade.event');

@@ -212,7 +212,7 @@ class EventControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function addImageAction_POSTEventIdImageRequestWithBase64Image_imageSavedAndOKReturned()
+    public function addImageAction_POSTEventIdImageRequestWithBase64ImageAndExecutorIsEventCreator_imageSavedAndOKReturned()
     {
         $event = $this->getFixtureEvent();
         $eventId = $event->getId();
@@ -245,7 +245,28 @@ class EventControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function deleteImageAction_DELETEEventIdImageNameRequest_imageDeleted()
+    public function addImageAction_POSTEventIdImageRequestWithBase64ImageAndExecutorIsNotEventCreator_accessDenied()
+    {
+        $this->setAuthToken(UserFixture::TEST_TOKEN_SECOND);
+        $event = $this->getFixtureEvent();
+        $eventId = $event->getId();
+        $requestString = sprintf('/event/%s/image', $eventId);
+        $parameters = [
+            'image' => [
+                'name'    => self::IMAGE_NAME,
+                'content' => self::IMAGE_BASE64_CONTENT,
+            ],
+        ];
+
+        $this->sendPostRequest($requestString, $parameters);
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(403, $this->getResponseCode());
+        $this->assertContains('Only event creator can add images.', $contents['errors']);
+    }
+
+    /** @test */
+    public function deleteImageAction_DELETEEventIdImageNameRequestAndExecutorIsEventCreator_imageDeleted()
     {
         $event = $this->getFixtureEvent();
         $eventId = $event->getId();
@@ -259,8 +280,23 @@ class EventControllerTest extends FunctionalTester
         $this->assertEquals(200, $this->getResponseCode());
     }
 
-    // test: must be creator of event to post image
-    // test: must be creator of event to delete image
+    /** @test */
+    public function deleteImageAction_DELETEEventIdImageNameRequestAndExecutorIsNotEventCreator_accessDenied()
+    {
+        $this->setAuthToken(UserFixture::TEST_TOKEN_SECOND);
+        $event = $this->getFixtureEvent();
+        $eventId = $event->getId();
+        /** @var Image $eventImage */
+        $eventImage = $event->getImages()->first();
+        $eventImageName = $eventImage->getName();
+        $requestString = sprintf('/event/%s/image/%s', $eventId, $eventImageName);
+
+        $this->sendDeleteRequest($requestString);
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(403, $this->getResponseCode());
+        $this->assertContains('Only event creator can delete images.', $contents['errors']);
+    }
 
     private function getFixtureEvent(): Event
     {
@@ -286,5 +322,10 @@ class EventControllerTest extends FunctionalTester
         $lastImage = $this->getLastImage();
         $filename = $fileDirectory . '/' . $lastImage->getName();
         unlink($filename);
+    }
+
+    private function givenRequestExecutor(string $token)
+    {
+        $this->setAuthToken($token);
     }
 }

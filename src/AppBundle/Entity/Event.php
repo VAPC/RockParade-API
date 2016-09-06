@@ -117,6 +117,11 @@ class Event
         $this->description = $description;
     }
 
+    public function getCreator(): User
+    {
+        return $this->creator;
+    }
+
     /**
      * @return Image[]|PersistentCollection
      */

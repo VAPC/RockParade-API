@@ -13,13 +13,14 @@ class UserFixture implements FixtureInterface
 {
 
     const TEST_TOKEN = 'test-token';
+    const TEST_TOKEN_SECOND = 'test-token-second';
 
     /** {@inheritDoc} */
     public function load(ObjectManager $manager)
     {
         $users = [
             new User('first', 'Mr. First', 4, '', null, 'The very first test user.', self::TEST_TOKEN),
-            new User('second', 'Mr. Second', 5, '', null, 'The second test user.'),
+            new User('second', 'Mr. Second', 5, '', null, 'The second test user.', self::TEST_TOKEN_SECOND),
         ];
 
         foreach ($users as $user) {

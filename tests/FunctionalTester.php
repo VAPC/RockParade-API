@@ -100,4 +100,9 @@ abstract class FunctionalTester extends WebTestCase
     {
         return $this->getResponse()->headers->get('Location');
     }
+
+    protected function setAuthToken(string $token)
+    {
+        $this->httpClient->setServerParameter('HTTP_AUTH_TOKEN', $token);
+    }
 }

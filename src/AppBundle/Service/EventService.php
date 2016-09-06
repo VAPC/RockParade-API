@@ -90,42 +90,47 @@ class EventService
         return $response;
     }
 
-    public function addImageToEvent(string $eventId, array $imageData = null): AbstractApiResponse
+    public function addImageToEvent(string $eventId, User $requestExecutor, array $imageData = null): AbstractApiResponse
     {
         $event = $this->eventRepository->findOneById($eventId);
 
         if ($event) {
-            $imageName = $imageData['name'] ?: null;
-            $imageContent = $imageData['content'] ?? null;
-
-            if (empty($imageData) || !$imageName || !$imageContent) {
-                $response = new ApiError(
-                    'Parameters are mandatory: image[name] and image[content].',
-                    Response::HTTP_BAD_REQUEST
-                );
+            if ($requestExecutor->getLogin() !== $event->getCreator()->getLogin()) {
+            	$response = new ApiError('Only event creator can add images.', Response::HTTP_FORBIDDEN);
             } else {
-                try {
-                    $imageExtension = $this->fileService->getExtensionFromBase64File($imageContent);
-                    $imageName = sprintf('%s.%s', $imageName, $imageExtension);
-                    $image = $this->fileService->createBase64Image($imageName, $imageContent, $event);
+                $imageName = $imageData['name'] ?: null;
+                $imageContent = $imageData['content'] ?? null;
 
-                    $imageLocation = $this->router->generate(
-                        'event_image_view',
-                        [
-                            'eventId'   => $eventId,
-                            'imageName' => $image->getName(),
-                        ],
-                        Router::ABSOLUTE_URL
-                    );
-
-                    $response = new LocationApiResponse(Response::HTTP_OK, $imageLocation);
-                } catch (UnsupportedTypeException $exception) {
+                if (empty($imageData) || !$imageName || !$imageContent) {
                     $response = new ApiError(
-                        'Only images of types png, gif and jpeg are supported.',
+                        'Parameters are mandatory: image[name] and image[content].',
                         Response::HTTP_BAD_REQUEST
                     );
+                } else {
+                    try {
+                        $imageExtension = $this->fileService->getExtensionFromBase64File($imageContent);
+                        $imageName = sprintf('%s.%s', $imageName, $imageExtension);
+                        $image = $this->fileService->createBase64Image($imageName, $imageContent, $event);
+
+                        $imageLocation = $this->router->generate(
+                            'event_image_view',
+                            [
+                                'eventId'   => $eventId,
+                                'imageName' => $image->getName(),
+                            ],
+                            Router::ABSOLUTE_URL
+                        );
+
+                        $response = new LocationApiResponse(Response::HTTP_OK, $imageLocation);
+                    } catch (UnsupportedTypeException $exception) {
+                        $response = new ApiError(
+                            'Only images of types png, gif and jpeg are supported.',
+                            Response::HTTP_BAD_REQUEST
+                        );
+                    }
                 }
             }
+
         } else {
             $response = $this->createEventNotFoundErrorResult($eventId);
         }
