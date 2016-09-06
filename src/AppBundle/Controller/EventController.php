@@ -393,6 +393,7 @@ class EventController extends RestController
      * Delete event image
      * @Route("/{eventId}/image/{imageId}", name="event_image_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
