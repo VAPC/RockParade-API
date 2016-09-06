@@ -37,7 +37,7 @@ class ExceptionListener
         /** @var \Exception $exception */
         $exception = $event->getException();
 
-        if ($this->environment === Environment::PRODUCTION && $exception instanceof HttpExceptionInterface && $exception->getStatusCode() < 500) {
+        if ($this->environment === Environment::PRODUCTION && $exception instanceof HttpExceptionInterface && $exception->getStatusCode() >= 500) {
             $bugSerialNumber = HashGenerator::generate();
 
             $this->logger->info(
