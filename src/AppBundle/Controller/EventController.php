@@ -4,16 +4,11 @@ namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\DTO\CreateEventDTO;
-use AppBundle\Entity\Event;
 use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Entity\Repository\ImageRepository;
-use AppBundle\Exception\UnsupportedTypeException;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\CollectionApiResponse;
-use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
-use AppBundle\Response\LocationApiResponse;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -22,7 +17,6 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilder;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -119,7 +113,8 @@ class EventController extends RestController
         if ($event) {
             $response = new ApiResponse($event, Response::HTTP_OK);
         } else {
-            $response = $this->createEventNotFoundErrorResult($eventId);
+            $eventService = $this->get('rockparade.event');
+            $response = $eventService->createEventNotFoundErrorResult($eventId);
         }
 
         return $this->respond($response);
@@ -164,20 +159,8 @@ class EventController extends RestController
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
-            $newEvent = $this->createEventByForm($form);
-
-            /** @var EventRepository $eventRepository */
-            $eventRepository = $this->get('rockparade.event_repository');
-            $eventRepository->persist($newEvent);
-
-            try {
-                $eventRepository->flush();
-                $response = new CreatedApiResponse($this->createLocationById($newEvent->getId()));
-            } catch (UniqueConstraintViolationException $exception) {
-                $form->addError(new FormError('Event must have unique name and date.'));
-                $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
-            }
-
+            $eventService = $this->get('rockparade.event');
+            $response = $eventService->createEventByForm($form, $this->getUser());
         } else {
             $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
         }
@@ -226,31 +209,8 @@ class EventController extends RestController
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
-            /** @var EventRepository $eventRepository */
-            $eventRepository = $this->get('rockparade.event_repository');
-            /** @var Event $event */
-            $event = $eventRepository->findOneById($eventId);
-
-            if (!$event) {
-                $response = $this->createEventNotFoundErrorResult($eventId);
-            } else {
-                $eventName = $form->get('name')->getData();
-                /** @var \DateTime $eventDate */
-                $eventDate = $form->get('date')->getData();
-                $eventDescription = $form->get('description')->getData();
-
-                $event->setName($eventName);
-                $event->setDate($eventDate);
-                $event->setDescription($eventDescription);
-
-                try {
-                    $eventRepository->flush();
-                    $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
-                } catch (UniqueConstraintViolationException $exception) {
-                    $response = new ApiError(['Event must have unique name and date.'], Response::HTTP_BAD_REQUEST);
-                }
-            }
-
+            $eventService = $this->get('rockparade.event');
+            $response = $eventService->editEventByForm($form, $eventId);
         } else {
             $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
         }
@@ -284,7 +244,8 @@ class EventController extends RestController
 
             $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
         } else {
-            $response = $this->createEventNotFoundErrorResult($eventId);
+            $eventService = $this->get('rockparade.event');
+            $response = $eventService->createEventNotFoundErrorResult($eventId);
         }
 
         return $this->respond($response);
@@ -305,50 +266,8 @@ class EventController extends RestController
      */
     public function addImageAction(Request $request, string $eventId): Response
     {
-        /** @var EventRepository $eventRepository */
-        $eventRepository = $this->get('rockparade.event_repository');
-        $event = $eventRepository->findOneById($eventId);
-
-        if ($event) {
-            $image = $request->get('image');
-
-            $imageName = $image['name'] ?: null;
-            $imageContent = $image['content'] ?? null;
-
-            if (!$image || !$imageName || !$imageContent) {
-                $response = new ApiError(
-                    'Parameters are mandatory: image[name] and image[content].',
-                    Response::HTTP_BAD_REQUEST
-                );
-            } else {
-                try {
-                    $imageExtensionChecker = $this->get('rockparade.image_extension_checker');
-                    $imageExtension = $imageExtensionChecker->getExtensionFromBase64File($imageContent);
-                    $imageName = sprintf('%s.%s', $imageName, $imageExtension);
-
-                    $fileService = $this->get('rockparade.file_service');
-                    $image = $fileService->createBase64Image($imageName, $imageContent, $event);
-
-                    $imageLocation = $this->generateUrl(
-                        'event_image_view',
-                        [
-                            'eventId'   => $eventId,
-                            'imageName' => $image->getName(),
-                        ]
-                    );
-
-
-                    $response = new LocationApiResponse(Response::HTTP_OK, $imageLocation);
-                } catch (UnsupportedTypeException $exception) {
-                    $response = new ApiError(
-                        'Only images of types png, gif and jpeg are supported.',
-                        Response::HTTP_BAD_REQUEST
-                    );
-                }
-            }
-        } else {
-            $response = $this->createEventNotFoundErrorResult($eventId);
-        }
+        $eventService = $this->get('rockparade.event');
+        $response = $eventService->addImageToEvent($eventId, $request->get('image'));
 
         return $this->respond($response);
     }
@@ -383,7 +302,8 @@ class EventController extends RestController
                 $response = $apiResponseFactory->createNotFoundResponse();
             }
         } else {
-            $response = $this->createEventNotFoundErrorResult($eventId);
+            $eventService = $this->get('rockparade.event');
+            $response = $eventService->createEventNotFoundErrorResult($eventId);
         }
 
         return $this->respond($response);
@@ -424,18 +344,11 @@ class EventController extends RestController
                 $response = $apiResponseFactory->createNotFoundResponse();
             }
         } else {
-            $response = $this->createEventNotFoundErrorResult($eventId);
+            $eventService = $this->get('rockparade.event');
+            $response = $eventService->createEventNotFoundErrorResult($eventId);
         }
 
         return $this->respond($response);
-    }
-
-    private function createEventNotFoundErrorResult(string $eventId): ApiError
-    {
-        return new ApiError(
-            sprintf('Event with id "%s" was not found.', $eventId),
-            Response::HTTP_NOT_FOUND
-        );
     }
 
     private function createEventCreationForm(): FormInterface
@@ -454,19 +367,5 @@ class EventController extends RestController
         $formBuilder->add('description', TextareaType::class);
 
         return $formBuilder->getForm();
-    }
-
-    private function createLocationById(string $eventId): string
-    {
-        return $this->generateUrl('event_view', ['eventId' => $eventId]);
-    }
-
-    private function createEventByForm(FormInterface $form): Event
-    {
-        /** @var CreateEventDTO $createEventDTO */
-        $createEventDTO = $form->getData();
-        $creator = $this->getUser();
-
-        return new Event($createEventDTO->name, $creator, $createEventDTO->date, $createEventDTO->description);
     }
 }

@@ -18,7 +18,14 @@ class FileService
     /** @var string */
     private $imagesPath;
 
-    public function __construct(string $applicationRootPath, ImageRepository $imageRepository)
+    /** @var ImageExtensionChecker */
+    private $extensionChecker;
+
+    public function __construct(
+        string $applicationRootPath,
+        ImageRepository $imageRepository,
+        ImageExtensionChecker $extensionChecker
+    )
     {
         $this->imageRepository = $imageRepository;
         $this->imagesPath = $applicationRootPath . '/../var/upload/images';
@@ -26,6 +33,7 @@ class FileService
         if (!is_dir($this->imagesPath)) {
             mkdir($this->imagesPath, 0755, true);
         }
+        $this->extensionChecker = $extensionChecker;
     }
 
     public function createBase64Image(string $fileName, string $fileContents, $entity): Image
@@ -43,5 +51,10 @@ class FileService
         $this->imageRepository->flush();
 
         return $image;
+    }
+
+    public function getExtensionFromBase64File($imageContent): string
+    {
+        return $this->extensionChecker->getExtensionFromBase64File($imageContent);
     }
 }
