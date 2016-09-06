@@ -361,6 +361,8 @@ class EventController extends RestController
 
         if ($form->isValid()) {
             $eventService = $this->get('rockparade.event');
+            $eventId = (string) $eventId;
+
             if ($eventId) {
                 $response = $eventService->editEventByForm($form, $eventId);
             } else {
