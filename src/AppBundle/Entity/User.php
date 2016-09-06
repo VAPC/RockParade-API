@@ -51,8 +51,8 @@ class User implements UserInterface
     private $description;
 
     /**
-     * @var string
-     * @ORM\Column(name="vkontakte_id", type="string", length=50, nullable=false, unique=true)
+     * @var int
+     * @ORM\Column(name="vkontakte_id", type="integer", nullable=false, unique=true)
      * @Serializer\Exclude()
      */
     private $vkontakteId;
