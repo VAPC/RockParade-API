@@ -82,6 +82,10 @@ services:
     rockparade.event:
         class: AppBundle\Service\EventService
         arguments: ['@rockparade.event_repository', '@router', '@rockparade.file_service']
+    rockparade.extractor:
+        class: AppBundle\Service\Extractor\Extractor
+        arguments: ['@router']
+        public: false
 
     # Event listeners
     rockparade.event_listener.exception:
@@ -96,7 +100,7 @@ services:
             - { name: kernel.event_listener, event: kernel.controller, method: beforeController }
     rockparade.event_listener.serializer:
         class: AppBundle\EventListener\SerializerListener
-        arguments: ['@router']
+        arguments: ['@rockparade.extractor']
         scope: request
         tags:
             - { name: jms_serializer.subscribing_handler }
