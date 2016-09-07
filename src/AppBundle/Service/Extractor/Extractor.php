@@ -3,6 +3,7 @@
 namespace AppBundle\Service\Extractor;
 
 use AppBundle\Exception\UnsupportedEntityException;
+use AppBundle\Service\Extractor\Infrastructure\ExtractorInterface;
 use Symfony\Component\Routing\Router;
 
 /**
