@@ -16,15 +16,9 @@ class Link
     const ID_HASH_LENGTH = 32;
 
     /**
-     * @var int
-     * @ORM\Column(name="id", type="string", length=32)
-     * @ORM\Id
-     */
-    private $id;
-
-    /**
      * @var string
-     * @ORM\Column(name="url", type="string", length=255, unique=true)
+     * @ORM\Column(name="url", type="string", length=255)
+     * @ORM\Id
      */
     private $url;
 
@@ -44,5 +38,23 @@ class Link
         $this->id = $hashGenerator::generate(self::ID_HASH_LENGTH);
         $this->url = $url;
         $this->description = $description;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

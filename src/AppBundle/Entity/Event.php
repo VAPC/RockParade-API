@@ -66,7 +66,7 @@ class Event
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Link")
      * @ORM\JoinTable(name="event_links",
      *      joinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="link_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="link_url", referencedColumnName="url", unique=true, onDelete="CASCADE")}
      *      )
      */
     private $links;
