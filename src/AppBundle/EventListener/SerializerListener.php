@@ -40,10 +40,7 @@ class SerializerListener implements SubscribingHandlerInterface
      * @param object $entity Entity object
      * @throws UnsupportedEntityException
      */
-    public function extract(
-        JsonSerializationVisitor $visitor,
-        $entity
-    ): array
+    public function extract(JsonSerializationVisitor $visitor, $entity): array
     {
         return $this->extractor->extract($entity);
     }
