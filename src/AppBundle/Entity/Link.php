@@ -40,9 +40,8 @@ class Link
      */
     public function __construct(string $url, string $description = null, HashGenerator $hashGenerator = null)
     {
-        $this->id = $hashGenerator
-            ? $hashGenerator::generate(self::ID_HASH_LENGTH)
-            : HashGenerator::generate(self::ID_HASH_LENGTH);
+        $hashGenerator = $hashGenerator ?: new HashGenerator();
+        $this->id = $hashGenerator::generate(self::ID_HASH_LENGTH);
         $this->url = $url;
         $this->description = $description;
     }

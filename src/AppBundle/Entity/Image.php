@@ -14,6 +14,8 @@ use JMS\Serializer\Annotation as Serializer;
 class Image
 {
 
+    const ID_HASH_LENGTH = 32;
+
     /**
      * @var string
      * @ORM\Id
@@ -24,7 +26,7 @@ class Image
     public function __construct(string $name, HashGenerator $hashGenerator = null)
     {
         $hashGenerator = $hashGenerator ?: new HashGenerator();
-        $this->name = sprintf('%s-%s', $hashGenerator::generate(32), $name);
+        $this->name = sprintf('%s-%s', $hashGenerator::generate(self::ID_HASH_LENGTH), $name);
     }
 
     public function getName(): string

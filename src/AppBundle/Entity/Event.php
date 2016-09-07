@@ -52,19 +52,24 @@ class Event
     private $creator;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Image")
-     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
-     */
-
-    /**
      * @var Image[]|ArrayCollection
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Image", orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Image")
      * @ORM\JoinTable(name="event_images",
      *      joinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="image_name", referencedColumnName="name", unique=true)}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="image_name", referencedColumnName="name", unique=true, onDelete="CASCADE")}
      *      )
      */
     private $images;
+
+    /**
+     * @var Link[]|ArrayCollection
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Link")
+     * @ORM\JoinTable(name="event_links",
+     *      joinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="link_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
+     *      )
+     */
+    private $links;
 
     public function __construct(
         string $name,
@@ -80,6 +85,7 @@ class Event
         $this->description = $description;
         $this->id = $hashGenerator ? $hashGenerator::generate() : HashGenerator::generate();
         $this->images = new ArrayCollection();
+        $this->links = new ArrayCollection();
     }
 
     public function getDate(): string
@@ -123,11 +129,19 @@ class Event
     }
 
     /**
-     * @return Image[]|PersistentCollection
+     * @return Image[]|PersistentCollection|ArrayCollection
      */
     public function getImages()
     {
         return $this->images;
+    }
+
+    /**
+     * @return Link[]|PersistentCollection|ArrayCollection
+     */
+    public function getLinks()
+    {
+        return $this->links;
     }
 
     /**
@@ -152,5 +166,15 @@ class Event
     public function removeImage(Image $image)
     {
         $this->images->removeElement($image);
+    }
+
+    public function addLink(Link $link)
+    {
+        $this->links->add($link);
+    }
+
+    public function removeLink(Link $link)
+    {
+        $this->links->removeElement($link);
     }
 }
