@@ -46,7 +46,7 @@ class SerializerListener implements SubscribingHandlerInterface
         $config = [];
 
         foreach ($entities as $entityClassName) {
-            return ['format' => 'json', 'type' => $entityClassName, 'method' => 'extract'];
+            $config[] = ['format' => 'json', 'type' => $entityClassName, 'method' => 'extract'];
         }
 
         return $config;
