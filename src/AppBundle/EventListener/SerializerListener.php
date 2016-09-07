@@ -28,7 +28,6 @@ class SerializerListener implements SubscribingHandlerInterface
     {
         return [
             [
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
                 'type'      => Event::class,
                 'method'    => 'extract',
