@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service\Extractor;
 
-use AppBundle\Exception\UnsupportedEntityException;
+use AppBundle\Exception\ExtractorNotExists;
 use AppBundle\Service\Extractor\Infrastructure\ExtractorInterface;
 use Symfony\Component\Routing\Router;
 
@@ -22,7 +22,7 @@ class Extractor
 
     /**
      * @param object $entity Entity object
-     * @throws UnsupportedEntityException
+     * @throws ExtractorNotExists
      */
     public function extract($entity)
     {
@@ -30,11 +30,12 @@ class Extractor
         $extractorClassName = __NAMESPACE__ . '\\' . $entityClassName . 'Extractor';
 
         if (!class_exists($extractorClassName)) {
-            throw new UnsupportedEntityException();
+            throw new ExtractorNotExists();
         }
 
         /** @var ExtractorInterface $extractor */
         $extractor = new $extractorClassName($this->router);
+
         return $extractor->extract($entity);
     }
 }
