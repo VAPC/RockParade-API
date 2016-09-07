@@ -24,7 +24,7 @@ class Link
 
     /**
      * @var string
-     * @ORM\Column(name="url", type="string", length=255)
+     * @ORM\Column(name="url", type="string", length=255, unique=true)
      */
     private $url;
 
