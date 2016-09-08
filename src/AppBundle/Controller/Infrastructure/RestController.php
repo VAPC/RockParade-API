@@ -23,7 +23,7 @@ class RestController extends Controller
 
     public function respond(AbstractApiResponse $apiResponse): Response
     {
-        $response = $this->get('rockparade.response_factory')->createResponse($apiResponse);
+        $response = $this->get('rockparade.http_response_factory')->createResponse($apiResponse);
 
         $this->setLocation($response, $apiResponse);
         $this->setContentType($apiResponse, $response);
