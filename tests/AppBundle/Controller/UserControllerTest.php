@@ -46,7 +46,7 @@ class UserControllerTest extends FunctionalTester
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(404, $responseCode);
-        $this->assertContains('User with login "notexistinguser" was not found.', $contents['errors']);
+        $this->assertContains('User "notexistinguser" was not found.', $contents['errors']);
     }
 
     /** @test */

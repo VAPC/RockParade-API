@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Repository\UserRepository;
+use AppBundle\Entity\User;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -42,7 +43,7 @@ class UserController extends RestController
         if ($user) {
             $response = new ApiResponse($user, Response::HTTP_OK);
         } else {
-            $response = $this->createUserNotFoundErrorResult($login);
+            $response = $this->createEntityNotFoundResponse(User::class, $login);
         }
 
         return $this->respond($response);
@@ -71,14 +72,6 @@ class UserController extends RestController
         }
 
         return $this->respond($response);
-    }
-
-    private function createUserNotFoundErrorResult(string $userLogin): ApiError
-    {
-        return new ApiError(
-            sprintf('User with login "%s" was not found.', $userLogin),
-            Response::HTTP_NOT_FOUND
-        );
     }
 
     private function createUserNotLoggedInErrorResult(): ApiError
