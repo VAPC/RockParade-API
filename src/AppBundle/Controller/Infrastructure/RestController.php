@@ -3,6 +3,8 @@
 namespace AppBundle\Controller\Infrastructure;
 
 use AppBundle\Entity\Infrasctucture\AbstractRepository;
+use AppBundle\Exception\EntityNotFoundException;
+use AppBundle\Response\ApiError;
 use AppBundle\Response\CollectionApiResponse;
 use AppBundle\Response\FileResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
@@ -68,6 +70,22 @@ class RestController extends Controller
         $response = new CollectionApiResponse($entities, Response::HTTP_OK, $entitiesQuantity, $limit, $offset);
 
         return $response;
+    }
+
+    /**
+     * @param string $entityFullName Entity class name
+     * @param string|int $id Entity id
+     * @return ApiError
+     * @throws EntityNotFoundException
+     */
+    protected function createEntityNotFoundResponse(string $entityFullName, $id): ApiError
+    {
+        $entityName = (new \ReflectionClass($entityFullName))->getShortName();
+
+        return new ApiError(
+            sprintf('%s "%s" was not found.', $entityName, $id),
+            Response::HTTP_NOT_FOUND
+        );
     }
 
     private function setLocation(Response $response, AbstractApiResponse $apiResponse)

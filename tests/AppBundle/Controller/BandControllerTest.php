@@ -133,7 +133,7 @@ class BandControllerTest extends FunctionalTester
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(404, $responseCode);
-        $this->assertContains('Band with name "VeryUnexistingBand" was not found.', $contents['errors']);
+        $this->assertContains('Band "VeryUnexistingBand" was not found.', $contents['errors']);
     }
 
     /** @test */

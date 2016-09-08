@@ -2,17 +2,19 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Band;
+use AppBundle\Entity\BandMember;
 use AppBundle\Entity\DTO\CreateBandMemberDTO;
 use AppBundle\Entity\DTO\CreateBand;
 use AppBundle\Entity\DTO\UpdateBandMemberDTO;
 use AppBundle\Entity\Repository\BandRepository;
+use AppBundle\Entity\User;
 use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use AppBundle\Service\BandService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\Form;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiResponse;
@@ -74,7 +76,7 @@ class BandController extends RestController
         if ($band) {
             $response = new ApiResponse($band, Response::HTTP_OK);
         } else {
-            $response = $this->createBandNotFoundErrorResult($bandName);
+            $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
         }
 
         return $this->respond($response);
@@ -187,7 +189,7 @@ class BandController extends RestController
         $band = $bandRepository->findOneByName($bandName);
 
         if (!$band) {
-            $response = $this->createBandNotFoundErrorResult($bandName);
+            $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
         } else {
             $response = new ApiResponse($band->getMembers(), Response::HTTP_OK);
         }
@@ -239,13 +241,13 @@ class BandController extends RestController
             $band = $bandRepository->findOneByName($bandName);
 
             if (!$band) {
-                $response = $this->createBandNotFoundErrorResult($bandName);
+                $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
             } else {
                 $newUserLogin = $form->get('login')->getData();
                 $newUser = $this->get('rockparade.user_repository')->findOneByLogin($newUserLogin);
 
                 if (!$newUser) {
-                    $response = $this->createUserNotFoundErrorResult($newUserLogin);
+                    $response = $this->createEntityNotFoundResponse(User::class, $newUserLogin);
                 } else {
                     $bandMemberRepository = $this->get('rockparade.band_member_repository');
                     $shortDescription = (string) $form->get('short_description')->getData();
@@ -304,13 +306,13 @@ class BandController extends RestController
 
                     $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
                 } else {
-                    $response = $this->createBandMemberNotFoundErrorResult($userLogin, $bandName);
+                    $response = $this->createEntityNotFoundResponse(BandMember::class, $userLogin);
                 }
             } else {
-                $response = $this->createUserNotFoundErrorResult($userLogin);
+                $response = $this->createEntityNotFoundResponse(User::class, $userLogin);
             }
         } else {
-            $response = $this->createBandNotFoundErrorResult($bandName);
+            $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
         }
 
         return $this->respond($response);
@@ -367,51 +369,16 @@ class BandController extends RestController
 
                     $response = $this->createResponseFromUpdateForm($form);
                 } else {
-                    $response = $this->createBandMemberNotFoundErrorResult($userLogin, $bandName);
+                    $response = $this->createEntityNotFoundResponse(BandMember::class, $userLogin);
                 }
-
             } else {
-                $response = $this->createUserNotFoundErrorResult($userLogin);
+                $response = $this->createEntityNotFoundResponse(User::class, $userLogin);
             }
         } else {
-            $response = $this->createBandNotFoundErrorResult($bandName);
+            $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
         }
 
         return $this->respond($response);
-    }
-
-    private function createBandNotFoundErrorResult(string $bandName): ApiError
-    {
-        return new ApiError(
-            sprintf('Band with name "%s" was not found.', $bandName),
-            Response::HTTP_NOT_FOUND
-        );
-    }
-
-    private function createUserNotFoundErrorResult(string $userLogin): ApiError
-    {
-        return new ApiError(
-            sprintf('User with login "%s" was not found.', $userLogin),
-            Response::HTTP_NOT_FOUND
-        );
-    }
-
-    private function createBandMemberNotFoundErrorResult(string $userLogin, string $bandName): ApiError
-    {
-        return new ApiError(
-            sprintf('Band member with login "%s" was not found for band "%s".', $userLogin, $bandName),
-            Response::HTTP_NOT_FOUND
-        );
-    }
-
-    private function createFormBandCreate(): Form
-    {
-        $formBuilder = $this->createFormBuilder(new CreateBand());
-        $formBuilder->add('name', TextType::class);
-        $formBuilder->add(BandService::ATTRIBUTE_MEMBERS, TextType::class);
-        $formBuilder->add('description', TextareaType::class);
-
-        return $formBuilder->getForm();
     }
 
     private function createLocationByNameFieldInForm(FormInterface $form): string
@@ -445,6 +412,16 @@ class BandController extends RestController
         } else {
             return new ApiValidationError($form);
         }
+    }
+
+    private function createFormBandCreate(): FormInterface
+    {
+        $formBuilder = $this->createFormBuilder(new CreateBand());
+        $formBuilder->add('name', TextType::class);
+        $formBuilder->add(BandService::ATTRIBUTE_MEMBERS, TextType::class);
+        $formBuilder->add('description', TextareaType::class);
+
+        return $formBuilder->getForm();
     }
 
     private function createFormUpdateBandMember(): FormInterface
