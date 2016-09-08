@@ -131,21 +131,6 @@ class BandService
         );
     }
 
-    /**
-     * @param FormInterface $form
-     * @return string[]
-     */
-    protected function getFormErrors(FormInterface $form): array
-    {
-        $errors = [];
-
-        foreach ($form->getErrors(true) as $error) {
-            $errors[] = $error->getMessage();
-        }
-
-        return $errors;
-    }
-
     public function processFormAndUpdateBandMember(FormInterface $form, BandMember $bandMember): FormInterface
     {
         $shortDescription = $form->get('short_description')->getData();
