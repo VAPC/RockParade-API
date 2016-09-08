@@ -86,7 +86,7 @@ class EventController extends RestController
     public function listAction($limit = null, $offset = null): Response
     {
         return $this->respond(
-            $this->createCollectionResponse(
+            $this->createCompleteCollectionResponse(
                 $this->get('rockparade.event_repository'),
                 $limit,
                 $offset

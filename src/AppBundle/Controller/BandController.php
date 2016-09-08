@@ -48,7 +48,7 @@ class BandController extends RestController
     public function listAction($limit = null, $offset = null): Response
     {
         return $this->respond(
-            $this->createCollectionResponse(
+            $this->createCompleteCollectionResponse(
                 $this->get('rockparade.band_repository'),
                 $limit,
                 $offset

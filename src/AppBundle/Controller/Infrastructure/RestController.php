@@ -57,7 +57,7 @@ class RestController extends Controller
      * @param integer|null $limit
      * @param integer|null $offset
      */
-    protected function createCollectionResponse(AbstractRepository $repository, $limit, $offset): CollectionApiResponse
+    protected function createCompleteCollectionResponse(AbstractRepository $repository, $limit, $offset): CollectionApiResponse
     {
         $limit = (int) filter_var($limit, FILTER_VALIDATE_INT);
         $offset = (int) filter_var($offset, FILTER_VALIDATE_INT);
