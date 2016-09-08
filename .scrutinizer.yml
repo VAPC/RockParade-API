@@ -19,4 +19,6 @@ filter:
     - "bin/*"
     - "tests/*"
     - "var/*"
+    - "src/AppBundle/Exception/*"
     - "src/AppBundle/Fixture/*"
+    - "src/AppBundle/Command/Composer/*"
