@@ -6,7 +6,9 @@ use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Entity\Repository\ImageRepository;
+use AppBundle\Form\Event\LinksCollectionType;
 use AppBundle\Response\ApiError;
+use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CollectionApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
@@ -342,6 +344,52 @@ class EventController extends RestController
         return $this->respond($response);
     }
 
+    /**
+     * Add links to event
+     * @Route("/{eventId}/links", name="event_links_add")
+     * @Method("POST")
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *     section="Event",
+     *     requirements={
+     *         {
+     *             "name"="links",
+     *             "dataType"="array",
+     *             "requirement"="true",
+     *             "description"="list of links"
+     *         },
+     *         {
+     *             "name"="links[0][url]",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="link url"
+     *         },
+     *         {
+     *             "name"="links[0][description]",
+     *             "dataType"="string",
+     *             "requirement"="false",
+     *             "description"="link description"
+     *         },
+     *     },
+     *     statusCodes={
+     *         403="Only event creator can add links",
+     *         404="Event with given id was not found",
+     *     }
+     * )
+     * @param string $eventId event id
+     */
+    public function addLinksAction(Request $request, string $eventId): Response
+    {
+        $eventService = $this->get('rockparade.event');
+
+        $form = $this->createForm(LinksCollectionType::class);
+        $this->processForm($request, $form);
+
+        $response = $eventService->addLinksToEvent($eventId, $this->getUser(), $form);
+
+        return $this->respond($response);
+    }
+
     private function createEventCreationForm(): FormInterface
     {
         /** @var FormBuilder $formBuilder */
@@ -375,7 +423,7 @@ class EventController extends RestController
                 $response = $eventService->createEventByForm($form, $this->getUser());
             }
         } else {
-            $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
+            $response = new ApiValidationError($form);
         }
 
         return $response;

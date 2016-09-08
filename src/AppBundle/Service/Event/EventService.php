@@ -1,13 +1,16 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Service\Event;
 
 use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Repository\EventRepository;
+use AppBundle\Entity\Repository\LinkRepository;
 use AppBundle\Entity\User;
 use AppBundle\Exception\UnsupportedTypeException;
+use AppBundle\Form\Event\LinksCollectionDTO;
 use AppBundle\Response\ApiError;
+use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
@@ -27,6 +30,9 @@ class EventService
     /** @var EventRepository */
     private $eventRepository;
 
+    /** @var LinkRepository */
+    private $linkRepository;
+
     /** @var Router */
     private $router;
 
@@ -35,10 +41,12 @@ class EventService
 
     public function __construct(
         EventRepository $eventRepository,
+        LinkRepository $linkRepository,
         Router $router,
         FileService $fileService
     ) {
         $this->eventRepository = $eventRepository;
+        $this->linkRepository = $linkRepository;
         $this->router = $router;
         $this->fileService = $fileService;
     }
@@ -130,12 +138,54 @@ class EventService
                     }
                 }
             }
-
         } else {
             $response = $this->createEventNotFoundErrorResult($eventId);
         }
 
         return $response;
+    }
+
+    public function addLinksToEvent(string $eventId, User $requestExecutor, FormInterface $form): AbstractApiResponse
+    {
+        if (!$form->isValid()) {
+        	return new ApiValidationError($form);
+        }
+
+        $event = $this->eventRepository->findOneById($eventId);
+
+        if ($event) {
+            if ($this->executorIsCreator($requestExecutor, $event)) {
+
+                /** @var LinksCollectionDTO $linksCollectionDTO */
+                $linksCollectionDTO = $form->getData();
+
+                foreach ($linksCollectionDTO->links as $linkData) {
+                    $linkUrl = $linkData['url'] ?? null;
+                    $linkDescription = $linkData['description'] ?? null;
+                    $link = $this->linkRepository->getOrCreateLink($linkUrl, $linkDescription);
+                    $this->linkRepository->persist($link);
+                    $event->addLink($link);
+                }
+
+                try {
+                    $this->eventRepository->flush();
+                    $response = new CreatedApiResponse($this->createLocationById($eventId));
+                } catch (UniqueConstraintViolationException $exception) {
+                    $response = new ApiError('Links must have unique url.', Response::HTTP_BAD_REQUEST);
+                }
+            } else {
+                $response = new ApiError('Only event creator can add links.', Response::HTTP_FORBIDDEN);
+            }
+        } else {
+            $response = $this->createEventNotFoundErrorResult($eventId);
+        }
+
+        return $response;
+    }
+
+    private function executorIsCreator(User $executor, Event $event): bool
+    {
+        return $executor->getLogin() === $event->getCreator()->getLogin();
     }
 
     public function createEventNotFoundErrorResult(string $eventId): ApiError

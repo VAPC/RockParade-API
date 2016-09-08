@@ -54,6 +54,10 @@ services:
         class: AppBundle\Entity\Repository\ImageRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Image']
+    rockparade.link_repository:
+        class: AppBundle\Entity\Repository\LinkRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ['AppBundle\Entity\Link']
 
     # Services
     rockparade.band:
@@ -80,8 +84,8 @@ services:
         class: AppBundle\Response\ApiResponseFactory
         arguments: ['%kernel.root_dir%']
     rockparade.event:
-        class: AppBundle\Service\EventService
-        arguments: ['@rockparade.event_repository', '@router', '@rockparade.file_service']
+        class: AppBundle\Service\Event\EventService
+        arguments: ['@rockparade.event_repository', '@rockparade.link_repository', '@router', '@rockparade.file_service']
     rockparade.extractor:
         class: AppBundle\Service\Extractor\Extractor
         arguments: ['@router']
