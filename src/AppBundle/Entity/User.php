@@ -2,13 +2,10 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Infrasctucture\FormattedRegistrationDateTrait;
 use AppBundle\Service\HashGenerator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
-use JMS\Serializer\Annotation\Accessor;
-use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type as SerializerType;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -19,8 +16,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
-
-    use FormattedRegistrationDateTrait;
 
     const TOKEN_LENGTH = 32;
 
@@ -74,9 +69,6 @@ class User implements UserInterface
     /**
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime", nullable=false)
-     * @SerializedName("registration_date")
-     * @Accessor(getter="getRegistrationDate")
-     * @SerializerType("string")
      */
     private $registrationDate;
 

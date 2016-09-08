@@ -16,21 +16,18 @@ use JMS\Serializer\Annotation\Type as SerializerType;
  */
 abstract class Ambassador
 {
-    use FormattedRegistrationDateTrait;
     use CreatorLoginTrait;
 
     /**
      * @var string
      * @ORM\Id
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     protected $name;
 
     /**
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime")
-     * @Accessor(getter="getRegistrationDate")
-     * @SerializerType("string")
      */
     protected $registrationDate;
 
@@ -92,5 +89,10 @@ abstract class Ambassador
     public function setDescription(string $description)
     {
         $this->description = $description;
+    }
+
+    public function getCreator(): User
+    {
+        return $this->creator;
     }
 }

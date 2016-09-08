@@ -11,13 +11,10 @@ use AppBundle\Entity\User;
 trait CreatorLoginTrait
 {
 
-    /**
-     * @return null|string
-     */
-    public function getCreatorLogin()
+    abstract function getCreator(): User;
+
+    public function getCreatorLogin(): string
     {
-        return $this->creator instanceof User
-            ? $this->creator->getLogin()
-            : null;
+        return $this->getCreator()->getLogin();
     }
 }
