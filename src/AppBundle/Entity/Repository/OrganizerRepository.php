@@ -2,7 +2,10 @@
 
 namespace AppBundle\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use AppBundle\Entity\Infrasctucture\AbstractRepository;
 
 /** {@inheritDoc} */
-class OrganizerRepository extends EntityRepository {}
+class OrganizerRepository extends AbstractRepository
+{
+
+}

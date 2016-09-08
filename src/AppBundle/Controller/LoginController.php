@@ -14,8 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * @Route("login")
  * @author Vehsamrak
+ * @Route("login")
  */
 class LoginController extends RestController
 {

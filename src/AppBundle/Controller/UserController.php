@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Actions with users
+ * @author Vehsamrak
  * @Route("user")
  */
 class UserController extends RestController

@@ -26,8 +26,8 @@ use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Response\ApiResponse;
 
 /**
- * @Route("event")
  * @author Vehsamrak
+ * @Route("event")
  */
 class EventController extends RestController
 {

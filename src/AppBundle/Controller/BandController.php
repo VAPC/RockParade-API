@@ -27,8 +27,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @Route("band")
  * @author Vehsamrak
+ * @Route("band")
  */
 class BandController extends RestController
 {

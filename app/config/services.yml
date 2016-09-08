@@ -58,6 +58,10 @@ services:
         class: AppBundle\Entity\Repository\LinkRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Link']
+    rockparade.organizer_repository:
+        class: AppBundle\Entity\Repository\OrganizerRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ['AppBundle\Entity\Organizer']
 
     # Services
     rockparade.band:
