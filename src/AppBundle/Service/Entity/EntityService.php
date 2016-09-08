@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @author Vehsamrak
  */
-abstract class EntityService
+class EntityService
 {
 
     /**

@@ -64,6 +64,8 @@ services:
         arguments: ['AppBundle\Entity\Organizer']
 
     # Services
+    rockparade.entity_service:
+        class: AppBundle\Service\Entity\EntityService
     rockparade.band:
         class: AppBundle\Service\Entity\BandService
         arguments: ['@rockparade.band_repository', '@rockparade.band_member_repository', '@rockparade.user_repository']

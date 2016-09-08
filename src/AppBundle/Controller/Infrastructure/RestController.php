@@ -80,12 +80,7 @@ class RestController extends Controller
      */
     protected function createEntityNotFoundResponse(string $entityFullName, $id): ApiError
     {
-        $entityName = (new \ReflectionClass($entityFullName))->getShortName();
-
-        return new ApiError(
-            sprintf('%s "%s" was not found.', $entityName, $id),
-            Response::HTTP_NOT_FOUND
-        );
+        return $this->get('rockparade.entity_service')->createEntityNotFoundResponse($entityFullName, $id);
     }
 
     private function setLocation(Response $response, AbstractApiResponse $apiResponse)
