@@ -13,7 +13,7 @@ use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
-use AppBundle\Service\BandService;
+use AppBundle\Service\Entity\BandService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Response\ApiError;

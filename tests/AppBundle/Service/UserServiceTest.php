@@ -4,7 +4,7 @@ namespace Tests\AppBundle\Service;
 
 use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Entity\User;
-use AppBundle\Service\UserService;
+use AppBundle\Service\Entity\UserService;
 use AppBundle\Service\Vkontakte\AccessToken;
 use AppBundle\Service\Vkontakte\VkontakteClient;
 use Liip\FunctionalTestBundle\Test\WebTestCase;

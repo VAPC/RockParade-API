@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service\Event;
+namespace AppBundle\Service\Entity;
 
 use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Router;
 /**
  * @author Vehsamrak
  */
-class EventService
+class EventService extends EntityService
 {
 
     /** @var EventRepository */

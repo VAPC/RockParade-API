@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Service\Entity;
 
 use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormInterface;
 /**
  * @author Vehsamrak
  */
-class BandService
+class BandService extends EntityService
 {
     const ATTRIBUTE_MEMBERS = 'members';
     const CREATOR_DEFAULT_MEMBER_SHORT_DESCRIPTION = 'Founder';

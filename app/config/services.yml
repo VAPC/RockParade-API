@@ -65,10 +65,10 @@ services:
 
     # Services
     rockparade.band:
-        class: AppBundle\Service\BandService
+        class: AppBundle\Service\Entity\BandService
         arguments: ['@rockparade.band_repository', '@rockparade.band_member_repository', '@rockparade.user_repository']
     rockparade.user:
-        class: AppBundle\Service\UserService
+        class: AppBundle\Service\Entity\UserService
         arguments: ['@rockparade.vkontakte', '@rockparade.user_repository']
     rockparade.http_response_factory:
         class: AppBundle\Service\HttpResponseFactory
@@ -88,7 +88,7 @@ services:
         class: AppBundle\Response\ApiResponseFactory
         arguments: ['%kernel.root_dir%']
     rockparade.event:
-        class: AppBundle\Service\Event\EventService
+        class: AppBundle\Service\Entity\EventService
         arguments: ['@rockparade.event_repository', '@rockparade.link_repository', '@router', '@rockparade.file_service']
     rockparade.extractor:
         class: AppBundle\Service\Extractor\Extractor

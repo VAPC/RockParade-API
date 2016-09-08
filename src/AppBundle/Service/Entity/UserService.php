@@ -1,16 +1,17 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Service\Entity;
 
 use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Entity\User;
+use AppBundle\Service\HashGenerator;
 use AppBundle\Service\Vkontakte\AccessToken;
 use AppBundle\Service\Vkontakte\VkontakteClient;
 
 /**
  * @author Vehsamrak
  */
-class UserService
+class UserService extends EntityService
 {
 
     /** @var UserRepository */
