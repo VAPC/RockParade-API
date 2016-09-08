@@ -4,6 +4,7 @@ namespace Tests\AppBundle\Controller;
 
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Image;
+use AppBundle\Entity\Link;
 use AppBundle\Fixture\EventFixture;
 use AppBundle\Fixture\UserFixture;
 use Tests\FunctionalTester;
@@ -379,7 +380,49 @@ class EventControllerTest extends FunctionalTester
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $this->getResponseCode());
-        $this->assertEquals(self::VALID_URL_SECOND, $contents['data']['links'][1]['url']);
+        $this->assertCount(3, $contents['data']['links']);
+    }
+
+    /** @test */
+    public function deleteLinksAction_DELETEEventIdLinkUrlAndExecutorIsNotEventCreator_accessDenied()
+    {
+        $this->givenExecutorNotEventCreator();
+        $event = $this->getFixtureEvent();
+        /** @var Link $link */
+        $link = $event->getLinks()->first();
+        $requestString = sprintf('/event/%s/link/%s', $event->getId(), $link->getId());
+
+        $this->sendDeleteRequest($requestString);
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(403, $this->getResponseCode());
+        $this->assertContains('Only event creator can delete links.', $contents['errors']);
+    }
+
+    /** @test */
+    public function deleteLinksAction_DELETEEventIdLinkUrlAndExecutorIsEventCreator_linkDeleted()
+    {
+        $event = $this->getFixtureEvent();
+        /** @var Link $link */
+        $link = $event->getLinks()->first();
+        $eventId = $event->getId();
+        $requestString = sprintf('/event/%s/link/%s', $eventId, $link->getId());
+
+        $this->sendGetRequest(sprintf('/event/%s', $eventId));
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertCount(1, $contents['data']['links']);
+
+        $this->sendDeleteRequest($requestString);
+
+        $this->assertEquals(200, $this->getResponseCode());
+
+        $this->sendGetRequest(sprintf('/event/%s', $eventId));
+        $contents = $this->getResponseContents();
+
+        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertCount(0, $contents['data']['links']);
     }
 
     private function getFixtureEvent(): Event

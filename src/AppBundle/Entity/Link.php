@@ -17,8 +17,14 @@ class Link
 
     /**
      * @var string
-     * @ORM\Column(name="url", type="string", length=255)
+     * @ORM\Column(name="id", type="string", length=32)
      * @ORM\Id
+     */
+    private $id;
+
+    /**
+     * @var string
+     * @ORM\Column(name="url", type="string", length=255, unique=true)
      */
     private $url;
 

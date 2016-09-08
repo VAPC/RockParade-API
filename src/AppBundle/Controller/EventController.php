@@ -372,6 +372,7 @@ class EventController extends RestController
      *         },
      *     },
      *     statusCodes={
+     *         400="Links must have unique url",
      *         403="Only event creator can add links",
      *         404="Event with given id was not found",
      *     }
@@ -386,6 +387,30 @@ class EventController extends RestController
         $this->processForm($request, $form);
 
         $response = $eventService->addLinksToEvent($eventId, $this->getUser(), $form);
+
+        return $this->respond($response);
+    }
+
+    /**
+     * Delete link from event
+     * @Route("/{eventId}/link/{linkId}", name="event_link_delete")
+     * @Method("DELETE")
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *     section="Event",
+     *     statusCodes={
+     *         403="Only event creator can delete links",
+     *         404="Event with given id was not found",
+     *         404="Link with given id was not found",
+     *     }
+     * )
+     * @param string $eventId event id
+     * @param string $linkId link id
+     */
+    public function deleteLinkAction(string $eventId, string $linkId)
+    {
+        $eventService = $this->get('rockparade.event');
+        $response = $eventService->removeLinksFromEvent($eventId, $linkId, $this->getUser());
 
         return $this->respond($response);
     }

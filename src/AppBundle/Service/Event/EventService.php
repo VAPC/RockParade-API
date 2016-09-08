@@ -98,12 +98,12 @@ class EventService
         return $response;
     }
 
-    public function addImageToEvent(string $eventId, User $requestExecutor, array $imageData = null): AbstractApiResponse
+    public function addImageToEvent(string $eventId, User $executor, array $imageData = null): AbstractApiResponse
     {
         $event = $this->eventRepository->findOneById($eventId);
 
         if ($event) {
-            if ($requestExecutor->getLogin() !== $event->getCreator()->getLogin()) {
+            if ($executor->getLogin() !== $event->getCreator()->getLogin()) {
             	$response = new ApiError('Only event creator can add images.', Response::HTTP_FORBIDDEN);
             } else {
                 $imageName = $imageData['name'] ?: null;
@@ -145,7 +145,7 @@ class EventService
         return $response;
     }
 
-    public function addLinksToEvent(string $eventId, User $requestExecutor, FormInterface $form): AbstractApiResponse
+    public function addLinksToEvent(string $eventId, User $executor, FormInterface $form): AbstractApiResponse
     {
         if (!$form->isValid()) {
         	return new ApiValidationError($form);
@@ -154,7 +154,7 @@ class EventService
         $event = $this->eventRepository->findOneById($eventId);
 
         if ($event) {
-            if ($this->executorIsCreator($requestExecutor, $event)) {
+            if ($this->executorIsCreator($executor, $event)) {
 
                 /** @var LinksCollectionDTO $linksCollectionDTO */
                 $linksCollectionDTO = $form->getData();
@@ -183,9 +183,29 @@ class EventService
         return $response;
     }
 
-    private function executorIsCreator(User $executor, Event $event): bool
+    public function removeLinksFromEvent(string $eventId, string $linkId, User $executor): AbstractApiResponse
     {
-        return $executor->getLogin() === $event->getCreator()->getLogin();
+        $event = $this->eventRepository->findOneById($eventId);
+
+        if ($event) {
+            if ($this->executorIsCreator($executor, $event)) {
+                $link = $this->linkRepository->findOneById($linkId);
+
+                if ($link) {
+                    $event->removeLink($link);
+                    $this->linkRepository->flush();
+                    $response = new EmptyApiResponse(Response::HTTP_OK);
+                } else {
+                    $response = $this->createLinkNotFoundErrorResult($linkId);
+                }
+            } else {
+                $response = new ApiError('Only event creator can delete links.', Response::HTTP_FORBIDDEN);
+            }
+        } else {
+            $response = $this->createEventNotFoundErrorResult($eventId);
+        }
+
+        return $response;
     }
 
     public function createEventNotFoundErrorResult(string $eventId): ApiError
@@ -194,6 +214,19 @@ class EventService
             sprintf('Event with id "%s" was not found.', $eventId),
             Response::HTTP_NOT_FOUND
         );
+    }
+
+    private function createLinkNotFoundErrorResult(string $linkUrl): ApiError
+    {
+        return new ApiError(
+            sprintf('Link with url "%s" was not found.', $linkUrl),
+            Response::HTTP_NOT_FOUND
+        );
+    }
+
+    private function executorIsCreator(User $executor, Event $event): bool
+    {
+        return $executor->getLogin() === $event->getCreator()->getLogin();
     }
 
     private function createLocationById(string $eventId): string

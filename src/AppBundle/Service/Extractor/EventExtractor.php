@@ -58,6 +58,7 @@ class EventExtractor extends AbstractExtractor
         return array_map(
             function (Link $link) {
                 return [
+                    'id'          => $link->getId(),
                     'url'         => $link->getUrl(),
                     'description' => $link->getDescription(),
                 ];
