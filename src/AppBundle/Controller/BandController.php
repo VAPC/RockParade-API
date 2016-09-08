@@ -6,6 +6,7 @@ use AppBundle\Entity\DTO\CreateBandMemberDTO;
 use AppBundle\Entity\DTO\CreateBand;
 use AppBundle\Entity\DTO\UpdateBandMemberDTO;
 use AppBundle\Entity\Repository\BandRepository;
+use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
@@ -266,7 +267,7 @@ class BandController extends RestController
                 }
             }
         } else {
-            $response = new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
+            $response = new ApiValidationError($form);
         }
 
         return $this->respond($response);
@@ -433,7 +434,7 @@ class BandController extends RestController
         if ($form->isValid()) {
             return new CreatedApiResponse($this->createLocationByNameFieldInForm($form));
         } else {
-            return new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
+            return new ApiValidationError($form);
         }
     }
 
@@ -445,7 +446,7 @@ class BandController extends RestController
         if ($form->isValid()) {
             return new EmptyApiResponse(Response::HTTP_NO_CONTENT);
         } else {
-            return new ApiError($this->getFormErrors($form), Response::HTTP_BAD_REQUEST);
+            return new ApiValidationError($form);
         }
     }
 
