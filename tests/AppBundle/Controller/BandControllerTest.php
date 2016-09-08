@@ -11,6 +11,7 @@ use Tests\FunctionalTester;
  */
 class BandControllerTest extends FunctionalTester
 {
+
     const BAND_NAME_FIRST = 'Banders';
     const BAND_NAME_FIRST_EDITED = 'New Derbans';
     const BAND_NAME_SECOND = 'Derbans';

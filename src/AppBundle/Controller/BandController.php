@@ -32,6 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class BandController extends RestController
 {
+
     /**
      * List all registered bands
      * @Route("s/{limit}/{offset}", name="bands_list")

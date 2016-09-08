@@ -13,7 +13,6 @@ class UserControllerTest extends FunctionalTester
 
     const USER_LOGIN_FIRST = 'first';
     const USER_NAME_FIRST = 'Mr. First';
-    const USER_REGISTRATION_DATE_FIRST = '2016-09-08 21:37';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -36,7 +35,7 @@ class UserControllerTest extends FunctionalTester
         $this->assertEquals(200, $responseCode);
         $this->assertEquals(self::USER_LOGIN_FIRST, $contents['data']['login']);
         $this->assertEquals(self::USER_NAME_FIRST, $contents['data']['name']);
-        $this->assertEquals(self::USER_REGISTRATION_DATE_FIRST, $contents['data']['registration_date']);
+        $this->assertEquals(16, strlen($contents['data']['registration_date']));
     }
 
     /** @test */
