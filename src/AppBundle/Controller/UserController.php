@@ -48,6 +48,7 @@ class UserController extends RestController
      *     section="User",
      *     statusCodes={
      *         200="Current user is logged in",
+     *         401="Authentication required",
      *     }
      * )
      */
