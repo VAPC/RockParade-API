@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\DTO\CreateEventDTO;
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Entity\Repository\ImageRepository;
 use AppBundle\Form\Event\LinksCollectionType;
@@ -136,6 +137,7 @@ class EventController extends RestController
      *     statusCodes={
      *         201="New event was created. Link to new resource in header 'Location'",
      *         400="Validation error",
+     *         401="Authentication required",
      *     }
      * )
      */
@@ -176,6 +178,7 @@ class EventController extends RestController
      *     statusCodes={
      *         204="Event was edited with new data",
      *         400="Validation error",
+     *         401="Authentication required",
      *         404="Event with given id was not found",
      *     }
      * )
@@ -197,6 +200,8 @@ class EventController extends RestController
      *     section="Event",
      *     statusCodes={
      *         204="Event was deleted",
+     *         401="Authentication required",
+     *         403="Only event creator can delete event",
      *         404="Event with given id was not found",
      *     }
      * )
@@ -206,13 +211,18 @@ class EventController extends RestController
     {
         /** @var EventRepository $eventRepository */
         $eventRepository = $this->get('rockparade.event_repository');
+        /** @var Event $event */
         $event = $eventRepository->findOneById($eventId);
 
         if ($event) {
-            $eventRepository->remove($event);
-            $eventRepository->flush();
+            if ($event->getCreator() === $this->getUser()) {
+                $eventRepository->remove($event);
+                $eventRepository->flush();
 
-            $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+                $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
+            } else {
+                $response = new ApiError('Only event creator can delete event.', Response::HTTP_FORBIDDEN);
+            }
         } else {
             $eventService = $this->get('rockparade.event');
             $response = $eventService->createEventNotFoundErrorResult($eventId);
@@ -229,6 +239,7 @@ class EventController extends RestController
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
+     *         401="Authentication required",
      *         403="Only event creator can add images",
      *         404="Event with given id was not found",
      *     }
@@ -288,6 +299,7 @@ class EventController extends RestController
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
+     *         401="Authentication required",
      *         403="Only event creator can delete images",
      *         404="Event with given id was not found",
      *         404="Image with given id was not found",
@@ -356,6 +368,7 @@ class EventController extends RestController
      *     },
      *     statusCodes={
      *         400="Links must have unique url",
+     *         401="Authentication required",
      *         403="Only event creator can add links",
      *         404="Event with given id was not found",
      *     }
@@ -382,6 +395,7 @@ class EventController extends RestController
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
+     *         401="Authentication required",
      *         403="Only event creator can delete links",
      *         404="Event with given id was not found",
      *         404="Link with given id was not found",
