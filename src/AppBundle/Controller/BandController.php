@@ -70,16 +70,7 @@ class BandController extends RestController
      */
     public function viewAction(string $bandName): Response
     {
-        $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneByName($bandName);
-
-        if ($band) {
-            $response = new ApiResponse($band, Response::HTTP_OK);
-        } else {
-            $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
-        }
-
-        return $this->respond($response);
+        return $this->viewEntity($this->get('rockparade.band_repository'), $bandName);
     }
 
     /**

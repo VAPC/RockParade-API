@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Infrastructure;
 use AppBundle\Entity\Infrasctucture\AbstractRepository;
 use AppBundle\Exception\EntityNotFoundException;
 use AppBundle\Response\ApiError;
+use AppBundle\Response\ApiResponse;
 use AppBundle\Response\CollectionApiResponse;
 use AppBundle\Response\FileResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
@@ -81,6 +82,23 @@ class RestController extends Controller
     protected function createEntityNotFoundResponse(string $entityFullName, $id): ApiError
     {
         return $this->get('rockparade.entity_service')->createEntityNotFoundResponse($entityFullName, $id);
+    }
+
+    /**
+     * @param string|int $id
+     */
+    protected function viewEntity(AbstractRepository $repository, $id): Response
+    {
+        $entity = $repository->findOneById($id);
+        $entityClass = $repository->getClassName();
+
+        if ($entity) {
+            $response = new ApiResponse($entity, Response::HTTP_OK);
+        } else {
+            $response = $this->createEntityNotFoundResponse($entityClass, $id);
+        }
+
+        return $this->respond($response);
     }
 
     private function setLocation(Response $response, AbstractApiResponse $apiResponse)

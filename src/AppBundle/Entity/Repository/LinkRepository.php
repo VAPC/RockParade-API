@@ -31,12 +31,4 @@ class LinkRepository extends AbstractRepository
 
         return $link;
     }
-
-    /**
-     * @return Link|object|null
-     */
-    public function findOneById(string $linkId)
-    {
-        return $this->find($linkId);
-    }
 }

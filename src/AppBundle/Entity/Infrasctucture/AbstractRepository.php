@@ -40,6 +40,15 @@ abstract class AbstractRepository extends EntityRepository
     }
 
     /**
+     * @param int|string|array $id
+     * @return object|null Entity
+     */
+    public function findOneById($id)
+    {
+        return $this->find($id);
+    }
+
+    /**
      * @param int $limit
      * @param int $offset
      * @return object[] Entity array

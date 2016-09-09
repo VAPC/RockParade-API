@@ -34,4 +34,22 @@ class OrganizerController extends RestController
             $this->createCompleteCollectionResponse($this->get('rockparade.organizer_repository'), $limit, $offset)
         );
     }
+
+    /**
+     * View organizer by name
+     * @Route("/{organizerName}", name="organizer_view")
+     * @Method("GET")
+     * @ApiDoc(
+     *     section="Organizer",
+     *     statusCodes={
+     *         200="Organizer was found",
+     *         404="Organizer with given name was not found",
+     *     }
+     * )
+     * @param string $organizerName organizer name
+     */
+    public function viewAction(string $organizerName): Response
+    {
+        return $this->viewEntity($this->get('rockparade.organizer_repository'), $organizerName);
+    }
 }

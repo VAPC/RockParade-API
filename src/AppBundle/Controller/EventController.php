@@ -105,18 +105,7 @@ class EventController extends RestController
      */
     public function viewAction(string $eventId): Response
     {
-        /** @var EventRepository $eventRepository */
-        $eventRepository = $this->get('rockparade.event_repository');
-        $event = $eventRepository->findOneById($eventId);
-
-        if ($event) {
-            $response = new ApiResponse($event, Response::HTTP_OK);
-        } else {
-            $eventService = $this->get('rockparade.event');
-            $response = $eventService->createEventNotFoundErrorResult($eventId);
-        }
-
-        return $this->respond($response);
+        return $this->viewEntity($this->get('rockparade.event_repository'), $eventId);
     }
 
     /**

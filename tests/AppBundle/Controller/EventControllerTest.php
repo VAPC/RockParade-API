@@ -130,7 +130,7 @@ class EventControllerTest extends FunctionalTester
 
         $this->sendGetRequest(sprintf('/event/%s', $existingEventId));
         $contents = $this->getResponseContents();
-        $this->assertContains(sprintf('Event with id "%s" was not found.', $existingEventId), $contents['errors']);
+        $this->assertContains(sprintf('Event "%s" was not found.', $existingEventId), $contents['errors']);
     }
 
     /** @test */

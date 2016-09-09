@@ -11,14 +11,6 @@ class EventRepository extends AbstractRepository
 {
 
     /**
-     * @return Event|null
-     */
-    public function findOneById(string $id)
-    {
-        return $this->find($id);
-    }
-
-    /**
      * @return Event|object|null
      */
     public function findOneByNameAndDate(string $name, \DateTime $date)

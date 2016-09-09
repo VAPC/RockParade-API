@@ -9,11 +9,4 @@ use AppBundle\Entity\Infrasctucture\AbstractRepository;
 class ImageRepository extends AbstractRepository
 {
 
-    /**
-     * @return Image|null
-     */
-    public function findOneById($imageId)
-    {
-        return $this->find($imageId);
-    }
 }

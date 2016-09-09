@@ -32,21 +32,11 @@ class UserController extends RestController
      *         404="User with given login was not found",
      *     }
      * )
-     * @param string $login user login
+     * @param string $bandName user login
      */
     public function viewAction(string $login): Response
     {
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->get('rockparade.user_repository');
-        $user = $userRepository->findOneByLogin($login);
-
-        if ($user) {
-            $response = new ApiResponse($user, Response::HTTP_OK);
-        } else {
-            $response = $this->createEntityNotFoundResponse(User::class, $login);
-        }
-
-        return $this->respond($response);
+        return $this->viewEntity($this->get('rockparade.user_repository'), $login);
     }
 
     /**
