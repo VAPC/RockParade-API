@@ -11,26 +11,21 @@ Join our Slack channel: https://rockparade.slack.com
 
 Requirements
 ============
-* Vagrant
-
 All requirements are listed in **composer.json**.
 
 How to run server
 =================
-1. Inside project directory run `vagrant up`
-2. Wait untill environment builds. It may take several minutes at the first time.
-3. App will be available at http://127.0.0.1 once built.
-
-* To update composer dependencies or run migrations run `vagrant provision`
+1. Run composer install
+2. Run symfony server: `php bin/console server:run`
+3. Server will be available on http://localhost:8000
 
 API documentation
 =================
-Last actual documentation is available at http://127.0.0.1/api. You can try queries in sandbox.
+Last actual documentation is available at http://rockparade.creora.ru/api. You can try queries in sandbox.
 
 Contribution
 ============
-1. Take issue from [issue board](https://github.com/Vehsamrak/RockParade/issues).
-* We use kanban board (install [zenhub chrome extension](https://www.zenhub.com) to visualize github issues as taskboard).
+1. Take issue from [task trecker board](http://redmine.rockparade.creora.ru/).
 * There are several types of tasks in pipeline:
   * New - feature proposals.
   * Architecture - working on requirements, architecture or discussions.
