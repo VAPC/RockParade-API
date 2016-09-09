@@ -60,7 +60,7 @@ class RestController extends Controller
      * @param integer|null $limit
      * @param integer|null $offset
      */
-    protected function createCompleteCollectionResponse(AbstractRepository $repository, $limit, $offset): CollectionApiResponse
+    protected function listEntities(AbstractRepository $repository, $limit, $offset): Response
     {
         $limit = (int) filter_var($limit, FILTER_VALIDATE_INT);
         $offset = (int) filter_var($offset, FILTER_VALIDATE_INT);
@@ -70,7 +70,7 @@ class RestController extends Controller
 
         $response = new CollectionApiResponse($entities, Response::HTTP_OK, $entitiesQuantity, $limit, $offset);
 
-        return $response;
+        return $this->respond($response);
     }
 
     /**

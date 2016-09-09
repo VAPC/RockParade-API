@@ -44,9 +44,7 @@ class OrganizerController extends RestController
      */
     public function listAction($limit = null, $offset = null): Response
     {
-        return $this->respond(
-            $this->createCompleteCollectionResponse($this->get('rockparade.organizer_repository'), $limit, $offset)
-        );
+        return $this->listEntities($this->get('rockparade.organizer_repository'), $limit, $offset);
     }
 
     /**
