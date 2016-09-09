@@ -4,6 +4,7 @@ namespace AppBundle\Service\Entity;
 
 use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
+use AppBundle\Entity\Link;
 use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Entity\Repository\LinkRepository;
 use AppBundle\Entity\User;
@@ -151,6 +152,7 @@ class EventService extends EntityService
         	return new ApiValidationError($form);
         }
 
+        /** @var Event $event */
         $event = $this->eventRepository->findOneById($eventId);
 
         if ($event) {
@@ -185,10 +187,12 @@ class EventService extends EntityService
 
     public function removeLinksFromEvent(string $eventId, string $linkId, User $executor): AbstractApiResponse
     {
+        /** @var Event $event */
         $event = $this->eventRepository->findOneById($eventId);
 
         if ($event) {
             if ($this->executorIsCreator($executor, $event)) {
+                /** @var Link $link */
                 $link = $this->linkRepository->findOneById($linkId);
 
                 if ($link) {

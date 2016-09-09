@@ -239,6 +239,7 @@ class EventController extends RestController
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
+     *         200="OK",
      *         401="Authentication required",
      *         403="Only event creator can add images",
      *         404="Event with given id was not found",
@@ -261,6 +262,7 @@ class EventController extends RestController
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
+     *         200="OK",
      *         404="Event with given id was not found",
      *         404="Image with given name was not found",
      *     }
@@ -299,6 +301,7 @@ class EventController extends RestController
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
+     *         200="OK",
      *         401="Authentication required",
      *         403="Only event creator can delete images",
      *         404="Event with given id was not found",
@@ -367,6 +370,7 @@ class EventController extends RestController
      *         },
      *     },
      *     statusCodes={
+     *         201="Link created and added to event",
      *         400="Links must have unique url",
      *         401="Authentication required",
      *         403="Only event creator can add links",
@@ -395,6 +399,7 @@ class EventController extends RestController
      * @ApiDoc(
      *     section="Event",
      *     statusCodes={
+     *         200="OK",
      *         401="Authentication required",
      *         403="Only event creator can delete links",
      *         404="Event with given id was not found",
