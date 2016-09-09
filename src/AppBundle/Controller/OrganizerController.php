@@ -21,6 +21,20 @@ class OrganizerController extends RestController
      * @Method("GET")
      * @ApiDoc(
      *     section="Organizer",
+     *     requirements={
+     *         {
+     *             "name"="limit",
+     *             "dataType"="int",
+     *             "requirement"="false",
+     *             "description"="limit number. Default is 50"
+     *         },
+     *         {
+     *             "name"="offset",
+     *             "dataType"="int",
+     *             "requirement"="false",
+     *             "description"="offset number. Default is 0"
+     *         },
+     *     },
      *     statusCodes={
      *         200="OK",
      *     }
@@ -41,6 +55,14 @@ class OrganizerController extends RestController
      * @Method("GET")
      * @ApiDoc(
      *     section="Organizer",
+     *     requirements={
+     *         {
+     *             "name"="organizerName",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="organizer name"
+     *         },
+     *     },
      *     statusCodes={
      *         200="Organizer was found",
      *         404="Organizer with given name was not found",
