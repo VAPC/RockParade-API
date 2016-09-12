@@ -7,7 +7,7 @@ use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Entity\Repository\ImageRepository;
-use AppBundle\Form\Event\LinksCollectionType;
+use AppBundle\Form\Event\LinksCollectionFormType;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CollectionApiResponse;
@@ -24,7 +24,6 @@ use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Response\ApiResponse;
 
 /**
  * @author Vehsamrak
@@ -383,7 +382,7 @@ class EventController extends RestController
     {
         $eventService = $this->get('rockparade.event');
 
-        $form = $this->createForm(LinksCollectionType::class);
+        $form = $this->createForm(LinksCollectionFormType::class);
         $this->processForm($request, $form);
 
         $response = $eventService->addLinksToEvent($eventId, $this->getUser(), $form);
