@@ -2,13 +2,14 @@
 
 namespace AppBundle\Form\Event;
 
+use AppBundle\Form\AbstractFormType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @author Vehsamrak
  */
-class LinksCollectionDTO
+class LinksCollectionFormType extends AbstractFormType
 {
 
     /** @var array */
@@ -30,7 +31,8 @@ class LinksCollectionDTO
                 $url = $link['url'] ?? null;
 
                 if (!$url) {
-                    $context->buildViolation(sprintf('Parameter is mandatory: links[%s][url].', $linkKey))->addViolation();
+                    $context->buildViolation(sprintf('Parameter is mandatory: links[%s][url].', $linkKey))
+                            ->addViolation();
                 }
             }
         }
