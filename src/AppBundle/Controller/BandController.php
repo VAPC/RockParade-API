@@ -99,7 +99,7 @@ class BandController extends RestController
      *         },
      *     },
      *     statusCodes={
-     *         201="New band was created. Link to new resource in header 'Location'",
+     *         201="New band was created. Link to new resource provided in header 'Location'",
      *         400="Validation error",
      *     }
      * )
