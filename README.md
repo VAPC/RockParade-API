@@ -17,7 +17,7 @@ How to run server
 =================
 1. Run composer install
 2. Run symfony server: `php bin/console server:run`
-3. Server will be available on http://localhost:8000
+3. Server will be available on [http://localhost:8000](http://localhost:8000)
 
 API documentation
 =================
@@ -25,7 +25,7 @@ Last actual documentation is available at http://rockparade.creora.ru/api. You c
 
 Contribution
 ============
-1. Take issue from [task trecker board](http://redmine.rockparade.creora.ru/).
+1. Take issue from [task tracker board](http://redmine.rockparade.creora.ru/).
 * There are several types of tasks in pipeline:
   * New - feature proposals.
   * Architecture - working on requirements, architecture or discussions.
