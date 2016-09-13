@@ -13,19 +13,23 @@ class ApiValidationError extends ApiError
 {
 
     /** {@inheritDoc} */
-    public function __construct(FormInterface $form)
+    public function __construct($errorData)
     {
         /** @var string[] $errors */
         $errors = [];
 
-        /** @var FormError $error */
-        foreach ($form->getErrors(true) as $error) {
-            $parametersString = join(',', $error->getMessageParameters());
-            if (!$parametersString || in_array($parametersString, ['null', 'array'])) {
-                $errors[] = $error->getMessage();
-            } else {
-                $errors[] = sprintf('%s - %s', $parametersString, $error->getMessage());
+        if ($errorData instanceof FormInterface) {
+            /** @var FormError $error */
+            foreach ($errorData->getErrors(true) as $error) {
+                $parametersString = join(',', $error->getMessageParameters());
+                if (!$parametersString || in_array($parametersString, ['null', 'array'])) {
+                    $errors[] = $error->getMessage();
+                } else {
+                    $errors[] = sprintf('%s - %s', $parametersString, $error->getMessage());
+                }
             }
+        } else {
+            $errors = (array) $errorData;
         }
 
         parent::__construct($errors, Response::HTTP_BAD_REQUEST);
