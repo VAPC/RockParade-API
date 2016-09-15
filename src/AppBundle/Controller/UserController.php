@@ -32,7 +32,7 @@ class UserController extends RestController
      *         404="User with given login was not found",
      *     }
      * )
-     * @param string $bandName user login
+     * @param string $login user login
      */
     public function viewAction(string $login): Response
     {
