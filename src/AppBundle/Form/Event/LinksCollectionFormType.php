@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form\Event;
 
+use AppBundle\Entity\Link;
 use AppBundle\Form\AbstractFormType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -36,5 +37,10 @@ class LinksCollectionFormType extends AbstractFormType
                 }
             }
         }
+    }
+
+    public function getEntityClassName(): string
+    {
+        return Link::class;
     }
 }

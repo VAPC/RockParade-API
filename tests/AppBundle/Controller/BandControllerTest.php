@@ -96,7 +96,7 @@ class BandControllerTest extends FunctionalTester
         $createBandResponseLocation = $this->getResponseLocation();
 
         $this->assertEquals(201, $createBandResponseCode);
-        $this->assertEquals('/band/Derbans', $createBandResponseLocation);
+        $this->assertEquals('http://localhost/band/Derbans', $createBandResponseLocation);
 
         $this->sendGetRequest('/bands');
         $listBandsResponseCode = $this->getResponseCode();
@@ -106,11 +106,11 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals(self::BAND_NAME_SECOND, $bandListContents['data'][2]['name']);
         $this->assertEquals(self::BAND_DESCRIPTION_SECOND, $bandListContents['data'][2]['description']);
         $this->assertEquals(self::USER_LOGIN_EXECUTOR, $bandListContents['data'][2]['creator']);
-        $this->assertContains(self::USER_LOGIN_EXECUTOR, $bandListContents['data'][2]['members'][2]['login']);
-        $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][2]['members'][0]['login']);
-        $this->assertContains(self::USER_DESCRIPTION_SHORT_FIRST, $bandListContents['data'][2]['members'][0]['short_description']);
-        $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][2]['members'][1]['login']);
-        $this->assertContains(self::USER_DESCRIPTION_SHORT_SECOND, $bandListContents['data'][2]['members'][1]['short_description']);
+        $this->assertContains(self::USER_LOGIN_EXECUTOR, $bandListContents['data'][2]['members'][0]['login']);
+        $this->assertContains(self::BAND_USER_LOGIN_FIRST, $bandListContents['data'][2]['members'][1]['login']);
+        $this->assertContains(self::USER_DESCRIPTION_SHORT_FIRST, $bandListContents['data'][2]['members'][1]['short_description']);
+        $this->assertContains(self::BAND_USER_LOGIN_SECOND, $bandListContents['data'][2]['members'][2]['login']);
+        $this->assertContains(self::USER_DESCRIPTION_SHORT_SECOND, $bandListContents['data'][2]['members'][2]['short_description']);
     }
 
     /** @test */

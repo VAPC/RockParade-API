@@ -12,7 +12,7 @@ use JMS\Serializer\Annotation\Type as SerializerType;
 
 /**
  * @author Vehsamrak
- * @ORM\MappedSuperclass()
+ * @ORM\MappedSuperclass
  */
 abstract class Ambassador
 {
@@ -61,6 +61,11 @@ abstract class Ambassador
         $this->description = $description;
         $this->members = new ArrayCollection();
         $this->creator = $creator;
+    }
+
+    public function getId(): string
+    {
+        return $this->name;
     }
 
     /**

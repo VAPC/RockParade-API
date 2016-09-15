@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Exception\MethodNotImplemented;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -11,6 +12,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 abstract class AbstractFormType extends AbstractType
 {
+
+    public function getEntityClassName(): string
+    {
+        throw new MethodNotImplemented(__METHOD__);
+    }
 
     /** {@inheritDoc} */
     public function configureOptions(OptionsResolver $resolver)

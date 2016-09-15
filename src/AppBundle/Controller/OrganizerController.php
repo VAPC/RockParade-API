@@ -3,9 +3,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
+use AppBundle\Entity\Organizer;
+use AppBundle\Form\Ambassador\OrganizerFormType;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -49,13 +53,13 @@ class OrganizerController extends RestController
 
     /**
      * View organizer by name
-     * @Route("/{organizerName}", name="organizer_view")
+     * @Route("/{id}", name="organizer_view")
      * @Method("GET")
      * @ApiDoc(
      *     section="Organizer",
      *     requirements={
      *         {
-     *             "name"="organizerName",
+     *             "name"="id",
      *             "dataType"="string",
      *             "requirement"="true",
      *             "description"="organizer name"
@@ -66,10 +70,58 @@ class OrganizerController extends RestController
      *         404="Organizer with given name was not found",
      *     }
      * )
-     * @param string $organizerName organizer name
+     * @param string $id organizer name
      */
-    public function viewAction(string $organizerName): Response
+    public function viewAction(string $id): Response
     {
-        return $this->viewEntity($this->get('rockparade.organizer_repository'), $organizerName);
+        return $this->viewEntity($this->get('rockparade.organizer_repository'), $id);
+    }
+
+    /**
+     * Create new band
+     * @Route("", name="organizer_create")
+     * @Method("POST")
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *     section="Organizer",
+     *     requirements={
+     *         {
+     *             "name"="name",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="organization name"
+     *         },
+     *         {
+     *             "name"="description",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="organization description"
+     *         },
+     *         {
+     *             "name"="members",
+     *             "dataType"="array",
+     *             "requirement"="false",
+     *             "description"="logins and short descriptions of organization members"
+     *         },
+     *     },
+     *     statusCodes={
+     *         201="New organizer was created. Link to new resource provided in header 'Location'",
+     *         400="Validation error",
+     *     }
+     * )
+     */
+    public function createAction(Request $request): Response
+    {
+        $form = $this->createAndProcessForm($request, OrganizerFormType::class);
+
+        $apiResponseFactory = $this->get('rockparade.api_response_factory');
+        $response = $apiResponseFactory->createResponse(
+            $this->createApiOperation($request),
+            $form,
+            $this->getUser(),
+            Organizer::class
+        );
+
+        return $this->respond($response);
     }
 }

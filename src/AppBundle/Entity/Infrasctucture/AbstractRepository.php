@@ -2,13 +2,23 @@
 
 namespace AppBundle\Entity\Infrasctucture;
 
+use AppBundle\Form\AbstractFormType;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Intl\Exception\MethodNotImplementedException;
 
 /**
  * @author Vehsamrak
  */
 abstract class AbstractRepository extends EntityRepository
 {
+
+    /**
+     * @return object|null Entity
+     */
+    public function findOneByFormData(AbstractFormType $formType)
+    {
+        throw new MethodNotImplementedException(__METHOD__);
+    }
 
     /**
      * @return \Doctrine\ORM\EntityManager

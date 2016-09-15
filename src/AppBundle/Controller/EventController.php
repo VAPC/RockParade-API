@@ -90,7 +90,7 @@ class EventController extends RestController
 
     /**
      * View event by id
-     * @Route("/{eventId}", name="event_view")
+     * @Route("/{id}", name="event_view")
      * @Method("GET")
      * @ApiDoc(
      *     section="Event",
@@ -99,11 +99,11 @@ class EventController extends RestController
      *         404="Event with given id was not found",
      *     }
      * )
-     * @param string $eventId event id
+     * @param string $id event id
      */
-    public function viewAction(string $eventId): Response
+    public function viewAction(string $id): Response
     {
-        return $this->viewEntity($this->get('rockparade.event_repository'), $eventId);
+        return $this->viewEntity($this->get('rockparade.event_repository'), $id);
     }
 
     /**
@@ -280,7 +280,7 @@ class EventController extends RestController
             $apiResponseFactory = $this->get('rockparade.api_response_factory');
 
             if ($image) {
-                $response = $apiResponseFactory->createResponse($image);
+                $response = $apiResponseFactory->createImageResponse($image);
             } else {
                 $response = $apiResponseFactory->createNotFoundResponse();
             }

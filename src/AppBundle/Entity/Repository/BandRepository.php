@@ -2,21 +2,10 @@
 
 namespace AppBundle\Entity\Repository;
 
-use AppBundle\Entity\Band;
-use AppBundle\Entity\Infrasctucture\AbstractRepository;
+use AppBundle\Entity\Infrasctucture\AmbassadorRepository;
 
 /** {@inheritDoc} */
-class BandRepository extends AbstractRepository
+class BandRepository extends AmbassadorRepository
 {
-    /**
-     * @return Band|null
-     */
-    public function findOneByName(string $name)
-    {
-        return $this->findOneBy(
-            [
-                'name' => $name,
-            ]
-        );
-    }
+
 }

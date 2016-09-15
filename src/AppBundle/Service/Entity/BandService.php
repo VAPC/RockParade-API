@@ -147,7 +147,7 @@ class BandService extends EntityService
         return $form;
     }
 
-    private function createBandMemberFromCreator(Band $band, User $creator): BandMember
+    public function createBandMemberFromCreator(Band $band, User $creator): BandMember
     {
         return $this->bandMemberRepository->getOrCreateByBandAndUser(
             $band,

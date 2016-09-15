@@ -9,6 +9,8 @@ use AppBundle\Entity\DTO\CreateBand;
 use AppBundle\Entity\DTO\UpdateBandMemberDTO;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\User;
+use AppBundle\Form\Ambassador\BandFormType;
+use AppBundle\Form\FormOptions;
 use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
@@ -55,7 +57,7 @@ class BandController extends RestController
 
     /**
      * View band by name
-     * @Route("/{bandName}", name="band_view")
+     * @Route("/{id}", name="band_view")
      * @Method("GET")
      * @ApiDoc(
      *     section="Band",
@@ -64,11 +66,11 @@ class BandController extends RestController
      *         404="Band with given name was not found",
      *     }
      * )
-     * @param string $bandName band name
+     * @param string $id band name
      */
-    public function viewAction(string $bandName): Response
+    public function viewAction(string $id): Response
     {
-        return $this->viewEntity($this->get('rockparade.band_repository'), $bandName);
+        return $this->viewEntity($this->get('rockparade.band_repository'), $id);
     }
 
     /**
@@ -94,7 +96,7 @@ class BandController extends RestController
      *         {
      *             "name"="members",
      *             "dataType"="array",
-     *             "requirement"="true",
+     *             "requirement"="false",
      *             "description"="logins and short descriptions of band musicians"
      *         },
      *     },
@@ -106,11 +108,17 @@ class BandController extends RestController
      */
     public function createAction(Request $request): Response
     {
-        $form = $this->createFormBandCreate();
-        $this->processForm($request, $form);
-        $form = $this->get('rockparade.band')->processFormAndCreateBand($form, $this->getUser());
+        $form = $this->createAndProcessForm($request, BandFormType::class);
 
-        return $this->respond($this->createResponseFromCreateForm($form));
+        $apiResponseFactory = $this->get('rockparade.api_response_factory');
+        $response = $apiResponseFactory->createResponse(
+            $this->createApiOperation($request),
+            $form,
+            $this->getUser(),
+            Band::class
+        );
+
+        return $this->respond($response);
     }
 
     /**

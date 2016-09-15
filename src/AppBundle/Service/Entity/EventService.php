@@ -235,6 +235,6 @@ class EventService extends EntityService
 
     private function createLocationById(string $eventId): string
     {
-        return $this->router->generate('event_view', ['eventId' => $eventId]);
+        return $this->router->generate('event_view', ['id' => $eventId]);
     }
 }

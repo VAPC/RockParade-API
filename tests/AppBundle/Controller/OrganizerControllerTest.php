@@ -62,4 +62,34 @@ class OrganizerControllerTest extends FunctionalTester
         $this->assertEquals(self::ORGANIZER_NAME_FIRST, $contentsData['name']);
         $this->assertEquals(self::ORGANIZER_DESCRIPTION_FIRST, $contentsData['description']);
     }
+
+    /** @test */
+    public function createAction_POSTOrganizerRequestWithEmptyData_validationErrors()
+    {
+        $this->sendPostRequest('/organizer');
+
+        $this->assertEquals(400, $this->getResponseCode());
+    }
+
+    /** @test */
+    public function createAction_POSTOrganizerRequestWithNameAndDescriptionData_organizerCreatedAndLocationReturned()
+    {
+        $parameters = [
+            'name'        => 'first organizer name',
+            'description' => 'first organizer description',
+        ];
+
+        $this->sendPostRequest('/organizer', $parameters);
+        $responseLocation = $this->getResponseLocation();
+
+        $this->assertEquals(201, $this->getResponseCode());
+        $this->assertRegExp('/^http.?:\/\/.*organizer\/..*$/', $responseLocation);
+
+        $this->sendGetRequest($responseLocation);
+        $contentsData = $this->getResponseContents()['data'];
+
+        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertEquals($parameters['name'], $contentsData['name']);
+        $this->assertEquals($parameters['description'], $contentsData['description']);
+    }
 }
