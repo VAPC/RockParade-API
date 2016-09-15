@@ -21,12 +21,7 @@ class ApiValidationError extends ApiError
         if ($errorData instanceof FormInterface) {
             /** @var FormError $error */
             foreach ($errorData->getErrors(true) as $error) {
-                $parametersString = join(',', $error->getMessageParameters());
-                if (!$parametersString || in_array($parametersString, ['null', 'array'])) {
-                    $errors[] = $error->getMessage();
-                } else {
-                    $errors[] = sprintf('%s - %s', $parametersString, $error->getMessage());
-                }
+                $errors[] = $error->getMessage();
             }
         } else {
             $errors = (array) $errorData;
