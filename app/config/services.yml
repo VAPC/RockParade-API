@@ -62,10 +62,15 @@ services:
         class: AppBundle\Entity\Repository\OrganizerRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\Organizer']
+    rockparade.ambassador_repository:
+        class: AppBundle\Entity\Infrasctucture\AmbassadorRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ['AppBundle\Entity\Infrasctucture\Ambassador']
 
     # Services
     rockparade.entity_service:
         class: AppBundle\Service\Entity\EntityService
+        arguments: ['@rockparade.ambassador_service']
     rockparade.band:
         class: AppBundle\Service\Entity\BandService
         arguments: ['@rockparade.band_repository', '@rockparade.band_member_repository', '@rockparade.user_repository']
@@ -88,7 +93,7 @@ services:
         arguments: ['%kernel.root_dir%', '@rockparade.image_repository', '@rockparade.image_extension_checker']
     rockparade.api_response_factory:
         class: AppBundle\Response\ApiResponseFactory
-        arguments: ['%kernel.root_dir%']
+        arguments: ['%kernel.root_dir%', '@doctrine.orm.entity_manager', '@rockparade.entity_service', '@router']
     rockparade.event:
         class: AppBundle\Service\Entity\EventService
         arguments: ['@rockparade.event_repository', '@rockparade.link_repository', '@router', '@rockparade.file_service']
@@ -96,6 +101,9 @@ services:
         class: AppBundle\Service\Extractor\Extractor
         arguments: ['@router']
         public: false
+    rockparade.ambassador_service:
+        class: AppBundle\Service\Ambassador\AmbassadorService
+        arguments: ['@doctrine.orm.entity_manager', '@rockparade.band']
 
     # Event listeners
     rockparade.event_listener.exception:
