@@ -15,7 +15,7 @@ class HttpRuntimeException extends HttpException
     /**
      * @param string $message
      */
-    public function __construct(string $message)
+    public function __construct(string $message = null)
     {
         parent::__construct(self::HTTP_ERROR_CODE, $message);
     }
