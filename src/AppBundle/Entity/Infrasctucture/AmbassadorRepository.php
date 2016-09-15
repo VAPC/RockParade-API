@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity\Infrasctucture;
 
-use AppBundle\Entity\User;
+use AppBundle\Exception\HttpRuntimeException;
 use AppBundle\Form\AbstractFormType;
 use AppBundle\Form\Ambassador\AmbassadorFormType;
 
@@ -14,11 +14,14 @@ class AmbassadorRepository extends AbstractRepository
 
     /**
      * @param AmbassadorFormType $formType
-     * @param User $creator
      * @return Ambassador|null|object
      */
     public function findOneByFormData(AbstractFormType $formType)
     {
+        if (!($formType instanceof AmbassadorFormType)) {
+            throw new HttpRuntimeException(sprintf('Form type "%s" is not supported.', get_class($formType)));
+        }
+
         /** @var AmbassadorRepository $repository */
         $repository = $this->getEntityManager()->getRepository($formType->getEntityClassName());
 
