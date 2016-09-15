@@ -35,7 +35,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=255, nullable=true, unique=true)
-     * @Serializer\Exclude()
+     * @Serializer\Exclude
      */
     private $email;
 
@@ -48,21 +48,21 @@ class User implements UserInterface
     /**
      * @var int
      * @ORM\Column(name="vkontakte_id", type="integer", nullable=false, unique=true)
-     * @Serializer\Exclude()
+     * @Serializer\Exclude
      */
     private $vkontakteId;
 
     /**
      * @var string
      * @ORM\Column(name="vk_token", type="string", length=85, nullable=false)
-     * @Serializer\Exclude()
+     * @Serializer\Exclude
      */
     private $vkToken;
 
     /**
      * @var string
      * @ORM\Column(name="token", type="string", length=32, nullable=false, unique=true)
-     * @Serializer\Exclude()
+     * @Serializer\Exclude
      */
     private $token;
 
@@ -75,7 +75,7 @@ class User implements UserInterface
     /**
      * @var array
      * @ORM\Column(name="roles", type="simple_array", nullable=true)
-     * @Serializer\Exclude()
+     * @Serializer\Exclude
      */
     private $roles;
 

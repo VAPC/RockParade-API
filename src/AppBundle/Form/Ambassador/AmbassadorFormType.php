@@ -30,10 +30,10 @@ class AmbassadorFormType extends AbstractFormType
      *     fields = {
      *         "login" = {
      *             @EntityAssert\EntityExists(entityClass="AppBundle\Entity\User", entityField="login"),
-     *             @Assert\NotBlank()
+     *             @Assert\NotBlank
      *         },
      *         "short_description" = {
-     *             @Assert\NotBlank()
+     *             @Assert\NotBlank
      *         }
      *     })
      * })

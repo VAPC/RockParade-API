@@ -9,6 +9,7 @@ use AppBundle\Entity\Organizer;
  */
 class OrganizerFormType extends AmbassadorFormType
 {
+
     public function getEntityClassName(): string
     {
         return Organizer::class;

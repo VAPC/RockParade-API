@@ -29,7 +29,7 @@ class BandMember
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Band", inversedBy="members")
      * @ORM\JoinColumn(name="band_id", referencedColumnName="name")
-     * @Serializer\Exclude()
+     * @Serializer\Exclude
      */
     private $band;
 
