@@ -122,3 +122,15 @@ services:
         scope: request
         tags:
             - { name: jms_serializer.subscribing_handler }
+
+    # Validators
+    rockparade.validator.entity_not_exists:
+        class: AppBundle\Form\Validation\EntityDoesNotExistsValidator
+        arguments: ['@doctrine.orm.entity_manager']
+        tags:
+            - { name: validator.constraint_validator }
+    rockparade.validator.entity_exist:
+        class: AppBundle\Form\Validation\EntityExistsValidator
+        arguments: ['@doctrine.orm.entity_manager']
+        tags:
+            - { name: validator.constraint_validator }
