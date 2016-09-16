@@ -46,7 +46,7 @@ class ControllerListener
         }
 
         $token = $this->tokenStorage->getToken();
-        /** @var User|string $user */
+        /** @var User|null $user */
         $user = $token instanceof TokenInterface ? $token->getUser() : null;
         $request = $event->getRequest();
 
