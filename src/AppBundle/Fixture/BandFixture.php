@@ -5,6 +5,7 @@ namespace AppBundle\Fixture;
 use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
 use AppBundle\Entity\User;
+use AppBundle\Service\ForegoneHashGenerator;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -18,7 +19,7 @@ class BandFixture implements FixtureInterface
     public function load(ObjectManager $manager)
     {
         $user = new User('bander', 'Bander', 1, '');
-        $band = new Band('Banders', $user, 'Band description.');
+        $band = new Band('Banders', $user, 'Band description.', new ForegoneHashGenerator('Banders'));
         $bandMember = new BandMember($band, $user, 'bass guitar', 'loremus unitus');
 
         $entities = [

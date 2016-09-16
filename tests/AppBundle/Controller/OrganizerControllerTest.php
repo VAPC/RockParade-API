@@ -89,6 +89,7 @@ class OrganizerControllerTest extends FunctionalTester
         $contentsData = $this->getResponseContents()['data'];
 
         $this->assertEquals(200, $this->getResponseCode());
+        $this->assertEquals(8, strlen($contentsData['id']));
         $this->assertEquals($parameters['name'], $contentsData['name']);
         $this->assertEquals($parameters['description'], $contentsData['description']);
     }

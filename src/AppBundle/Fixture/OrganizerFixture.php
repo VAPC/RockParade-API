@@ -4,6 +4,7 @@ namespace AppBundle\Fixture;
 
 use AppBundle\Entity\Organizer;
 use AppBundle\Entity\User;
+use AppBundle\Service\ForegoneHashGenerator;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -17,7 +18,7 @@ class OrganizerFixture implements FixtureInterface
     public function load(ObjectManager $manager)
     {
         $user = new User('bander', 'Bander', 1, '');
-        $organizer = new Organizer('Org', $user, 'Organizer description.');
+        $organizer = new Organizer('Org', $user, 'Organizer description.', new ForegoneHashGenerator('Org'));
 
         $entities = [
             $user,

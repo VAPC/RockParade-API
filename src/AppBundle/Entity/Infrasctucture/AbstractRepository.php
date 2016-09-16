@@ -79,11 +79,18 @@ abstract class AbstractRepository extends EntityRepository
 
     public function countAll(): int
     {
-        $ids = $this->getClassMetadata()->getIdentifierFieldNames();
-        $id = reset($ids);
+        $id = $this->getEntityIdField();
         $queryBuilder = $this->createQueryBuilder('entity');
         $queryBuilder->select($queryBuilder->expr()->count('entity.' . $id));
 
         return $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    private function getEntityIdField(): string
+    {
+        $ids = $this->getClassMetadata()->getIdentifierFieldNames();
+        $id = reset($ids);
+
+        return $id;
     }
 }

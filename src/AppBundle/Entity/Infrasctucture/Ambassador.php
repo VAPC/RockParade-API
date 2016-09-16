@@ -4,6 +4,7 @@ namespace AppBundle\Entity\Infrasctucture;
 
 use AppBundle\Entity\BandMember;
 use AppBundle\Entity\User;
+use AppBundle\Service\HashGenerator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation\Accessor;
@@ -21,6 +22,12 @@ abstract class Ambassador
     /**
      * @var string
      * @ORM\Id
+     * @ORM\Column(name="id", type="string", length=8, unique=true)
+     */
+    protected $id;
+
+    /**
+     * @var string
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     protected $name;
@@ -54,8 +61,16 @@ abstract class Ambassador
      */
     protected $creator;
 
-    public function __construct(string $name, User $creator, string $description = null)
+    public function __construct(
+        string $name,
+        User $creator,
+        string $description = null,
+        HashGenerator $hashGenerator = null
+    )
     {
+        /** @var HashGenerator $hashGenerator */
+        $hashGenerator = $hashGenerator ?: new HashGenerator();
+        $this->id = $hashGenerator->generate();
         $this->registrationDate = new \DateTime();
         $this->name = $name;
         $this->description = $description;
@@ -65,7 +80,7 @@ abstract class Ambassador
 
     public function getId(): string
     {
-        return $this->name;
+        return $this->id;
     }
 
     /**
