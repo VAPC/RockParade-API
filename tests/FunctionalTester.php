@@ -105,4 +105,18 @@ abstract class FunctionalTester extends WebTestCase
     {
         $this->httpClient->setServerParameter('HTTP_AUTH_TOKEN', $token);
     }
+
+    /**
+     * Get last created entity from database
+     * @param string $entityClass
+     * @return mixed
+     */
+    protected function getLastCreated(string $entityClass)
+    {
+        $repository = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository($entityClass);
+        $allEntities = $repository->findAll();
+        $entity = array_pop($allEntities);
+
+        return $entity;
+    }
 }
