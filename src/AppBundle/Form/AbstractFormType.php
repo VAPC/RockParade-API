@@ -35,7 +35,7 @@ abstract class AbstractFormType extends AbstractType
         $dataClassVariables = array_keys(get_class_vars($this->getDataClass()));
 
         foreach ($dataClassVariables as $fieldName) {
-            $builder->add($fieldName);
+            $builder->add($this->underscore($fieldName));
         }
     }
 
@@ -46,5 +46,12 @@ abstract class AbstractFormType extends AbstractType
     protected function getDataClass(): string
     {
         return static::class;
+    }
+
+    private function underscore(string $string): string
+    {
+        $string = preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $string);
+
+        return strtolower($string);
     }
 }

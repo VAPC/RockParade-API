@@ -4,18 +4,15 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
-use AppBundle\Entity\DTO\CreateBandMemberDTO;
-use AppBundle\Entity\DTO\CreateBand;
-use AppBundle\Entity\DTO\UpdateBandMemberDTO;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\User;
+use AppBundle\Form\Ambassador\AmbassadorFormType;
+use AppBundle\Form\Ambassador\AmbassadorMemberFormType;
 use AppBundle\Form\Ambassador\BandFormType;
-use AppBundle\Form\FormOptions;
 use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
-use AppBundle\Service\Entity\BandService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Response\ApiError;
@@ -23,8 +20,6 @@ use AppBundle\Response\ApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -159,9 +154,10 @@ class BandController extends RestController
     {
         /** @var BandRepository $bandRepository */
         $bandRepository = $this->get('rockparade.band_repository');
+        /** @var Band $band */
         $band = $bandRepository->findOneByName($bandName);
 
-        $form = $this->createFormBandCreate();
+        $form = $this->createForm(AmbassadorFormType::class);
         $this->processForm($request, $form);
         $form = $this->get('rockparade.band')->processFormAndUpdateBand($form, $band, $this->getUser());
 
@@ -196,7 +192,7 @@ class BandController extends RestController
 
     /**
      * Add member to band
-     * @Route("/{bandName}/members", name="band_member_add")
+     * @Route("/{bandName}/members", name="band_member_create")
      * @Method("POST")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -228,9 +224,9 @@ class BandController extends RestController
      * )
      * @param string $bandName band name
      */
-    public function addMemberAction(Request $request, string $bandName): Response
+    public function createMemberAction(Request $request, string $bandName): Response
     {
-        $form = $this->createFormCreateBandMember();
+        $form = $this->createForm(AmbassadorMemberFormType::class);
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
@@ -317,12 +313,18 @@ class BandController extends RestController
     
     /**
      * Update band member
-     * @Route("/{bandName}/member/{userLogin}", name="band_member_update")
+     * @Route("/{bandName}/member", name="band_member_update")
      * @Method("PUT")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Band",
      *     requirements={
+     *         {
+     *             "name"="login",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="login of musician"
+     *         },
      *         {
      *             "name"="short_description",
      *             "dataType"="string",
@@ -344,12 +346,13 @@ class BandController extends RestController
      * @param string $bandName band name
      * @param string $userLogin member login
      */
-    public function updateMemberAction(Request $request, string $bandName, string $userLogin)
+    public function updateMemberAction(Request $request, string $bandName)
     {
         $bandRepository = $this->get('rockparade.band_repository');
         $band = $bandRepository->findOneByName($bandName);
 
         if ($band) {
+            $userLogin = $request->get('login');
             $userRepository = $this->get('rockparade.user_repository');
             $user = $userRepository->findOneByLogin($userLogin);
 
@@ -358,7 +361,7 @@ class BandController extends RestController
                 $bandMember = $bandMemberRepository->findByBandAndUser($band, $user);
                 
                 if ($bandMember) {
-                    $form = $this->createFormUpdateBandMember();
+                    $form = $this->createForm(AmbassadorMemberFormType::class);
                     $this->processForm($request, $form);
                     $form = $this->get('rockparade.band')->processFormAndUpdateBandMember($form, $bandMember);
                     
@@ -378,27 +381,6 @@ class BandController extends RestController
         return $this->respond($response);
     }
 
-    private function createLocationByNameFieldInForm(FormInterface $form): string
-    {
-        $bandName = $form->get('name')->getData();
-
-        return $this->generateUrl('band_view', ['bandName' => $bandName]);
-    }
-
-    /**
-     * @param $form
-     * @param $band
-     * @return ApiError|CreatedApiResponse|EmptyApiResponse
-     */
-    private function createResponseFromCreateForm(FormInterface $form): AbstractApiResponse
-    {
-        if ($form->isValid()) {
-            return new CreatedApiResponse($this->createLocationByNameFieldInForm($form));
-        } else {
-            return new ApiValidationError($form);
-        }
-    }
-
     /**
      * @return ApiError|CreatedApiResponse|EmptyApiResponse
      */
@@ -409,34 +391,5 @@ class BandController extends RestController
         } else {
             return new ApiValidationError($form);
         }
-    }
-
-    private function createFormBandCreate(): FormInterface
-    {
-        $formBuilder = $this->createFormBuilder(new CreateBand());
-        $formBuilder->add('name', TextType::class);
-        $formBuilder->add(BandService::ATTRIBUTE_MEMBERS, TextType::class);
-        $formBuilder->add('description', TextareaType::class);
-
-        return $formBuilder->getForm();
-    }
-
-    private function createFormUpdateBandMember(): FormInterface
-    {
-        $formBuilder = $this->createFormBuilder(new UpdateBandMemberDTO());
-        $formBuilder->add('short_description', TextType::class);
-        $formBuilder->add('description', TextareaType::class);
-
-        return $formBuilder->getForm();
-    }
-
-    private function createFormCreateBandMember(): FormInterface
-    {
-        $formBuilder = $this->createFormBuilder(new CreateBandMemberDTO());
-        $formBuilder->add('login', TextType::class);
-        $formBuilder->add('short_description', TextType::class);
-        $formBuilder->add('description', TextareaType::class);
-
-        return $formBuilder->getForm();
     }
 }

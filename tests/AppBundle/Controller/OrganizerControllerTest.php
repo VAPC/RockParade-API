@@ -93,4 +93,12 @@ class OrganizerControllerTest extends FunctionalTester
         $this->assertEquals($parameters['name'], $contentsData['name']);
         $this->assertEquals($parameters['description'], $contentsData['description']);
     }
+    
+    /** @test */
+    public function createMemberAction_POSTOrganizerIdMembersEmptyRequest_validationError()
+    {
+        $this->sendPostRequest('/organizer/Org/members');
+
+        $this->assertEquals(400, $this->getResponseCode());
+    }
 }

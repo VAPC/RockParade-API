@@ -27,6 +27,7 @@ class AmbassadorFormType extends AbstractFormType
     /**
      * @Assert\All({
      *     @Assert\Collection(
+     *     missingFieldsMessage="Members parameters are mandatory.",
      *     fields = {
      *         "login" = {
      *             @EntityAssert\EntityExists(entityClass="AppBundle\Entity\User", entityField="login"),

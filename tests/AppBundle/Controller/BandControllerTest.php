@@ -139,12 +139,14 @@ class BandControllerTest extends FunctionalTester
     /** @test */
     public function editAction_PUTBandNameRequestWithExistingName_validationError()
     {
-        $this->followRedirects();
         $parameters = [
             'name'        => self::BAND_NAME_EXISTING,
             'description' => self::BAND_DESCRIPTION_FIRST,
             'members'     => [
-                self::BAND_USER_LOGIN_THIRD,
+                [
+                    'login' => self::BAND_USER_LOGIN_FIRST,
+                    'short_description' => self::BAND_MEMBER_FIRST_SHORT_DESCRIPTION,
+                ],
             ],
         ];
 
@@ -196,7 +198,7 @@ class BandControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function addMemberAction_POSTBandNameMembersRequestWithNewMember_bandMemberAdded()
+    public function createMemberAction_POSTBandNameMembersRequestWithNewMember_bandMemberAdded()
     {
         $parameters = [
             'login'             => self::BAND_USER_LOGIN_SECOND,
@@ -225,10 +227,11 @@ class BandControllerTest extends FunctionalTester
     }
     
     /** @test */
-    public function updateMemberAction_PUTBandNameMemberLoginRequest_bandMemberUpdatedWithNewParameters()
+    public function updateMemberAction_PUTBandNameMemberRequest_bandMemberUpdatedWithNewParameters()
     {
         $this->followRedirects();
         $parameters = [
+            'login'             => self::BAND_USER_LOGIN_FIRST,
             'short_description' => self::BAND_MEMBER_SECOND_SHORT_DESCRIPTION,
             'description'       => self::BAND_MEMBER_SECOND_DESCRIPTION,
         ];
@@ -239,7 +242,7 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals(self::BAND_MEMBER_FIRST_DESCRIPTION, $contents['data'][0]['description']);
         $this->assertEquals(self::BAND_MEMBER_FIRST_SHORT_DESCRIPTION, $contents['data'][0]['short_description']);
 
-        $this->sendPutRequest('/band/Banders/member/bander', $parameters);
+        $this->sendPutRequest('/band/Banders/member', $parameters);
         $this->assertEquals(204, $this->getResponseCode());
 
         $this->sendGetRequest('/band/Banders/members');

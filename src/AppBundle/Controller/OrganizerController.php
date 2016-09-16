@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Organizer;
 use AppBundle\Form\Ambassador\OrganizerFormType;
+use AppBundle\Response\ApiValidationError;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -70,7 +71,7 @@ class OrganizerController extends RestController
      *         404="Organizer with given name was not found",
      *     }
      * )
-     * @param string $id organizer name
+     * @param string $id organizer id
      */
     public function viewAction(string $id): Response
     {
@@ -78,7 +79,7 @@ class OrganizerController extends RestController
     }
 
     /**
-     * Create new band
+     * Create new organizer
      * @Route("", name="organizer_create")
      * @Method("POST")
      * @Security("has_role('ROLE_USER')")
@@ -121,6 +122,47 @@ class OrganizerController extends RestController
             $this->getUser(),
             Organizer::class
         );
+
+        return $this->respond($response);
+    }
+
+    /**
+     * Add new member to organization
+     * @Route("/{id}/members", name="organizer_member_create")
+     * @Method("POST")
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *     section="Organizer",
+     *     requirements={
+     *         {
+     *             "name"="login",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="user login"
+     *         },
+     *         {
+     *             "name"="short_description",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="short description of user role in organization"
+     *         },
+     *         {
+     *             "name"="description",
+     *             "dataType"="string",
+     *             "requirement"="false",
+     *             "description"="long description of user"
+     *         },
+     *     },
+     *     statusCodes={
+     *         201="Member was added to organization",
+     *         400="Validation error",
+     *     }
+     * )
+     * @param string $id organizer id
+     */
+    public function createMemberAction(string $id): Response
+    {
+        $response = new ApiValidationError('');
 
         return $this->respond($response);
     }
