@@ -46,7 +46,7 @@ class EventController extends RestController
      * @param int $limit Limit results. Default is 50
      * @param int $offset Starting serial number of result collection. Default is 0
      */
-    public function findLikeAction($searchString = null, $limit = null, $offset = null)
+    public function findLikeAction($searchString = null, $limit = 50, $offset = null)
     {
         $eventRepository = $this->get('rockparade.event_repository');
         $events = $eventRepository->findLike($searchString);
@@ -55,9 +55,7 @@ class EventController extends RestController
         $limit = (int) filter_var($limit, FILTER_VALIDATE_INT);
         $offset = (int) filter_var($offset, FILTER_VALIDATE_INT);
 
-        if ($limit || $offset) {
-            $events = $events->slice($offset, $limit ?: null);
-        }
+        $events = $events->slice($offset, $limit ?: null);
 
         $response = new CollectionApiResponse(
             $events,
