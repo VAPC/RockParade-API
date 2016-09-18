@@ -119,8 +119,7 @@ class OrganizerController extends RestController
         $response = $apiResponseFactory->createResponse(
             $this->createApiOperation($request),
             $form,
-            $this->getUser(),
-            Organizer::class
+            $this->getUser()
         );
 
         return $this->respond($response);
@@ -160,7 +159,7 @@ class OrganizerController extends RestController
      * )
      * @param string $id organizer id
      */
-    public function createMemberAction(Request $request, string $id): Response
+    public function createMemberAction(Request $request): Response
     {
         $form = $this->createAndProcessForm($request, OrganizerMemberFormType::class);
 
@@ -168,8 +167,7 @@ class OrganizerController extends RestController
         $response = $apiResponseFactory->createResponse(
             $this->createApiOperation($request),
             $form,
-            $this->getUser(),
-            Organizer::class
+            $this->getUser()
         );
 
         return $this->respond($response);

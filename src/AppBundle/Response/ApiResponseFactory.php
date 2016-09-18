@@ -5,6 +5,8 @@ namespace AppBundle\Response;
 use AppBundle\Entity\Image;
 use AppBundle\Entity\User;
 use AppBundle\Enum\ApiOperation;
+use AppBundle\Exception\MethodNotImplemented;
+use AppBundle\Exception\UnsupportedApiOperation;
 use AppBundle\Exception\UnsupportedTypeException;
 use AppBundle\Form\AbstractFormType;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
@@ -48,12 +50,12 @@ class ApiResponseFactory
 
     /**
      * Api response factory method
+     * @throws UnsupportedApiOperation
      */
     public function createResponse(
         ApiOperation $operation,
         FormInterface $form,
-        User $creator,
-        string $entityClass = null
+        User $creator
     ): AbstractApiResponse
     {
         if (!$form->isValid()) {
@@ -61,8 +63,10 @@ class ApiResponseFactory
         }
 
         if ($operation->getValue() === ApiOperation::CREATE) {
-            return $this->processCreation($form, $creator, $entityClass);
+            return $this->processCreation($form, $creator);
         }
+
+        throw new UnsupportedApiOperation($operation);
     }
 
     /**
@@ -89,13 +93,12 @@ class ApiResponseFactory
 
     private function processCreation(
         FormInterface $form,
-        User $creator,
-        string $entityClass = null
+        User $creator
     ): AbstractApiResponse
     {
         /** @var AbstractFormType $formData */
         $formData = $form->getData();
-        $entityClass = $entityClass ?: $formData->getEntityClassName();
+        $entityClass = $formData->getEntityClassName();
 
         $entity = $this->entityService->createEntityByFormData($formData, $creator, $entityClass);
         $location = $this->createEntityHttpLocation($entity);

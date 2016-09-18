@@ -108,8 +108,7 @@ class BandController extends RestController
         $response = $apiResponseFactory->createResponse(
             $this->createApiOperation($request),
             $form,
-            $this->getUser(),
-            Band::class
+            $this->getUser()
         );
 
         return $this->respond($response);
