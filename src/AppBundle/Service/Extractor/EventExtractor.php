@@ -72,7 +72,7 @@ class EventExtractor extends AbstractExtractor
         return $this->generateUrl(
             'event_image_view',
             [
-                'eventId'   => $eventId,
+                'id'        => $eventId,
                 'imageName' => $imageName,
             ]
         );

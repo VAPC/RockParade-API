@@ -147,7 +147,7 @@ class EventController extends RestController
 
     /**
      * Edit event
-     * @Route("/{eventId}", name="event_edit")
+     * @Route("/{id}", name="event_edit")
      * @Method("PUT")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -179,18 +179,18 @@ class EventController extends RestController
      *         404="Event with given id was not found",
      *     }
      * )
-     * @param string $eventId event id
+     * @param string $id event id
      */
-    public function editAction(Request $request, string $eventId): Response
+    public function editAction(Request $request, string $id): Response
     {
-        $response = $this->createOrUpdateEvent($request, $eventId);
+        $response = $this->createOrUpdateEvent($request, $id);
 
         return $this->respond($response);
     }
 
     /**
      * Delete event
-     * @Route("/{eventId}", name="event_delete")
+     * @Route("/{id}", name="event_delete")
      * @Method("DELETE")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -202,14 +202,14 @@ class EventController extends RestController
      *         404="Event with given id was not found",
      *     }
      * )
-     * @param string $eventId event id
+     * @param string $id event id
      */
-    public function deleteEvent(string $eventId): Response
+    public function deleteEvent(string $id): Response
     {
         /** @var EventRepository $eventRepository */
         $eventRepository = $this->get('rockparade.event_repository');
         /** @var Event $event */
-        $event = $eventRepository->findOneById($eventId);
+        $event = $eventRepository->findOneById($id);
 
         if ($event) {
             if ($event->getCreator() === $this->getUser()) {
@@ -222,7 +222,7 @@ class EventController extends RestController
             }
         } else {
             $eventService = $this->get('rockparade.event');
-            $response = $eventService->createEventNotFoundErrorResult($eventId);
+            $response = $eventService->createEventNotFoundErrorResult($id);
         }
 
         return $this->respond($response);
@@ -230,7 +230,7 @@ class EventController extends RestController
 
     /**
      * Add image to event
-     * @Route("/{eventId}/image", name="event_image_add")
+     * @Route("/{id}/image", name="event_image_add")
      * @Method("POST")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -242,19 +242,19 @@ class EventController extends RestController
      *         404="Event with given id was not found",
      *     }
      * )
-     * @param string $eventId event id
+     * @param string $id event id
      */
-    public function addImageAction(Request $request, string $eventId): Response
+    public function addImageAction(Request $request, string $id): Response
     {
         $eventService = $this->get('rockparade.event');
-        $response = $eventService->addImageToEvent($eventId, $this->getUser(), $request->get('image'));
+        $response = $eventService->addImageToEvent($id, $this->getUser(), $request->get('image'));
 
         return $this->respond($response);
     }
 
     /**
      * Get event image
-     * @Route("/{eventId}/image/{imageName}", name="event_image_view")
+     * @Route("/{id}/image/{imageName}", name="event_image_view")
      * @Method("GET")
      * @ApiDoc(
      *     section="Event",
@@ -264,14 +264,14 @@ class EventController extends RestController
      *         404="Image with given name was not found",
      *     }
      * )
-     * @param string $eventId event id
+     * @param string $id event id
      * @param string $imageName image name
      */
-    public function viewImageAction(string $eventId, string $imageName): Response
+    public function viewImageAction(string $id, string $imageName): Response
     {
         /** @var EventRepository $eventRepository */
         $eventRepository = $this->get('rockparade.event_repository');
-        $event = $eventRepository->findOneById($eventId);
+        $event = $eventRepository->findOneById($id);
 
         if ($event) {
             $image = $event->getImageWithName($imageName);
@@ -284,7 +284,7 @@ class EventController extends RestController
             }
         } else {
             $eventService = $this->get('rockparade.event');
-            $response = $eventService->createEventNotFoundErrorResult($eventId);
+            $response = $eventService->createEventNotFoundErrorResult($id);
         }
 
         return $this->respond($response);
@@ -292,7 +292,7 @@ class EventController extends RestController
 
     /**
      * Delete event image
-     * @Route("/{eventId}/image/{imageId}", name="event_image_delete")
+     * @Route("/{id}/image/{imageId}", name="event_image_delete")
      * @Method("DELETE")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -305,16 +305,16 @@ class EventController extends RestController
      *         404="Image with given id was not found",
      *     }
      * )
-     * @param string $eventId event id
+     * @param string $id event id
      * @param string $imageId image id
      */
-    public function deleteImageAction(string $eventId, string $imageId)
+    public function deleteImageAction(string $id, string $imageId)
     {
         /** @var EventRepository $eventRepository */
         $eventRepository = $this->get('rockparade.event_repository');
         /** @var ImageRepository $imageRepository */
         $imageRepository = $this->get('rockparade.image_repository');
-        $event = $eventRepository->findOneById($eventId);
+        $event = $eventRepository->findOneById($id);
 
         if ($event) {
             if ($this->getUser()->getLogin() !== $event->getCreator()->getLogin()) {
@@ -333,7 +333,7 @@ class EventController extends RestController
             }
         } else {
             $eventService = $this->get('rockparade.event');
-            $response = $eventService->createEventNotFoundErrorResult($eventId);
+            $response = $eventService->createEventNotFoundErrorResult($id);
         }
 
         return $this->respond($response);
@@ -341,7 +341,7 @@ class EventController extends RestController
 
     /**
      * Add links to event
-     * @Route("/{eventId}/links", name="event_links_add")
+     * @Route("/{id}/links", name="event_links_add")
      * @Method("POST")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -374,23 +374,23 @@ class EventController extends RestController
      *         404="Event with given id was not found",
      *     }
      * )
-     * @param string $eventId event id
+     * @param string $id event id
      */
-    public function addLinksAction(Request $request, string $eventId): Response
+    public function addLinksAction(Request $request, string $id): Response
     {
         $eventService = $this->get('rockparade.event');
 
         $form = $this->createForm(LinksCollectionFormType::class);
         $this->processForm($request, $form);
 
-        $response = $eventService->addLinksToEvent($eventId, $this->getUser(), $form);
+        $response = $eventService->addLinksToEvent($id, $this->getUser(), $form);
 
         return $this->respond($response);
     }
 
     /**
      * Delete link from event
-     * @Route("/{eventId}/link/{linkId}", name="event_link_delete")
+     * @Route("/{id}/link/{linkId}", name="event_link_delete")
      * @Method("DELETE")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -403,13 +403,13 @@ class EventController extends RestController
      *         404="Link with given id was not found",
      *     }
      * )
-     * @param string $eventId event id
+     * @param string $id event id
      * @param string $linkId link id
      */
-    public function deleteLinkAction(string $eventId, string $linkId)
+    public function deleteLinkAction(string $id, string $linkId)
     {
         $eventService = $this->get('rockparade.event');
-        $response = $eventService->removeLinksFromEvent($eventId, $linkId, $this->getUser());
+        $response = $eventService->removeLinksFromEvent($id, $linkId, $this->getUser());
 
         return $this->respond($response);
     }
@@ -432,17 +432,17 @@ class EventController extends RestController
         return $formBuilder->getForm();
     }
 
-    private function createOrUpdateEvent(Request $request, string $eventId = null): AbstractApiResponse
+    private function createOrUpdateEvent(Request $request, string $id = null): AbstractApiResponse
     {
         $form = $this->createEventCreationForm();
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
             $eventService = $this->get('rockparade.event');
-            $eventId = (string) $eventId;
+            $id = (string) $id;
 
-            if ($eventId) {
-                $response = $eventService->editEventByForm($form, $eventId);
+            if ($id) {
+                $response = $eventService->editEventByForm($form, $id);
             } else {
                 $response = $eventService->createEventByForm($form, $this->getUser());
             }

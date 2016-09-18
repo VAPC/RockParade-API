@@ -124,7 +124,7 @@ class EventService extends EntityService
                         $imageLocation = $this->router->generate(
                             'event_image_view',
                             [
-                                'eventId'   => $eventId,
+                                'id'   => $eventId,
                                 'imageName' => $image->getName(),
                             ],
                             Router::ABSOLUTE_URL
