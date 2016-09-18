@@ -3,7 +3,6 @@
 namespace AppBundle\Response;
 
 use AppBundle\Entity\Image;
-use AppBundle\Entity\Infrasctucture\AbstractRepository;
 use AppBundle\Entity\User;
 use AppBundle\Enum\ApiOperation;
 use AppBundle\Exception\UnsupportedTypeException;

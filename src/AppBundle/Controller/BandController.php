@@ -6,8 +6,6 @@ use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\User;
-use AppBundle\Form\Ambassador\AmbassadorFormType;
-use AppBundle\Form\Ambassador\AmbassadorMemberFormType;
 use AppBundle\Form\Ambassador\BandFormType;
 use AppBundle\Form\Ambassador\BandMemberFormType;
 use AppBundle\Response\ApiValidationError;
