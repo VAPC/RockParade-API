@@ -63,7 +63,7 @@ abstract class AbstractRepository extends EntityRepository
      * @param int $offset
      * @return object[] Entity array
      */
-    public function findAllWithLimitAndOffset(int $limit = null, int $offset = null): array
+    public function findAllWithLimitAndOffset(int $limit = 50, int $offset = null): array
     {
         // Doctrine can handle correctly only null limits, but not 0
         if (!$limit) { $limit = null; }
