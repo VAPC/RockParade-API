@@ -13,10 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 abstract class AbstractFormType extends AbstractType
 {
 
-    public function getEntityClassName(): string
-    {
-        throw new MethodNotImplemented(__METHOD__);
-    }
+    abstract public function getEntityClassName(): string;
 
     /** {@inheritDoc} */
     public function configureOptions(OptionsResolver $resolver)

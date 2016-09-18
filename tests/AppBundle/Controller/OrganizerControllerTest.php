@@ -99,7 +99,10 @@ class OrganizerControllerTest extends FunctionalTester
     public function createMemberAction_POSTOrganizerIdMembersEmptyRequest_validationError()
     {
         $this->sendPostRequest(sprintf('/organizer/%s/members', self::ORGANIZER_ID_FIRST));
+        $contents = $this->getResponseContents();
 
         $this->assertEquals(400, $this->getResponseCode());
+        $this->assertContains('Parameter \'login\' is mandatory', $contents['errors']);
+        $this->assertContains('Parameter \'short_description\' is mandatory', $contents['errors']);
     }
 }

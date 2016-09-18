@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @author Vehsamrak
  */
-class AmbassadorMemberFormType extends AbstractFormType
+abstract class AmbassadorMemberFormType extends AbstractFormType
 {
 
     /**

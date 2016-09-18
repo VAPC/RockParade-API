@@ -47,6 +47,9 @@ class ApiResponseFactory
         $this->router = $router;
     }
 
+    /**
+     * Api response factory method
+     */
     public function createResponse(
         ApiOperation $operation,
         FormInterface $form,
@@ -94,13 +97,6 @@ class ApiResponseFactory
         /** @var AbstractFormType $formData */
         $formData = $form->getData();
         $entityClass = $entityClass ?: $formData->getEntityClassName();
-        /** @var AbstractRepository $repository */
-        $repository = $this->entityManager->getRepository($entityClass);
-        $entity = $repository->findOneByFormData($formData);
-
-        if ($entity) {
-            return new ApiValidationError('Entity with given id already exists.');
-        }
 
         $entity = $this->entityService->createEntityByFormData($formData, $creator, $entityClass);
         $location = $this->createEntityHttpLocation($entity);

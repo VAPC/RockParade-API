@@ -3,14 +3,13 @@
 namespace AppBundle\Form\Ambassador;
 
 use AppBundle\Form\AbstractFormType;
-use AppBundle\Form\Ambassador\Infrastructure\EntityAwareInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use AppBundle\Form\Validation as EntityAssert;
 
 /**
  * @author Vehsamrak
  */
-class AmbassadorFormType extends AbstractFormType implements EntityAwareInterface
+abstract class AmbassadorFormType extends AbstractFormType
 {
 
     /**

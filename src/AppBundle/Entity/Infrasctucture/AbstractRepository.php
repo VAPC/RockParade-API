@@ -13,14 +13,6 @@ abstract class AbstractRepository extends EntityRepository
 {
 
     /**
-     * @return object|null Entity
-     */
-    public function findOneByFormData(AbstractFormType $formType)
-    {
-        throw new MethodNotImplementedException(__METHOD__);
-    }
-
-    /**
      * @return \Doctrine\ORM\EntityManager
      */
     public function getEntityManager()

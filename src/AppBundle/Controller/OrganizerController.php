@@ -4,7 +4,9 @@ namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\Organizer;
+use AppBundle\Form\Ambassador\AmbassadorMemberFormType;
 use AppBundle\Form\Ambassador\OrganizerFormType;
+use AppBundle\Form\Ambassador\OrganizerMemberFormType;
 use AppBundle\Response\ApiValidationError;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -160,9 +162,17 @@ class OrganizerController extends RestController
      * )
      * @param string $id organizer id
      */
-    public function createMemberAction(string $id): Response
+    public function createMemberAction(Request $request, string $id): Response
     {
-        $response = new ApiValidationError('');
+        $form = $this->createAndProcessForm($request, OrganizerMemberFormType::class);
+
+        $apiResponseFactory = $this->get('rockparade.api_response_factory');
+        $response = $apiResponseFactory->createResponse(
+            $this->createApiOperation($request),
+            $form,
+            $this->getUser(),
+            Organizer::class
+        );
 
         return $this->respond($response);
     }

@@ -9,6 +9,7 @@ use AppBundle\Entity\User;
 use AppBundle\Form\Ambassador\AmbassadorFormType;
 use AppBundle\Form\Ambassador\AmbassadorMemberFormType;
 use AppBundle\Form\Ambassador\BandFormType;
+use AppBundle\Form\Ambassador\BandMemberFormType;
 use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
@@ -158,7 +159,7 @@ class BandController extends RestController
         /** @var Band $band */
         $band = $bandRepository->findOneById($id);
 
-        $form = $this->createForm(AmbassadorFormType::class);
+        $form = $this->createForm(BandFormType::class);
         $this->processForm($request, $form);
         $form = $this->get('rockparade.band')->processFormAndUpdateBand($form, $band, $this->getUser());
 
@@ -229,7 +230,7 @@ class BandController extends RestController
      */
     public function createMemberAction(Request $request, string $id): Response
     {
-        $form = $this->createForm(AmbassadorMemberFormType::class);
+        $form = $this->createForm(BandMemberFormType::class);
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
@@ -364,7 +365,7 @@ class BandController extends RestController
                 $bandMember = $bandMemberRepository->findByBandAndUser($band, $user);
                 
                 if ($bandMember) {
-                    $form = $this->createForm(AmbassadorMemberFormType::class);
+                    $form = $this->createForm(BandMemberFormType::class);
                     $this->processForm($request, $form);
                     $form = $this->get('rockparade.band')->processFormAndUpdateBandMember($form, $bandMember);
                     
