@@ -51,14 +51,14 @@ class BandController extends RestController
     }
 
     /**
-     * View band by name
+     * View band by id
      * @Route("/{id}", name="band_view")
      * @Method("GET")
      * @ApiDoc(
      *     section="Band",
      *     statusCodes={
      *         200="Band was found",
-     *         404="Band with given name was not found",
+     *         404="Band with given id was not found",
      *     }
      * )
      * @param string $id band name
@@ -118,7 +118,7 @@ class BandController extends RestController
 
     /**
      * Edit band
-     * @Route("/{bandName}", name="band_edit")
+     * @Route("/{id}", name="band_edit")
      * @Method("PUT")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -146,16 +146,17 @@ class BandController extends RestController
      *     statusCodes={
      *         204="Band was edited with new data",
      *         400="Validation error",
+     *         404="Band with given id was not found",
      *     }
      * )
-     * @param string $bandName band name
+     * @param string $id band id
      */
-    public function editAction(Request $request, string $bandName): Response
+    public function editAction(Request $request, string $id): Response
     {
         /** @var BandRepository $bandRepository */
         $bandRepository = $this->get('rockparade.band_repository');
         /** @var Band $band */
-        $band = $bandRepository->findOneByName($bandName);
+        $band = $bandRepository->findOneById($id);
 
         $form = $this->createForm(AmbassadorFormType::class);
         $this->processForm($request, $form);
@@ -166,25 +167,26 @@ class BandController extends RestController
 
     /**
      * List all band members
-     * @Route("/{bandName}/members", name="band_members")
+     * @Route("/{id}/members", name="band_members")
      * @Method("GET")
      * @ApiDoc(
      *     section="Band",
      *     statusCodes={
      *         200="OK",
-     *         404="Band was not found",
+     *         404="Band with given id was not found",
      *     }
      * )
+     * @param string $id band id
      */
-    public function listMembersAction(string $bandName): Response
+    public function listMembersAction(string $id): Response
     {
         $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneByName($bandName);
+        $band = $bandRepository->findOneById($id);
 
-        if (!$band) {
-            $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
-        } else {
+        if ($band) {
             $response = new ApiResponse($band->getMembers(), Response::HTTP_OK);
+        } else {
+            $response = $this->createEntityNotFoundResponse(Band::class, $id);
         }
 
         return $this->respond($response);
@@ -192,7 +194,7 @@ class BandController extends RestController
 
     /**
      * Add member to band
-     * @Route("/{bandName}/members", name="band_member_create")
+     * @Route("/{id}/members", name="band_member_create")
      * @Method("POST")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -220,21 +222,22 @@ class BandController extends RestController
      *     statusCodes={
      *         200="Member was added to the band",
      *         400="Validation error",
+     *         404="Band with given id was not found",
      *     }
      * )
-     * @param string $bandName band name
+     * @param string $id band id
      */
-    public function createMemberAction(Request $request, string $bandName): Response
+    public function createMemberAction(Request $request, string $id): Response
     {
         $form = $this->createForm(AmbassadorMemberFormType::class);
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
             $bandRepository = $this->get('rockparade.band_repository');
-            $band = $bandRepository->findOneByName($bandName);
+            $band = $bandRepository->findOneById($id);
 
             if (!$band) {
-                $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
+                $response = $this->createEntityNotFoundResponse(Band::class, $id);
             } else {
                 $newUserLogin = $form->get('login')->getData();
                 $newUser = $this->get('rockparade.user_repository')->findOneByLogin($newUserLogin);
@@ -267,7 +270,7 @@ class BandController extends RestController
 
     /**
      * Delete member from band
-     * @Route("/{bandName}/member/{userLogin}", name="band_member_delete")
+     * @Route("/{id}/member/{userLogin}", name="band_member_delete")
      * @Method("DELETE")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -277,13 +280,13 @@ class BandController extends RestController
      *         404="Band or user was not found",
      *     }
      * )
-     * @param string $bandName band name
+     * @param string $id band id
      * @param string $userLogin member login
      */
-    public function deleteMemberAction(string $bandName, string $userLogin)
+    public function deleteMemberAction(string $id, string $userLogin)
     {
         $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneByName($bandName);
+        $band = $bandRepository->findOneById($id);
 
         if ($band) {
             $userRepository = $this->get('rockparade.user_repository');
@@ -305,7 +308,7 @@ class BandController extends RestController
                 $response = $this->createEntityNotFoundResponse(User::class, $userLogin);
             }
         } else {
-            $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
+            $response = $this->createEntityNotFoundResponse(Band::class, $id);
         }
 
         return $this->respond($response);
@@ -313,7 +316,7 @@ class BandController extends RestController
     
     /**
      * Update band member
-     * @Route("/{bandName}/member", name="band_member_update")
+     * @Route("/{id}/member", name="band_member_update")
      * @Method("PUT")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
@@ -343,13 +346,13 @@ class BandController extends RestController
      *         404="Band or user was not found",
      *     }
      * )
-     * @param string $bandName band name
+     * @param string $id band id
      * @param string $userLogin member login
      */
-    public function updateMemberAction(Request $request, string $bandName)
+    public function updateMemberAction(Request $request, string $id)
     {
         $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneByName($bandName);
+        $band = $bandRepository->findOneById($id);
 
         if ($band) {
             $userLogin = $request->get('login');
@@ -375,7 +378,7 @@ class BandController extends RestController
                 $response = $this->createEntityNotFoundResponse(User::class, $userLogin);
             }
         } else {
-            $response = $this->createEntityNotFoundResponse(Band::class, $bandName);
+            $response = $this->createEntityNotFoundResponse(Band::class, $id);
         }
 
         return $this->respond($response);
