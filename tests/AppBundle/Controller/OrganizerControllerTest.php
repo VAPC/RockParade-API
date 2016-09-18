@@ -12,6 +12,7 @@ use Tests\FunctionalTester;
 class OrganizerControllerTest extends FunctionalTester
 {
 
+    const ORGANIZER_ID_FIRST = 'test-organizer';
     const ORGANIZER_NAME_FIRST = 'Org';
     const ORGANIZER_DESCRIPTION_FIRST = 'Organizer description.';
 
@@ -55,7 +56,7 @@ class OrganizerControllerTest extends FunctionalTester
     /** @test */
     public function viewAction_GETOrganizerExistingIdRequest_organizerResourceReturned()
     {
-        $this->sendGetRequest('/organizer/Org');
+        $this->sendGetRequest(sprintf('/organizer/%s', self::ORGANIZER_ID_FIRST));
         $contentsData = $this->getResponseContents()['data'];
 
         $this->assertEquals(200, $this->getResponseCode());
@@ -97,7 +98,7 @@ class OrganizerControllerTest extends FunctionalTester
     /** @test */
     public function createMemberAction_POSTOrganizerIdMembersEmptyRequest_validationError()
     {
-        $this->sendPostRequest('/organizer/Org/members');
+        $this->sendPostRequest(sprintf('/organizer/%s/members', self::ORGANIZER_ID_FIRST));
 
         $this->assertEquals(400, $this->getResponseCode());
     }

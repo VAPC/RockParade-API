@@ -18,7 +18,7 @@ class OrganizerFixture implements FixtureInterface
     public function load(ObjectManager $manager)
     {
         $user = new User('bander', 'Bander', 1, '');
-        $organizer = new Organizer('Org', $user, 'Organizer description.', new ForegoneHashGenerator('Org'));
+        $organizer = new Organizer('Org', $user, 'Organizer description.', new ForegoneHashGenerator('test-organizer'));
 
         $entities = [
             $user,
