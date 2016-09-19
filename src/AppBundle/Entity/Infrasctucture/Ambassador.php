@@ -2,8 +2,12 @@
 
 namespace AppBundle\Entity\Infrasctucture;
 
+use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
+use AppBundle\Entity\Organizer;
+use AppBundle\Entity\OrganizerMember;
 use AppBundle\Entity\User;
+use AppBundle\Exception\UnsupportedEntityException;
 use AppBundle\Service\HashGenerator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -44,12 +48,7 @@ abstract class Ambassador
      */
     protected $description;
 
-    /**
-     * @var BandMember[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\BandMember", mappedBy="band", orphanRemoval=true)
-     * @Accessor(getter="getMembers")
-     * @SerializerType("array")
-     */
+    /** @var ArrayCollection */
     protected $members;
 
     /**
@@ -114,5 +113,16 @@ abstract class Ambassador
     public function getCreator(): User
     {
         return $this->creator;
+    }
+
+    public function getMemberClass(): string
+    {
+        if ($this instanceof Band) {
+            return BandMember::class;
+        } elseif ($this instanceof Organizer) {
+            return OrganizerMember::class;
+        } else {
+            throw new UnsupportedEntityException();
+        }
     }
 }

@@ -15,6 +15,8 @@ class OrganizerControllerTest extends FunctionalTester
     const ORGANIZER_ID_FIRST = 'test-organizer';
     const ORGANIZER_NAME_FIRST = 'Org';
     const ORGANIZER_DESCRIPTION_FIRST = 'Organizer description.';
+    const USER_SECOND_LOGIN = 'second';
+    const ORGANIZER_MEMBER_SHORT_DESCRIPTION = 'second short description';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -98,11 +100,26 @@ class OrganizerControllerTest extends FunctionalTester
     /** @test */
     public function createMemberAction_POSTOrganizerIdMembersEmptyRequest_validationError()
     {
-        $this->sendPostRequest(sprintf('/organizer/%s/members', self::ORGANIZER_ID_FIRST));
-        $contents = $this->getResponseContents();
+        $this->sendPostRequest(sprintf('/organizer/members', self::ORGANIZER_ID_FIRST));
+        $errors = $this->getResponseContents()['errors'];
 
         $this->assertEquals(400, $this->getResponseCode());
-        $this->assertContains('Parameter \'login\' is mandatory', $contents['errors']);
-        $this->assertContains('Parameter \'short_description\' is mandatory', $contents['errors']);
+        $this->assertContains('Parameter \'ambassador\' is mandatory.', $errors);
+        $this->assertContains('Parameter \'login\' is mandatory.', $errors);
+        $this->assertContains('Parameter \'short_description\' is mandatory.', $errors);
+    }
+
+    /** @test */
+    public function createMemberAction_POSTOrganizerIdMembersRequest_newOrganizerMemberCreated()
+    {
+        $parameters = [
+            'ambassador'        => self::ORGANIZER_ID_FIRST,
+            'login'             => self::USER_SECOND_LOGIN,
+            'short_description' => self::ORGANIZER_MEMBER_SHORT_DESCRIPTION,
+        ];
+
+        $this->sendPostRequest(sprintf('/organizer/members', self::ORGANIZER_ID_FIRST), $parameters);
+
+        $this->assertEquals(201, $this->getResponseCode());
     }
 }

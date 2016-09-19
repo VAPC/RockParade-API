@@ -6,6 +6,7 @@ use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\User;
+use AppBundle\Form\Ambassador\AmbassadorMemberFormType;
 use AppBundle\Form\Ambassador\BandFormType;
 use AppBundle\Form\Ambassador\BandMemberFormType;
 use AppBundle\Response\ApiValidationError;
@@ -192,12 +193,18 @@ class BandController extends RestController
 
     /**
      * Add member to band
-     * @Route("/{id}/members", name="band_member_create")
+     * @Route("/members", name="band_member_create")
      * @Method("POST")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Band",
      *     requirements={
+     *         {
+     *             "name"="ambassador",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="band id"
+     *         },
      *         {
      *             "name"="login",
      *             "dataType"="string",
@@ -223,14 +230,17 @@ class BandController extends RestController
      *         404="Band with given id was not found",
      *     }
      * )
-     * @param string $id band id
      */
-    public function createMemberAction(Request $request, string $id): Response
+    public function createMemberAction(Request $request): Response
     {
         $form = $this->createForm(BandMemberFormType::class);
         $this->processForm($request, $form);
 
         if ($form->isValid()) {
+            /** @var AmbassadorMemberFormType $formData */
+            $formData = $form->getData();
+            $id = $formData->ambassador;
+
             $bandRepository = $this->get('rockparade.band_repository');
             $band = $bandRepository->findOneById($id);
 
@@ -246,7 +256,7 @@ class BandController extends RestController
                     $bandMemberRepository = $this->get('rockparade.band_member_repository');
                     $shortDescription = (string) $form->get('short_description')->getData();
                     $description = (string) $form->get('description')->getData();
-                    $bandMember = $bandMemberRepository->getOrCreateByBandAndUser(
+                    $bandMember = $bandMemberRepository->getOrCreateByAmbassadorAndUser(
                         $band,
                         $newUser,
                         $shortDescription,
@@ -292,7 +302,7 @@ class BandController extends RestController
 
             if ($user) {
                 $bandMemberRepository = $this->get('rockparade.band_member_repository');
-                $bandMember = $bandMemberRepository->findByBandAndUser($band, $user);
+                $bandMember = $bandMemberRepository->findByAmbassadorAndUser($band, $user);
 
                 if ($bandMember) {
                     $band->removeMember($bandMember);
@@ -321,6 +331,12 @@ class BandController extends RestController
      *     section="Band",
      *     requirements={
      *         {
+     *             "name"="ambassador",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="band id"
+     *         },
+     *         {
      *             "name"="login",
      *             "dataType"="string",
      *             "requirement"="true",
@@ -344,11 +360,12 @@ class BandController extends RestController
      *         404="Band or user was not found",
      *     }
      * )
-     * @param string $id band id
      * @param string $userLogin member login
      */
-    public function updateMemberAction(Request $request, string $id)
+    public function updateMemberAction(Request $request)
     {
+        $id = $request->get('ambassador');
+
         $bandRepository = $this->get('rockparade.band_repository');
         $band = $bandRepository->findOneById($id);
 
@@ -359,7 +376,7 @@ class BandController extends RestController
 
             if ($user) {
                 $bandMemberRepository = $this->get('rockparade.band_member_repository');
-                $bandMember = $bandMemberRepository->findByBandAndUser($band, $user);
+                $bandMember = $bandMemberRepository->findByAmbassadorAndUser($band, $user);
                 
                 if ($bandMember) {
                     $form = $this->createForm(BandMemberFormType::class);

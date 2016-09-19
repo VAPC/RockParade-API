@@ -2,10 +2,6 @@
 
 namespace AppBundle\Entity\Infrasctucture;
 
-use AppBundle\Exception\HttpRuntimeException;
-use AppBundle\Form\AbstractFormType;
-use AppBundle\Form\Ambassador\AmbassadorFormType;
-
 /**
  * @author Vehsamrak
  */

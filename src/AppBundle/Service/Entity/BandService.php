@@ -125,7 +125,7 @@ class BandService extends EntityService
                     );
                 }
 
-                return $this->bandMemberRepository->getOrCreateByBandAndUser($band, $user, $shortDescription);
+                return $this->bandMemberRepository->getOrCreateByAmbassadorAndUser($band, $user, $shortDescription);
             },
             $form->get(self::ATTRIBUTE_MEMBERS)->getData()
         );
@@ -149,7 +149,7 @@ class BandService extends EntityService
 
     public function createBandMemberFromCreator(Band $band, User $creator): BandMember
     {
-        return $this->bandMemberRepository->getOrCreateByBandAndUser(
+        return $this->bandMemberRepository->getOrCreateByAmbassadorAndUser(
             $band,
             $creator,
             self::CREATOR_DEFAULT_MEMBER_SHORT_DESCRIPTION

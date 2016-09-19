@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Infrasctucture\GetUserLoginTrait;
+use AppBundle\Entity\Infrasctucture\AmbassadorMember;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -11,56 +11,14 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Table(name="band_members")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\BandMemberRepository")
  */
-class BandMember
+class BandMember extends AmbassadorMember
 {
-    use GetUserLoginTrait;
-
-    /**
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="login")
-     * @Serializer\Accessor("getUserLogin")
-     * @Serializer\Type("string")
-     * @Serializer\SerializedName("login")
-     */
-    private $user;
-
     /**
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Band", inversedBy="members")
      * @ORM\JoinColumn(name="band_id", referencedColumnName="id")
      * @Serializer\Exclude
+     * @var Band
      */
-    private $band;
-
-    /**
-     * @var string
-     * @ORM\Column(name="short_description", type="text", nullable=false)
-     * @Serializer\SerializedName("short_description")
-     */
-    private $shortDescription;
-
-    /**
-     * @var string
-     * @ORM\Column(name="description", type="text", nullable=true)
-     */
-    private $description;
-
-    public function __construct(Band $band, User $user, string $shortDescription = '', string $description = '')
-    {
-        $this->user = $user;
-        $this->band = $band;
-        $this->shortDescription = $shortDescription;
-        $this->description = $description;
-    }
-
-    public function setShortDescription(string $shortDescription)
-    {
-        $this->shortDescription = $shortDescription;
-    }
-
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
-    }
+    protected $ambassador;
 }

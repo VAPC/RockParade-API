@@ -201,12 +201,13 @@ class BandControllerTest extends FunctionalTester
     public function createMemberAction_POSTBandNameMembersRequestWithNewMember_bandMemberAdded()
     {
         $parameters = [
+            'ambassador'        => self::BAND_NAME_FIRST,
             'login'             => self::BAND_USER_LOGIN_SECOND,
             'short_description' => self::USER_DESCRIPTION_SHORT_SECOND,
             'description'       => self::USER_DESCRIPTION_SECOND,
         ];
 
-        $this->sendPostRequest('/band/Banders/members', $parameters);
+        $this->sendPostRequest('/band/members', $parameters);
         $this->assertEquals(200, $this->getResponseCode());
 
         $this->sendGetRequest('/band/Banders/members');
@@ -231,6 +232,7 @@ class BandControllerTest extends FunctionalTester
     {
         $this->followRedirects();
         $parameters = [
+            'ambassador'        => self::BAND_NAME_FIRST,
             'login'             => self::BAND_USER_LOGIN_FIRST,
             'short_description' => self::BAND_MEMBER_SECOND_SHORT_DESCRIPTION,
             'description'       => self::BAND_MEMBER_SECOND_DESCRIPTION,

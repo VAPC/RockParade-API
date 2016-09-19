@@ -3,6 +3,7 @@
 namespace AppBundle\Service\Entity;
 
 use AppBundle\Entity\Infrasctucture\Ambassador;
+use AppBundle\Entity\Infrasctucture\AmbassadorMember;
 use AppBundle\Entity\User;
 use AppBundle\Exception\EntityNotFoundException;
 use AppBundle\Exception\MethodNotImplemented;
@@ -27,14 +28,14 @@ class EntityService
     }
 
     /**
-     * @param string $entityFullName Entity class name
+     * @param string $entityClassName Entity class name
      * @param string|int $id Entity id
      * @return ApiError
      * @throws EntityNotFoundException
      */
-    public function createEntityNotFoundResponse(string $entityFullName, $id): ApiError
+    public function createEntityNotFoundResponse(string $entityClassName, $id): ApiError
     {
-        $entityName = (new \ReflectionClass($entityFullName))->getShortName();
+        $entityName = (new \ReflectionClass($entityClassName))->getShortName();
 
         return new ApiError(
             sprintf('%s "%s" was not found.', $entityName, $id),
@@ -62,7 +63,7 @@ class EntityService
     {
         $entityClass = new \ReflectionClass($entityClass);
 
-        if ($entityClass->isSubclassOf(Ambassador::class)) {
+        if ($entityClass->isSubclassOf(Ambassador::class) || $entityClass->isSubclassOf(AmbassadorMember::class)) {
         	return $this->ambassadorService;
         } else {
             throw new MethodNotImplemented(__METHOD__);

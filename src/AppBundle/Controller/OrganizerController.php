@@ -127,12 +127,18 @@ class OrganizerController extends RestController
 
     /**
      * Add new member to organization
-     * @Route("/{id}/members", name="organizer_member_create")
+     * @Route("/members", name="organizer_member_create")
      * @Method("POST")
      * @Security("has_role('ROLE_USER')")
      * @ApiDoc(
      *     section="Organizer",
      *     requirements={
+     *         {
+     *             "name"="organizer",
+     *             "dataType"="string",
+     *             "requirement"="true",
+     *             "description"="organizer id"
+     *         },
      *         {
      *             "name"="login",
      *             "dataType"="string",
@@ -155,9 +161,9 @@ class OrganizerController extends RestController
      *     statusCodes={
      *         201="Member was added to organization",
      *         400="Validation error",
+     *         403="Organizer or User was not found",
      *     }
      * )
-     * @param string $id organizer id
      */
     public function createMemberAction(Request $request): Response
     {

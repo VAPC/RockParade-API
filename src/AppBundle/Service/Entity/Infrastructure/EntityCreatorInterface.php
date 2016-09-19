@@ -11,5 +11,5 @@ use AppBundle\Form\AbstractFormType;
 interface EntityCreatorInterface
 {
 
-    public function createEntityByFormData(AbstractFormType $formType, User $creator, string $entityClass);
+    public function createEntityByFormData(AbstractFormType $formType, User $creator);
 }
