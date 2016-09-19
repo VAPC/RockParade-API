@@ -40,6 +40,7 @@ abstract class AmbassadorMember
 
     /**
      * @var Ambassador
+     * @Serializer\Exclude
      */
     protected $ambassador;
 

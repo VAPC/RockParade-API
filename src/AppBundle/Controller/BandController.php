@@ -164,33 +164,6 @@ class BandController extends RestController
     }
 
     /**
-     * List all band members
-     * @Route("/{id}/members", name="band_members")
-     * @Method("GET")
-     * @ApiDoc(
-     *     section="Band",
-     *     statusCodes={
-     *         200="OK",
-     *         404="Band with given id was not found",
-     *     }
-     * )
-     * @param string $id band id
-     */
-    public function listMembersAction(string $id): Response
-    {
-        $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneById($id);
-
-        if ($band) {
-            $response = new ApiResponse($band->getMembers(), Response::HTTP_OK);
-        } else {
-            $response = $this->createEntityNotFoundResponse(Band::class, $id);
-        }
-
-        return $this->respond($response);
-    }
-
-    /**
      * Add member to band
      * @Route("/members", name="band_member_create")
      * @Method("POST")
