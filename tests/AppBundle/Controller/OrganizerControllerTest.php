@@ -15,6 +15,7 @@ class OrganizerControllerTest extends FunctionalTester
     const ORGANIZER_ID_FIRST = 'test-organizer';
     const ORGANIZER_NAME_FIRST = 'Org';
     const ORGANIZER_DESCRIPTION_FIRST = 'Organizer description.';
+    const USER_CREATOR_LOGIN = 'first';
     const USER_SECOND_LOGIN = 'second';
     const ORGANIZER_MEMBER_SHORT_DESCRIPTION = 'second short description';
 
@@ -75,7 +76,7 @@ class OrganizerControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTOrganizerRequestWithNameAndDescriptionData_organizerCreatedAndLocationReturned()
+    public function createAction_POSTOrganizerRequestWithNameAndDescriptionData_organizerCreatedAndCreatorAddedAsMemberAndLocationReturned()
     {
         $parameters = [
             'name'        => 'first organizer name',
@@ -84,19 +85,18 @@ class OrganizerControllerTest extends FunctionalTester
 
         $this->sendPostRequest('/organizer', $parameters);
         $responseLocation = $this->getResponseLocation();
-
         $this->assertEquals(201, $this->getResponseCode());
         $this->assertRegExp('/^http.?:\/\/.*organizer\/..*$/', $responseLocation);
 
         $this->sendGetRequest($responseLocation);
         $contentsData = $this->getResponseContents()['data'];
-
         $this->assertEquals(200, $this->getResponseCode());
         $this->assertEquals(8, strlen($contentsData['id']));
         $this->assertEquals($parameters['name'], $contentsData['name']);
         $this->assertEquals($parameters['description'], $contentsData['description']);
+        $this->assertEquals(self::USER_CREATOR_LOGIN, $contentsData['members'][0]['login']);
     }
-    
+
     /** @test */
     public function createMemberAction_POSTOrganizerIdMembersEmptyRequest_validationError()
     {
@@ -110,7 +110,7 @@ class OrganizerControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createMemberAction_POSTOrganizerIdMembersRequest_newOrganizerMemberCreated()
+    public function createMemberAction_POSTOrganizerIdMembersRequest_organizerMemberCreated()
     {
         $parameters = [
             'ambassador'        => self::ORGANIZER_ID_FIRST,

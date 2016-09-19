@@ -83,21 +83,21 @@ abstract class Ambassador
     }
 
     /**
-     * @return Collection|BandMember[]
+     * @return Collection|AmbassadorMember[]
      */
     public function getMembers(): Collection
     {
         return $this->members;
     }
 
-    public function addMember(BandMember $bandMember)
+    public function addMember(AmbassadorMember $ambassadorMember)
     {
-        $this->members->add($bandMember);
+        $this->members->add($ambassadorMember);
     }
 
-    public function removeMember(BandMember $bandMember)
+    public function removeMember(AmbassadorMember $ambassadorMember)
     {
-        $this->members->removeElement($bandMember);
+        $this->members->removeElement($ambassadorMember);
     }
 
     public function setName(string $name)

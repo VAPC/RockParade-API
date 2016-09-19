@@ -4,6 +4,8 @@ namespace AppBundle\Service\Entity;
 
 use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
+use AppBundle\Entity\Infrasctucture\Ambassador;
+use AppBundle\Entity\Infrasctucture\AmbassadorMember;
 use AppBundle\Entity\Repository\BandMemberRepository;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\Repository\UserRepository;
@@ -94,7 +96,7 @@ class BandService extends EntityService
         }
 
         $bandMembers = $this->getBandMembersFromForm($band, $form);
-        $bandMembers[] = $this->createBandMemberFromCreator($band, $creator);
+        $bandMembers[] = $this->createAmbassadorMemberFromCreator($band, $creator);
 
         foreach ($bandMembers as $bandMember) {
             $band->addMember($bandMember);
@@ -147,10 +149,10 @@ class BandService extends EntityService
         return $form;
     }
 
-    public function createBandMemberFromCreator(Band $band, User $creator): BandMember
+    public function createAmbassadorMemberFromCreator(Ambassador $ambassador, User $creator): AmbassadorMember
     {
         return $this->bandMemberRepository->getOrCreateByAmbassadorAndUser(
-            $band,
+            $ambassador,
             $creator,
             self::CREATOR_DEFAULT_MEMBER_SHORT_DESCRIPTION
         );

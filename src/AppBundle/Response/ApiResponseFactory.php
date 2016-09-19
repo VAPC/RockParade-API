@@ -103,7 +103,7 @@ class ApiResponseFactory
         $entity = $this->entityService->createEntityByFormData($formData, $creator, $entityClass);
 
         if (method_exists($entity, 'getId')) {
-            $location = $this->createEntityHttpLocation($entity);
+            $location = $this->createEntityHttpLocation($entity, $entity->getId());
             $response = new CreatedApiResponse($location);
         } else {
             $response = new EmptyApiResponse(Response::HTTP_CREATED);
@@ -117,14 +117,8 @@ class ApiResponseFactory
      * @param string $id Entity id
      * @return string
      */
-    private function createEntityHttpLocation($entity): string
+    private function createEntityHttpLocation($entity, string $id): string
     {
-        if (method_exists($entity, 'getId')) {
-            $id = $entity->getId();
-        } else {
-            throw new MethodNotImplemented('getId');
-        }
-
         $entityShortName = (new \ReflectionClass($entity))->getShortName();
         $route = strtolower($entityShortName) . '_view';
 
