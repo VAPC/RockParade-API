@@ -18,6 +18,8 @@ class OrganizerControllerTest extends FunctionalTester
     const USER_CREATOR_LOGIN = 'first';
     const USER_SECOND_LOGIN = 'second';
     const ORGANIZER_MEMBER_SHORT_DESCRIPTION = 'second short description';
+    const ORGANIZER_NAME_SECOND = 'first organizer name';
+    const ORGANIZER_DESCRIPTION_SECOND = 'first organizer description';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -47,7 +49,7 @@ class OrganizerControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function viewAction_GETOrganizerUnexistingIdRequest_organizerResourceReturned()
+    public function viewAction_GETOrganizerUnexistingIdRequest_organizerResource()
     {
         $this->sendGetRequest('/organizer/unexisting');
         $contents = $this->getResponseContents();
@@ -57,7 +59,7 @@ class OrganizerControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function viewAction_GETOrganizerExistingIdRequest_organizerResourceReturned()
+    public function viewAction_GETOrganizerExistingIdRequest_organizerResource()
     {
         $this->sendGetRequest(sprintf('/organizer/%s', self::ORGANIZER_ID_FIRST));
         $contentsData = $this->getResponseContents()['data'];
@@ -76,11 +78,25 @@ class OrganizerControllerTest extends FunctionalTester
     }
 
     /** @test */
-    public function createAction_POSTOrganizerRequestWithNameAndDescriptionData_organizerCreatedAndCreatorAddedAsMemberAndLocationReturned()
+    public function createAction_POSTOrganizerRequestWithExistingName_validationError()
     {
         $parameters = [
-            'name'        => 'first organizer name',
-            'description' => 'first organizer description',
+            'name' => self::ORGANIZER_NAME_FIRST,
+        ];
+
+        $this->sendPostRequest('/organizer', $parameters);
+        $errors = $this->getResponseContents()['errors'];
+
+        $this->assertEquals(400, $this->getResponseCode());
+        $this->assertContains('Organizer with name "Org" already exists.', $errors);
+    }
+
+    /** @test */
+    public function createAction_POSTOrganizerRequestWithNameAndDescriptionData_organizerCreatedAndCreatorAddedAsMemberAndLocation()
+    {
+        $parameters = [
+            'name'        => self::ORGANIZER_NAME_SECOND,
+            'description' => self::ORGANIZER_DESCRIPTION_SECOND,
         ];
 
         $this->sendPostRequest('/organizer', $parameters);
