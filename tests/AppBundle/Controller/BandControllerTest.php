@@ -208,7 +208,7 @@ class BandControllerTest extends FunctionalTester
         ];
 
         $this->sendPostRequest('/band/members', $parameters);
-        $this->assertEquals(200, $this->getResponseCode());
+        $this->assertEquals(201, $this->getResponseCode());
 
         $this->sendGetRequest('/band/Banders/members');
         $contents = $this->getResponseContents();

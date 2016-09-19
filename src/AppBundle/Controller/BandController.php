@@ -6,7 +6,6 @@ use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\User;
-use AppBundle\Form\Ambassador\AmbassadorMemberFormType;
 use AppBundle\Form\Ambassador\BandFormType;
 use AppBundle\Form\Ambassador\BandMemberFormType;
 use AppBundle\Response\ApiValidationError;
@@ -227,51 +226,20 @@ class BandController extends RestController
      *     statusCodes={
      *         200="Member was added to the band",
      *         400="Validation error",
-     *         404="Band with given id was not found",
+     *         404="Band or User was not found",
      *     }
      * )
      */
     public function createMemberAction(Request $request): Response
     {
-        $form = $this->createForm(BandMemberFormType::class);
-        $this->processForm($request, $form);
+        $form = $this->createAndProcessForm($request, BandMemberFormType::class);
 
-        if ($form->isValid()) {
-            /** @var AmbassadorMemberFormType $formData */
-            $formData = $form->getData();
-            $id = $formData->ambassador;
-
-            $bandRepository = $this->get('rockparade.band_repository');
-            $band = $bandRepository->findOneById($id);
-
-            if (!$band) {
-                $response = $this->createEntityNotFoundResponse(Band::class, $id);
-            } else {
-                $newUserLogin = $form->get('login')->getData();
-                $newUser = $this->get('rockparade.user_repository')->findOneByLogin($newUserLogin);
-
-                if (!$newUser) {
-                    $response = $this->createEntityNotFoundResponse(User::class, $newUserLogin);
-                } else {
-                    $bandMemberRepository = $this->get('rockparade.band_member_repository');
-                    $shortDescription = (string) $form->get('short_description')->getData();
-                    $description = (string) $form->get('description')->getData();
-                    $bandMember = $bandMemberRepository->getOrCreateByAmbassadorAndUser(
-                        $band,
-                        $newUser,
-                        $shortDescription,
-                        $description
-                    );
-
-                    $band->addMember($bandMember);
-                    $bandRepository->flush();
-
-                    $response = new EmptyApiResponse(Response::HTTP_OK);
-                }
-            }
-        } else {
-            $response = new ApiValidationError($form);
-        }
+        $apiResponseFactory = $this->get('rockparade.api_response_factory');
+        $response = $apiResponseFactory->createResponse(
+            $this->createApiOperation($request),
+            $form,
+            $this->getUser()
+        );
 
         return $this->respond($response);
     }

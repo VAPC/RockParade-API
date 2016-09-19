@@ -134,7 +134,7 @@ class OrganizerController extends RestController
      *     section="Organizer",
      *     requirements={
      *         {
-     *             "name"="organizer",
+     *             "name"="ambassador",
      *             "dataType"="string",
      *             "requirement"="true",
      *             "description"="organizer id"
@@ -161,7 +161,7 @@ class OrganizerController extends RestController
      *     statusCodes={
      *         201="Member was added to organization",
      *         400="Validation error",
-     *         403="Organizer or User was not found",
+     *         404="Organizer or User was not found",
      *     }
      * )
      */
