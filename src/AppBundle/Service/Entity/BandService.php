@@ -40,11 +40,6 @@ class BandService extends EntityService
         $this->userRepository = $userRepository;
     }
 
-    public function processFormAndCreateBand(FormInterface $form, User $creator): FormInterface
-    {
-        return $this->createOrUpdateBand($form, $creator);
-    }
-
     public function processFormAndUpdateBand(FormInterface $form, Band $band, User $creator): FormInterface
     {
         return $this->createOrUpdateBand($form, $creator, $band);
