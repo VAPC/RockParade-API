@@ -4,11 +4,5 @@ php:
   - '7.0'
   - '7.1'
 
-env:
-  - SYMFONY_VERSION="3.*" DB=mysql
-  - SYMFONY_VERSION="3.*" DB=postgresql
-  - SYMFONY_VERSION="dev-master" DB=mysql
-
 install:
-   - composer require symfony/framework-bundle:${SYMFONY_VERSION}
    - composer install
