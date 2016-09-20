@@ -34,6 +34,5 @@ Last actual documentation is available at http://rockparade.creora.ru/api. You c
 Contribution
 ============
 1. Take issue from [task tracker board](http://redmine.rockparade.creora.ru).
-2. Create new branch with conventional name: **t-IssueNumber-feature_description** 
-(please use underscore in description part of branch name)
-3. When work is done, create pull request from your branch to master.
+2. Fork repository on github.
+3. When work is done, create pull request from your master branch to this repository master branch.
