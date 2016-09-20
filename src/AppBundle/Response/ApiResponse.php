@@ -16,9 +16,4 @@ class ApiResponse extends AbstractApiResponse
         $this->data = $data;
         $this->httpCode = $httpCode;
     }
-
-    public function getData()
-    {
-        return $this->data;
-    }
 }

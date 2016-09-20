@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
+use AppBundle\Entity\Image;
 use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Entity\Repository\ImageRepository;
 use AppBundle\Form\Event\LinksCollectionFormType;
@@ -272,6 +273,7 @@ class EventController extends RestController
         /** @var EventRepository $eventRepository */
         $eventRepository = $this->get('rockparade.event_repository');
         $event = $eventRepository->findOneById($id);
+        $entityService = $this->get('rockparade.entity_service');
 
         if ($event) {
             $image = $event->getImageWithName($imageName);
@@ -280,11 +282,10 @@ class EventController extends RestController
             if ($image) {
                 $response = $apiResponseFactory->createImageResponse($image);
             } else {
-                $response = $apiResponseFactory->createNotFoundResponse();
+                $response = $entityService->createEntityNotFoundResponse(Image::class, $imageName);
             }
         } else {
-            $eventService = $this->get('rockparade.event');
-            $response = $eventService->createEventNotFoundErrorResult($id);
+            $response = $entityService->createEntityNotFoundResponse(Event::class, $id);
         }
 
         return $this->respond($response);
@@ -315,6 +316,7 @@ class EventController extends RestController
         /** @var ImageRepository $imageRepository */
         $imageRepository = $this->get('rockparade.image_repository');
         $event = $eventRepository->findOneById($id);
+        $entityService = $this->get('rockparade.entity_service');
 
         if ($event) {
             if ($this->getUser()->getLogin() !== $event->getCreator()->getLogin()) {
@@ -327,13 +329,11 @@ class EventController extends RestController
                     $eventRepository->flush();
                     $response = new EmptyApiResponse(Response::HTTP_OK);
                 } else {
-                    $apiResponseFactory = $this->get('rockparade.api_response_factory');
-                    $response = $apiResponseFactory->createNotFoundResponse();
+                    $response = $entityService->createEntityNotFoundResponse(Image::class, $imageId);
                 }
             }
         } else {
-            $eventService = $this->get('rockparade.event');
-            $response = $eventService->createEventNotFoundErrorResult($id);
+            $response = $entityService->createEntityNotFoundResponse(Event::class, $id);
         }
 
         return $this->respond($response);

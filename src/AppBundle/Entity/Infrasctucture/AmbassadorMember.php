@@ -13,8 +13,6 @@ use JMS\Serializer\Annotation as Serializer;
 abstract class AmbassadorMember
 {
 
-    use GetUserLoginTrait;
-
     /**
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
@@ -64,5 +62,10 @@ abstract class AmbassadorMember
     public function setDescription(string $description)
     {
         $this->description = $description;
+    }
+
+    public function getUserLogin(): string
+    {
+        return $this->user->getLogin();
     }
 }

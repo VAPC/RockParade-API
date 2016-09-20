@@ -5,7 +5,6 @@ namespace AppBundle\Response;
 use AppBundle\Entity\Image;
 use AppBundle\Entity\User;
 use AppBundle\Enum\ApiOperation;
-use AppBundle\Exception\MethodNotImplemented;
 use AppBundle\Exception\UnsupportedApiOperation;
 use AppBundle\Exception\UnsupportedTypeException;
 use AppBundle\Form\AbstractFormType;
@@ -14,7 +13,6 @@ use AppBundle\Service\Entity\EntityService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Intl\Exception\MethodNotImplementedException;
 use Symfony\Component\Routing\Router;
 
 /**
@@ -73,22 +71,13 @@ class ApiResponseFactory
      * @deprecated
      * @throws UnsupportedTypeException
      */
-    public function createImageResponse($responseData): FileResponse
+    public function createImageResponse(Image $responseData): FileResponse
     {
-        if ($responseData instanceof Image) {
-            $imagesBasePath = $this->filePath . '/images/';
-            $imagePath = $imagesBasePath . $responseData->getName();
-            $response = new FileResponse($imagePath);
-        } else {
-            throw new UnsupportedTypeException();
-        }
+        $imagesBasePath = $this->filePath . '/images/';
+        $imagePath = $imagesBasePath . $responseData->getName();
+        $response = new FileResponse($imagePath);
 
         return $response;
-    }
-
-    public function createNotFoundResponse(): ApiError
-    {
-        return new ApiError('Resource was not found.', Response::HTTP_NOT_FOUND);
     }
 
     private function processCreation(

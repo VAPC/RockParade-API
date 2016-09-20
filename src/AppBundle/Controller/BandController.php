@@ -15,7 +15,6 @@ use AppBundle\Response\Infrastructure\AbstractApiResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Response\ApiError;
-use AppBundle\Response\ApiResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

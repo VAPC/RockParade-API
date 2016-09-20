@@ -2,7 +2,6 @@
 
 namespace AppBundle\Service\Ambassador;
 
-use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
 use AppBundle\Entity\Infrasctucture\Ambassador;
 use AppBundle\Entity\Infrasctucture\AmbassadorMemberRepository;
