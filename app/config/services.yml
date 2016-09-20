@@ -119,7 +119,6 @@ services:
     rockparade.event_listener.serializer:
         class: AppBundle\EventListener\SerializerListener
         arguments: ['@rockparade.extractor']
-        scope: request
         tags:
             - { name: jms_serializer.subscribing_handler }
 
