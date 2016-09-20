@@ -2,9 +2,7 @@
 
 namespace AppBundle\Entity\Infrasctucture;
 
-use AppBundle\Form\AbstractFormType;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Intl\Exception\MethodNotImplementedException;
 
 /**
  * @author Vehsamrak
