@@ -49,17 +49,12 @@ class EntityService
     public function createEntityByFormData(AbstractFormType $formType, User $creator, string $entityClass)
     {
         $service = $this->getServiceByEntity($entityClass);
-
-        if (!$service instanceof EntityCreatorInterface) {
-            throw new MethodNotImplemented(__METHOD__);
-        }
-
-        $entity = $service->createEntityByFormData($formType, $creator, $entityClass);
+        $entity = $service->createEntityByFormData($formType, $creator);
 
         return $entity;
     }
 
-    private function getServiceByEntity(string $entityClass)
+    private function getServiceByEntity(string $entityClass): EntityCreatorInterface
     {
         $entityClass = new \ReflectionClass($entityClass);
 
