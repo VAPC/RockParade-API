@@ -17,9 +17,13 @@ class OrganizerControllerTest extends FunctionalTester
     const ORGANIZER_DESCRIPTION_FIRST = 'Organizer description.';
     const USER_CREATOR_LOGIN = 'first';
     const USER_SECOND_LOGIN = 'second';
-    const ORGANIZER_MEMBER_SHORT_DESCRIPTION = 'second short description';
+    const USER_THIRD_LOGIN = 'third';
     const ORGANIZER_NAME_SECOND = 'first organizer name';
     const ORGANIZER_DESCRIPTION_SECOND = 'first organizer description';
+    const ORGANIZER_MEMBER_FIRST_SHORT_DESCRIPTION = 'first short description';
+    const ORGANIZER_MEMBER_SECOND_SHORT_DESCRIPTION = 'second short description';
+    const ORGANIZER_MEMBER_THIRD_SHORT_DESCRIPTION = 'third short description';
+    const ORGANIZER_MEMBER_THIRD_DESCRIPTION = 'third description';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -114,6 +118,37 @@ class OrganizerControllerTest extends FunctionalTester
     }
 
     /** @test */
+    public function createAction_POSTOrganizerRequestWithMembersData_organizerCreatedWithMembers()
+    {
+        $parameters = [
+            'name'        => self::ORGANIZER_NAME_SECOND,
+            'description' => self::ORGANIZER_DESCRIPTION_SECOND,
+            'members'     => [
+                [
+                    'login'             => self::USER_SECOND_LOGIN,
+                    'short_description' => self::ORGANIZER_MEMBER_SECOND_SHORT_DESCRIPTION,
+                ],
+                [
+                    'login'             => self::USER_THIRD_LOGIN,
+                    'short_description' => self::ORGANIZER_MEMBER_THIRD_SHORT_DESCRIPTION,
+                    'description'       => self::ORGANIZER_MEMBER_THIRD_DESCRIPTION,
+                ],
+            ],
+        ];
+
+        $this->sendPostRequest('/organizer', $parameters);
+        $this->assertEquals(201, $this->getResponseCode());
+
+        $this->sendGetRequest($this->getResponseLocation());
+        $contentsData = $this->getResponseContents()['data'];
+        $this->assertEquals(self::USER_CREATOR_LOGIN, $contentsData['members'][0]['login']);
+        $this->assertEquals(self::USER_SECOND_LOGIN, $contentsData['members'][1]['login']);
+        $this->assertEquals(self::USER_THIRD_LOGIN, $contentsData['members'][2]['login']);
+        $this->assertEquals(self::ORGANIZER_MEMBER_THIRD_SHORT_DESCRIPTION, $contentsData['members'][2]['short_description']);
+        $this->assertEquals(self::ORGANIZER_MEMBER_THIRD_DESCRIPTION, $contentsData['members'][2]['description']);
+    }
+
+    /** @test */
     public function createMemberAction_POSTOrganizerIdMembersEmptyRequest_validationError()
     {
         $this->sendPostRequest(sprintf('/organizer/members', self::ORGANIZER_ID_FIRST));
@@ -131,7 +166,7 @@ class OrganizerControllerTest extends FunctionalTester
         $parameters = [
             'ambassador'        => self::ORGANIZER_ID_FIRST,
             'login'             => self::USER_SECOND_LOGIN,
-            'short_description' => self::ORGANIZER_MEMBER_SHORT_DESCRIPTION,
+            'short_description' => self::ORGANIZER_MEMBER_FIRST_SHORT_DESCRIPTION,
         ];
 
         $this->sendPostRequest(sprintf('/organizer/members', self::ORGANIZER_ID_FIRST), $parameters);

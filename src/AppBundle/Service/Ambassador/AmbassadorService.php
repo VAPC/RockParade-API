@@ -84,22 +84,20 @@ class AmbassadorService implements EntityCreatorInterface
         $creatorMember = $this->bandService->createAmbassadorMemberFromCreator($ambassador, $creator);
         $ambassador->addMember($creatorMember);
 
-        if ($ambassador instanceof Band) {
-            foreach ($ambassadorMemberLogins as $memberData) {
-                $memberLogin = $memberData['login'];
-                $memberShortDescription = $memberData['short_description'];
-                $memberDescription = $memberData['description'] ?? '';
+        foreach ($ambassadorMemberLogins as $memberData) {
+            $memberLogin = $memberData['login'];
+            $memberShortDescription = $memberData['short_description'];
+            $memberDescription = $memberData['description'] ?? '';
 
-                /** @var BandMember $member */
-                $member = $this->getOrCreateMemberByAmbassadorAndUserLogin(
-                    $ambassador,
-                    $memberLogin,
-                    $memberShortDescription,
-                    $memberDescription
-                );
+            /** @var BandMember $member */
+            $member = $this->getOrCreateMemberByAmbassadorAndUserLogin(
+                $ambassador,
+                $memberLogin,
+                $memberShortDescription,
+                $memberDescription
+            );
 
-                $ambassador->addMember($member);
-            }
+            $ambassador->addMember($member);
         }
 
         return $ambassador;
