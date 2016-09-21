@@ -1,7 +1,7 @@
 RockParade
 ==========
 
-[![Build Status](https://scrutinizer-ci.com/g/VAPC/RockParade-API/badges/build.png?b=master)](https://scrutinizer-ci.com/g/VAPC/RockParade-API/build-status/master)
+[![Build Status](https://travis-ci.org/VAPC/RockParade-API.svg?branch=master)](https://travis-ci.org/VAPC/RockParade-API)
 [![Code Coverage](https://scrutinizer-ci.com/g/VAPC/RockParade-API/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/VAPC/RockParade-API/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VAPC/RockParade-API/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VAPC/RockParade-API/?branch=master)
 
