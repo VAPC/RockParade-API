@@ -26,10 +26,15 @@ Requirements
 How to run server
 =================
 1. Run MySQL server.
-2. Run composer install. Enter database credentials.
-3. Clone this repository and follow to its directory.
+2. Clone this repository and follow to its directory.
+3. Run `composer install`. Enter database credentials.
 3. Run symfony server: `php bin/console server:run`.
 4. Server will be available on [http://localhost:8000](http://localhost:8000).
+
+How to run tests
+================
+1. Go to project directory and run `composer install`.
+2. Run tests `vendor/bin/phpunit tests`
 
 API documentation
 =================
