@@ -7,7 +7,7 @@ RockParade
 
 Test coverage
 ========
-![Test coverage grapth](https://codecov.io/gh/VAPC/RockParade-API/branch/master/graphs/icicle.svg "Test coverage grapth")
+![Test coverage grapth](https://codecov.io/gh/VAPC/RockParade-API/branch/master/graphs/tree.svg "Test coverage graph")
 
 Conversation
 ============
