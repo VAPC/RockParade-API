@@ -5,8 +5,11 @@ RockParade
 [![Coverage](https://codecov.io/gh/VAPC/RockParade-API/branch/master/graph/badge.svg)](https://codecov.io/gh/VAPC/RockParade-API)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VAPC/RockParade-API/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VAPC/RockParade-API/?branch=master)
 
-Test coverage
-========
+Test coverage (interactive)
+===========================
+
+Click on graph, and it will opens separately. You can click any rectangle to see code coverage of represented class.
+
 ![Test coverage grapth](https://codecov.io/gh/VAPC/RockParade-API/branch/master/graphs/tree.svg "Test coverage graph")
 
 Conversation
