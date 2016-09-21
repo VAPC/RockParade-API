@@ -1,14 +1,11 @@
 language: php
 
-sudo: required
-
 php:
     - '7.0'
     - '7.1'
 
 install:
     - composer install
-    - sudo pip install git+https://github.com/codecov/codecov-python@master#egg=codecov
 
 script:
     - phpunit --coverage-clover=coverage.xml
