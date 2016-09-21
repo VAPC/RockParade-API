@@ -2,8 +2,12 @@ RockParade
 ==========
 
 [![Build Status](https://travis-ci.org/VAPC/RockParade-API.svg?branch=master)](https://travis-ci.org/VAPC/RockParade-API)
-[![Code Coverage](https://scrutinizer-ci.com/g/VAPC/RockParade-API/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/VAPC/RockParade-API/?branch=master)
+[![Coverage](https://codecov.io/gh/VAPC/RockParade-API/branch/master/graph/badge.svg)](https://codecov.io/gh/VAPC/RockParade-API)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VAPC/RockParade-API/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VAPC/RockParade-API/?branch=master)
+
+Test coverage
+========
+![Test coverage grapth](https://codecov.io/gh/VAPC/RockParade-API/branch/master/graphs/icicle.svg "Test coverage grapth")
 
 Conversation
 ============
