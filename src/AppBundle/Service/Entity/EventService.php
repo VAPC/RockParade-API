@@ -57,7 +57,13 @@ class EventService extends EntityService
         /** @var EventFormType $createEventDTO */
         $createEventDTO = $form->getData();
         $eventDate = new \DateTime($createEventDTO->date);
-        $newEvent = new Event($createEventDTO->name, $creator, $eventDate, $createEventDTO->description);
+        $newEvent = new Event(
+            $createEventDTO->name,
+            $creator,
+            $eventDate,
+            $createEventDTO->description,
+            $createEventDTO->place
+        );
 
         $this->eventRepository->persist($newEvent);
 

@@ -26,6 +26,7 @@ class EventExtractor extends AbstractExtractor
                 'date'        => $entity->getDate(),
                 'name'        => $entity->getName(),
                 'description' => $entity->getDescription(),
+                'place'       => $entity->getPlace(),
                 'creator'     => $entity->getCreatorLogin(),
                 'images'      => $this->getImages($entity),
                 'links'       => $this->getLinks($entity),

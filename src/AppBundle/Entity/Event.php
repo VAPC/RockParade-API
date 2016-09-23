@@ -45,6 +45,12 @@ class Event
     private $description;
 
     /**
+     * @var string
+     * @ORM\Column(name="place", type="text")
+     */
+    private $place;
+
+    /**
      * @var User
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="events")
      * @ORM\JoinColumn(name="creator", referencedColumnName="login")
@@ -76,6 +82,7 @@ class Event
         User $creator,
         \DateTime $date,
         string $description,
+        string $place,
         HashGenerator $hashGenerator = null
     )
     {
@@ -83,6 +90,7 @@ class Event
         $this->creator = $creator;
         $this->date = $date;
         $this->description = $description;
+        $this->place = $place;
         $this->id = $hashGenerator ? $hashGenerator::generate() : HashGenerator::generate();
         $this->images = new ArrayCollection();
         $this->links = new ArrayCollection();
@@ -121,6 +129,11 @@ class Event
     public function setDescription(string $description)
     {
         $this->description = $description;
+    }
+
+    public function getPlace(): string
+    {
+        return $this->place;
     }
 
     public function getCreator(): User

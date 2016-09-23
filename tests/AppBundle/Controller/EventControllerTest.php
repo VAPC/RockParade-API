@@ -81,6 +81,7 @@ class EventControllerTest extends FunctionalTester
         $this->assertEquals($createEventData['name'], $responseData['name']);
         $this->assertEquals($createEventData['date'], $responseData['date']);
         $this->assertEquals($createEventData['description'], $responseData['description']);
+        $this->assertEquals($createEventData['place'], $responseData['place']);
         $this->assertEquals(self::USER_LOGIN_EXECUTOR, $responseData['creator']);
     }
 

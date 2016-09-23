@@ -22,7 +22,7 @@ class EventFixture implements FixtureInterface
         $image = new Image('test-image.png');
         $firstLink = new Link('http://rockparade.ru');
 
-        $firstEvent = new Event('Test Event', $user, new \DateTime('2187-03-03 10:10'), 'Great event, please come!');
+        $firstEvent = new Event('Test Event', $user, new \DateTime('2187-03-03 10:10'), 'Great event, please come!', 'best place');
         $firstEvent->addImage($image);
         $firstEvent->addLink($firstLink);
 
@@ -30,7 +30,7 @@ class EventFixture implements FixtureInterface
             $image,
             $firstLink,
             $firstEvent,
-            new Event('Second Test Event', $user, new \DateTime('1969-03-03 10:10'), 'Woodstocky old event!'),
+            new Event('Second Test Event', $user, new \DateTime('1969-03-03 10:10'), 'Woodstocky old event!', 'Woodstock'),
         ];
 
         foreach ($entities as $entity) {
