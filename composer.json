@@ -55,8 +55,7 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget",
             "AppBundle\\Command\\Composer\\ComposerScripter::createDatabase",
-            "AppBundle\\Command\\Composer\\ComposerScripter::updateDatabaseSchema",
-            "AppBundle\\Command\\Composer\\ComposerScripter::loadFixtures"
+            "AppBundle\\Command\\Composer\\ComposerScripter::updateDatabaseSchema"
         ],
         "post-update-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
