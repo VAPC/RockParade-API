@@ -89,10 +89,12 @@ class EventService extends EntityService
             /** @var \DateTime $eventDate */
             $eventDate = new \DateTime($form->get('date')->getData());
             $eventDescription = $form->get('description')->getData();
+            $eventPlace = $form->get('place')->getData();
 
             $event->setName($eventName);
             $event->setDate($eventDate);
             $event->setDescription($eventDescription);
+            $event->setPlace($eventPlace);
 
             try {
                 $this->eventRepository->flush();

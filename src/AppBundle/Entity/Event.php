@@ -136,6 +136,11 @@ class Event
         return $this->place;
     }
 
+    public function setPlace(string $place)
+    {
+        $this->place = $place;
+    }
+
     public function getCreator(): User
     {
         return $this->creator;
