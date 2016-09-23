@@ -27,6 +27,7 @@ class EventControllerTest extends FunctionalTester
     const URL_DESCRIPTION_FIRST = 'url description';
     const VALID_URL_SECOND = 'http://second.net';
     const URL_DESCRIPTION_SECOND = 'description second';
+    const EVENT_PLACE_FIRST = 'First event place';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -51,6 +52,7 @@ class EventControllerTest extends FunctionalTester
         $this->assertContains('Parameter is mandatory: name.', $errors);
         $this->assertContains('Parameter is mandatory: date (yyyy-MM-dd HH:mm).', $errors);
         $this->assertContains('Parameter is mandatory: description.', $errors);
+        $this->assertContains('Parameter is mandatory: place.', $errors);
     }
 
     /** @test */
@@ -60,6 +62,7 @@ class EventControllerTest extends FunctionalTester
             'name'        => self::EVENT_NAME_FIRST,
             'date'        => self::EVENT_DATE_FIRST,
             'description' => self::EVENT_DESCRIPTION_FIRST,
+            'place'       => self::EVENT_PLACE_FIRST,
         ];
 
         $this->sendPostRequest('/event', $createEventData);
@@ -100,6 +103,7 @@ class EventControllerTest extends FunctionalTester
             'name'        => self::EVENT_NAME_SECOND,
             'date'        => self::EVENT_DATE_FIRST,
             'description' => self::EVENT_DESCRIPTION_FIRST,
+            'place'       => self::EVENT_PLACE_FIRST,
         ];
 
         $this->sendPutRequest(sprintf('/event/%s', $existingEventId), $parameters);

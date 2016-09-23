@@ -30,6 +30,12 @@ class EventFormType extends AbstractFormType
      */
     public $description;
 
+    /**
+     * @var string
+     * @Assert\NotBlank(message="Parameter is mandatory: place.")
+     */
+    public $place;
+
     public function getEntityClassName(): string
     {
         return Event::class;

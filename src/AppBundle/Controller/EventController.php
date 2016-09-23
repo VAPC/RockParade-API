@@ -18,11 +18,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilder;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -131,6 +126,12 @@ class EventController extends RestController
      *             "requirement"="true",
      *             "description"="event description"
      *         },
+     *         {
+     *             "name"="place",
+     *             "dataType"="text",
+     *             "requirement"="true",
+     *             "description"="event place"
+     *         },
      *     },
      *     statusCodes={
      *         201="New event was created. Link to new resource in header 'Location'",
@@ -171,6 +172,12 @@ class EventController extends RestController
      *             "dataType"="string",
      *             "requirement"="true",
      *             "description"="event description"
+     *         },
+     *         {
+     *             "name"="place",
+     *             "dataType"="text",
+     *             "requirement"="true",
+     *             "description"="event place"
      *         },
      *     },
      *     statusCodes={
