@@ -1,14 +1,17 @@
 <?php
 
-namespace AppBundle\Entity\DTO;
+namespace AppBundle\Form\Event;
 
+use AppBundle\Entity\Event;
+use AppBundle\Form\AbstractFormType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @author Vehsamrak
  */
-class CreateEventDTO
+class EventFormType extends AbstractFormType
 {
+
     /**
      * @var string
      * @Assert\NotBlank(message="Parameter is mandatory: name.")
@@ -26,4 +29,9 @@ class CreateEventDTO
      * @Assert\NotBlank(message="Parameter is mandatory: description.")
      */
     public $description;
+
+    public function getEntityClassName(): string
+    {
+        return Event::class;
+    }
 }

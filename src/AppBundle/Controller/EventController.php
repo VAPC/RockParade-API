@@ -3,11 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Controller\Infrastructure\RestController;
-use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Image;
 use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Entity\Repository\ImageRepository;
+use AppBundle\Form\Event\EventFormType;
 use AppBundle\Form\Event\LinksCollectionFormType;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiValidationError;
@@ -414,27 +414,9 @@ class EventController extends RestController
         return $this->respond($response);
     }
 
-    private function createEventCreationForm(): FormInterface
-    {
-        /** @var FormBuilder $formBuilder */
-        $formBuilder = $this->createFormBuilder(new CreateEventDTO());
-        $formBuilder->add('name', TextType::class);
-        $formBuilder->add(
-            'date',
-            DateType::class,
-            [
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd HH:mm',
-            ]
-        );
-        $formBuilder->add('description', TextareaType::class);
-
-        return $formBuilder->getForm();
-    }
-
     private function createOrUpdateEvent(Request $request, string $id = null): AbstractApiResponse
     {
-        $form = $this->createEventCreationForm();
+        $form = $this->createForm(EventFormType::class);
         $this->processForm($request, $form);
 
         if ($form->isValid()) {

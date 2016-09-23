@@ -2,14 +2,14 @@
 
 namespace AppBundle\Service\Entity;
 
-use AppBundle\Entity\DTO\CreateEventDTO;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Link;
 use AppBundle\Entity\Repository\EventRepository;
 use AppBundle\Entity\Repository\LinkRepository;
 use AppBundle\Entity\User;
 use AppBundle\Exception\UnsupportedTypeException;
-use AppBundle\Form\Event\LinksCollectionDTO;
+use AppBundle\Form\Event\EventFormType;
+use AppBundle\Form\Event\LinksCollectionFormType;
 use AppBundle\Response\ApiError;
 use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
@@ -54,10 +54,10 @@ class EventService extends EntityService
 
     public function createEventByForm(FormInterface $form, User $creator): AbstractApiResponse
     {
-        /** @var CreateEventDTO $createEventDTO */
+        /** @var EventFormType $createEventDTO */
         $createEventDTO = $form->getData();
-
-        $newEvent = new Event($createEventDTO->name, $creator, $createEventDTO->date, $createEventDTO->description);
+        $eventDate = new \DateTime($createEventDTO->date);
+        $newEvent = new Event($createEventDTO->name, $creator, $eventDate, $createEventDTO->description);
 
         $this->eventRepository->persist($newEvent);
 
@@ -81,7 +81,7 @@ class EventService extends EntityService
         } else {
             $eventName = $form->get('name')->getData();
             /** @var \DateTime $eventDate */
-            $eventDate = $form->get('date')->getData();
+            $eventDate = new \DateTime($form->get('date')->getData());
             $eventDescription = $form->get('description')->getData();
 
             $event->setName($eventName);
@@ -158,7 +158,7 @@ class EventService extends EntityService
         if ($event) {
             if ($this->executorIsCreator($executor, $event)) {
 
-                /** @var LinksCollectionDTO $linksCollectionDTO */
+                /** @var LinksCollectionFormType $linksCollectionDTO */
                 $linksCollectionDTO = $form->getData();
 
                 foreach ($linksCollectionDTO->links as $linkData) {
