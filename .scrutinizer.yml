@@ -6,6 +6,8 @@ build:
 checks:
   php: true
 
+tests: false
+
 filter:
   excluded_paths:
     - "app/*"
