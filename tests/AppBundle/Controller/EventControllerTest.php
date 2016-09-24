@@ -44,7 +44,7 @@ class EventControllerTest extends FunctionalTester
     /** @test */
     public function createAction_POSTEventEmptyRequest_validationErrors()
     {
-        $this->sendPostRequest('/event', []);
+        $this->sendPostRequest('/api/event', []);
         $responseCode = $this->getResponseCode();
         $errors = $this->getResponseContents()['errors'];
 
@@ -65,7 +65,7 @@ class EventControllerTest extends FunctionalTester
             'place'       => self::EVENT_PLACE_FIRST,
         ];
 
-        $this->sendPostRequest('/event', $createEventData);
+        $this->sendPostRequest('/api/event', $createEventData);
         $responseCode = $this->getResponseCode();
         $errors = $this->getResponseContents()['errors'] ?? [];
 
@@ -88,7 +88,7 @@ class EventControllerTest extends FunctionalTester
     /** @test */
     public function editAction_PUTEventIdEmptyParameters_validationErrors()
     {
-        $this->sendPutRequest('/event/1', []);
+        $this->sendPutRequest('/api/event/1', []);
         $responseCode = $this->getResponseCode();
 
         $this->assertEquals(400, $responseCode);
@@ -107,14 +107,14 @@ class EventControllerTest extends FunctionalTester
             'place'       => self::EVENT_PLACE_FIRST,
         ];
 
-        $this->sendPutRequest(sprintf('/event/%s', $existingEventId), $parameters);
+        $this->sendPutRequest(sprintf('/api/event/%s', $existingEventId), $parameters);
         $responseCode = $this->getResponseCode();
         $errors = $this->getResponseContents()['errors'] ?? [];
 
         $this->assertEquals(204, $responseCode);
         $this->assertEmpty($errors);
 
-        $this->sendGetRequest(sprintf('/event/%s', $existingEventId));
+        $this->sendGetRequest(sprintf('/api/event/%s', $existingEventId));
         $responseCode = $this->getResponseCode();
         $responseData = $this->getResponseContents()['data'];
 
@@ -131,10 +131,10 @@ class EventControllerTest extends FunctionalTester
         $existingEvent = $this->getFixtureEvent();
         $existingEventId = $existingEvent->getId();
 
-        $this->sendDeleteRequest(sprintf('/event/%s', $existingEventId));
+        $this->sendDeleteRequest(sprintf('/api/event/%s', $existingEventId));
         $this->assertEquals(204, $this->getResponseCode());
 
-        $this->sendGetRequest(sprintf('/event/%s', $existingEventId));
+        $this->sendGetRequest(sprintf('/api/event/%s', $existingEventId));
         $contents = $this->getResponseContents();
         $this->assertContains(sprintf('Event "%s" was not found.', $existingEventId), $contents['errors']);
     }
@@ -142,7 +142,7 @@ class EventControllerTest extends FunctionalTester
     /** @test */
     public function listAction_GETRequest_listOfEventsReturned()
     {
-        $this->sendGetRequest('/events');
+        $this->sendGetRequest('/api/events');
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $this->getResponseCode());
@@ -155,7 +155,7 @@ class EventControllerTest extends FunctionalTester
     /** @test */
     public function findLikeAction_GETEventsLikeTestRequest_listOfFoundEventsReturned()
     {
-        $this->sendGetRequest('/events/like/test');
+        $this->sendGetRequest('/api/events/like/test');
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $this->getResponseCode());
@@ -166,7 +166,7 @@ class EventControllerTest extends FunctionalTester
     /** @test */
     public function findLikeAction_GETEventsLikeFoobarRequest_noEventsReturned()
     {
-        $this->sendGetRequest('/events/like/foobar');
+        $this->sendGetRequest('/api/events/like/foobar');
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $this->getResponseCode());
@@ -177,7 +177,7 @@ class EventControllerTest extends FunctionalTester
     /** @test */
     public function findLikeAction_GETEventsLikeTestLimit1Request_oneEventReturned()
     {
-        $this->sendGetRequest('/events/like/test/1');
+        $this->sendGetRequest('/api/events/like/test/1');
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $this->getResponseCode());
@@ -190,7 +190,7 @@ class EventControllerTest extends FunctionalTester
     /** @test */
     public function findLikeAction_GETEventsLikeTestLimitNullOffset1Request_oneEventReturned()
     {
-        $this->sendGetRequest('/events/like/test/null/1');
+        $this->sendGetRequest('/api/events/like/test/null/1');
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $this->getResponseCode());
@@ -203,7 +203,7 @@ class EventControllerTest extends FunctionalTester
     /** @test */
     public function addImageAction_POSTEventIdImageRequestWithUnexistingEventId_validationErrorReturned()
     {
-        $this->sendPostRequest('/event/-1/image');
+        $this->sendPostRequest('/api/event/-1/image');
         $contents = $this->getResponseContents();
 
         $this->assertEquals(404, $this->getResponseCode());
@@ -215,7 +215,7 @@ class EventControllerTest extends FunctionalTester
     {
         $event = $this->getFixtureEvent();
 
-        $this->sendPostRequest(sprintf('/event/%s/image', $event->getId()));
+        $this->sendPostRequest(sprintf('/api/event/%s/image', $event->getId()));
         $contents = $this->getResponseContents();
 
         $this->assertEquals(400, $this->getResponseCode());
@@ -227,7 +227,7 @@ class EventControllerTest extends FunctionalTester
     {
         $event = $this->getFixtureEvent();
         $eventId = $event->getId();
-        $requestString = sprintf('/event/%s/image', $eventId);
+        $requestString = sprintf('/api/event/%s/image', $eventId);
         $parameters = [
             'image' => [
                 'name'    => self::IMAGE_NAME,
@@ -261,7 +261,7 @@ class EventControllerTest extends FunctionalTester
         $this->givenExecutorNotEventCreator();
         $event = $this->getFixtureEvent();
         $eventId = $event->getId();
-        $requestString = sprintf('/event/%s/image', $eventId);
+        $requestString = sprintf('/api/event/%s/image', $eventId);
         $parameters = [
             'image' => [
                 'name'    => self::IMAGE_NAME,
@@ -284,7 +284,7 @@ class EventControllerTest extends FunctionalTester
         /** @var Image $eventImage */
         $eventImage = $event->getImages()->first();
         $eventImageName = $eventImage->getName();
-        $requestString = sprintf('/event/%s/image/%s', $eventId, $eventImageName);
+        $requestString = sprintf('/api/event/%s/image/%s', $eventId, $eventImageName);
 
         $this->sendDeleteRequest($requestString);
 
@@ -300,7 +300,7 @@ class EventControllerTest extends FunctionalTester
         /** @var Image $eventImage */
         $eventImage = $event->getImages()->first();
         $eventImageName = $eventImage->getName();
-        $requestString = sprintf('/event/%s/image/%s', $eventId, $eventImageName);
+        $requestString = sprintf('/api/event/%s/image/%s', $eventId, $eventImageName);
 
         $this->sendDeleteRequest($requestString);
         $contents = $this->getResponseContents();
@@ -314,7 +314,7 @@ class EventControllerTest extends FunctionalTester
     {
         $event = $this->getFixtureEvent();
         $eventId = $event->getId();
-        $requestString = sprintf('/event/%s', $eventId);
+        $requestString = sprintf('/api/event/%s', $eventId);
 
         $this->sendGetRequest($requestString);
         $contents = $this->getResponseContents();
@@ -329,7 +329,7 @@ class EventControllerTest extends FunctionalTester
     public function addLinksAction_POSTEventIdLinksAndEmptyRequest_validationError()
     {
         $eventId = $this->getFixtureEventId();
-        $requestString = sprintf('/event/%s/links', $eventId);
+        $requestString = sprintf('/api/event/%s/links', $eventId);
 
         $this->sendPostRequest($requestString);
         $contents = $this->getResponseContents();
@@ -343,7 +343,7 @@ class EventControllerTest extends FunctionalTester
     {
         $this->givenExecutorNotEventCreator();
         $eventId = $this->getFixtureEventId();
-        $requestString = sprintf('/event/%s/links', $eventId);
+        $requestString = sprintf('/api/event/%s/links', $eventId);
         $parameters = [
             'links' => [
                 [
@@ -363,7 +363,7 @@ class EventControllerTest extends FunctionalTester
     public function addLinksAction_POSTEventIdLinksAndRequestWithLinkUrlAndExecutorIsEventCreator_linksSavedToDatabase()
     {
         $eventId = $this->getFixtureEventId();
-        $requestString = sprintf('/event/%s/links', $eventId);
+        $requestString = sprintf('/api/event/%s/links', $eventId);
         $parameters = [
             'links' => [
                 [
@@ -396,7 +396,7 @@ class EventControllerTest extends FunctionalTester
         $event = $this->getFixtureEvent();
         /** @var Link $link */
         $link = $event->getLinks()->first();
-        $requestString = sprintf('/event/%s/link/%s', $event->getId(), $link->getId());
+        $requestString = sprintf('/api/event/%s/link/%s', $event->getId(), $link->getId());
 
         $this->sendDeleteRequest($requestString);
         $contents = $this->getResponseContents();
@@ -412,9 +412,9 @@ class EventControllerTest extends FunctionalTester
         /** @var Link $link */
         $link = $event->getLinks()->first();
         $eventId = $event->getId();
-        $requestString = sprintf('/event/%s/link/%s', $eventId, $link->getId());
+        $requestString = sprintf('/api/event/%s/link/%s', $eventId, $link->getId());
 
-        $this->sendGetRequest(sprintf('/event/%s', $eventId));
+        $this->sendGetRequest(sprintf('/api/event/%s', $eventId));
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $this->getResponseCode());
@@ -424,7 +424,7 @@ class EventControllerTest extends FunctionalTester
 
         $this->assertEquals(200, $this->getResponseCode());
 
-        $this->sendGetRequest(sprintf('/event/%s', $eventId));
+        $this->sendGetRequest(sprintf('/api/event/%s', $eventId));
         $contents = $this->getResponseContents();
 
         $this->assertEquals(200, $this->getResponseCode());

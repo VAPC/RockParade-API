@@ -1,6 +1,7 @@
-app:
+rockparade:
     resource: "@AppBundle/Controller/"
     type:     annotation
+    prefix:   /api
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
-    prefix:   /api
+    prefix:   /api/documentation

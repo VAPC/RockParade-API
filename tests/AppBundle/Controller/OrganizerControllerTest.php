@@ -42,7 +42,7 @@ class OrganizerControllerTest extends FunctionalTester
     {
         $this->followRedirects();
 
-        $this->sendGetRequest('/organizers');
+        $this->sendGetRequest('/api/organizers');
         $listBandsResponseCode = $this->getResponseCode();
         $contents = $this->getResponseContents();
 
@@ -55,7 +55,7 @@ class OrganizerControllerTest extends FunctionalTester
     /** @test */
     public function viewAction_GETOrganizerUnexistingIdRequest_organizerResource()
     {
-        $this->sendGetRequest('/organizer/unexisting');
+        $this->sendGetRequest('/api/organizer/unexisting');
         $contents = $this->getResponseContents();
 
         $this->assertEquals(404, $this->getResponseCode());
@@ -65,7 +65,7 @@ class OrganizerControllerTest extends FunctionalTester
     /** @test */
     public function viewAction_GETOrganizerExistingIdRequest_organizerResource()
     {
-        $this->sendGetRequest(sprintf('/organizer/%s', self::ORGANIZER_ID_FIRST));
+        $this->sendGetRequest(sprintf('/api/organizer/%s', self::ORGANIZER_ID_FIRST));
         $contentsData = $this->getResponseContents()['data'];
 
         $this->assertEquals(200, $this->getResponseCode());
@@ -76,7 +76,7 @@ class OrganizerControllerTest extends FunctionalTester
     /** @test */
     public function createAction_POSTOrganizerRequestWithEmptyData_validationErrors()
     {
-        $this->sendPostRequest('/organizer');
+        $this->sendPostRequest('/api/organizer');
 
         $this->assertEquals(400, $this->getResponseCode());
     }
@@ -88,7 +88,7 @@ class OrganizerControllerTest extends FunctionalTester
             'name' => self::ORGANIZER_NAME_FIRST,
         ];
 
-        $this->sendPostRequest('/organizer', $parameters);
+        $this->sendPostRequest('/api/organizer', $parameters);
         $errors = $this->getResponseContents()['errors'];
 
         $this->assertEquals(400, $this->getResponseCode());
@@ -103,7 +103,7 @@ class OrganizerControllerTest extends FunctionalTester
             'description' => self::ORGANIZER_DESCRIPTION_SECOND,
         ];
 
-        $this->sendPostRequest('/organizer', $parameters);
+        $this->sendPostRequest('/api/organizer', $parameters);
         $responseLocation = $this->getResponseLocation();
         $this->assertEquals(201, $this->getResponseCode());
         $this->assertRegExp('/^http.?:\/\/.*organizer\/..*$/', $responseLocation);
@@ -136,7 +136,7 @@ class OrganizerControllerTest extends FunctionalTester
             ],
         ];
 
-        $this->sendPostRequest('/organizer', $parameters);
+        $this->sendPostRequest('/api/organizer', $parameters);
         $this->assertEquals(201, $this->getResponseCode());
 
         $this->sendGetRequest($this->getResponseLocation());
@@ -151,7 +151,7 @@ class OrganizerControllerTest extends FunctionalTester
     /** @test */
     public function createMemberAction_POSTOrganizerIdMembersEmptyRequest_validationError()
     {
-        $this->sendPostRequest(sprintf('/organizer/members', self::ORGANIZER_ID_FIRST));
+        $this->sendPostRequest(sprintf('/api/organizer/members', self::ORGANIZER_ID_FIRST));
         $errors = $this->getResponseContents()['errors'];
 
         $this->assertEquals(400, $this->getResponseCode());
@@ -169,7 +169,7 @@ class OrganizerControllerTest extends FunctionalTester
             'short_description' => self::ORGANIZER_MEMBER_FIRST_SHORT_DESCRIPTION,
         ];
 
-        $this->sendPostRequest(sprintf('/organizer/members', self::ORGANIZER_ID_FIRST), $parameters);
+        $this->sendPostRequest(sprintf('/api/organizer/members', self::ORGANIZER_ID_FIRST), $parameters);
 
         $this->assertEquals(201, $this->getResponseCode());
     }
