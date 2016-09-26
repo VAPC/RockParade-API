@@ -78,14 +78,17 @@ class LoginController extends RestController
         $userService = $this->get('rockparade.user');
         $user = $userService->createOrUpdateUser($vkontakteToken);
 
-        $response = new ApiResponse(
-            [
-                TokenAuthenticator::TOKEN_HEADER => $user->getToken(),
-            ],
-            Response::HTTP_OK
+        $clientUrl = sprintf(
+            '%s/#/login/vk/callback?%s',
+            $request->getSchemeAndHttpHost(),
+            http_build_query(
+                [
+                    'token' => $user->getToken(),
+                ]
+            )
         );
 
-        return $this->respond($response);
+        return new \Symfony\Component\HttpFoundation\RedirectResponse($clientUrl);
     }
 
     /**
