@@ -13,12 +13,11 @@ cache:
     - ${HOME}/.composer/cache
 
 script:
-    - true
-#    - phpunit --coverage-clover=coverage.xml
+    - phpunit --coverage-clover=coverage.xml
 
 
 after_success:
-#    - bash <(curl -s https://codecov.io/bash)
+    - bash <(curl -s https://codecov.io/bash)
 
     # ssh key prepare
     - mv app/integration/deploy.key.gpg .
@@ -44,5 +43,5 @@ after_success:
     # Clear Symfony cache
     - ssh deploy /home/deployer/git/rockparade/bin/console ca:cl -e prod
 
-#notifications:
-#    slack: rockparade:IxVBagXvchm7GgEPukl71YTu
+notifications:
+    slack: rockparade:IxVBagXvchm7GgEPukl71YTu
