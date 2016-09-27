@@ -28,5 +28,5 @@ after_success:
     - git remote add deploy ssh://deploy/~/git/rockparade
     - git push deploy master
 
-notifications:
-    slack: rockparade:IxVBagXvchm7GgEPukl71YTu
+#notifications:
+#    slack: rockparade:IxVBagXvchm7GgEPukl71YTu
