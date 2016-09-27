@@ -12,3 +12,21 @@ script:
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
+
+    - mv app/integration/deploy.key.gpg .
+    - gpg --yes --batch --passphrase=${DEPLOY_KEY_PASSWORD} deploy.key.gpg
+    - chmod 600 deploy.key
+    - mv deploy.key ~/.ssh
+    - ssh-keyscan ${DEPLOY_SSH_HOST} >> ~/.ssh/known_hosts
+
+    - echo "Host deploy" >> ~/.ssh/config
+    - echo "  HostName ${DEPLOY_SSH_HOST}" >> ~/.ssh/config
+    - echo "  User ${DEPLOY_SSH_USER}" >> ~/.ssh/config
+    - echo "  IdentityFile ~/.ssh/deploy.key" >> ~/.ssh/config
+
+    - git config --global push.default simple
+    - git remote add deploy ssh://deploy/~/git/rockparade
+    - git push deploy master
+
+notifications:
+    slack: rockparade:IxVBagXvchm7GgEPukl71YTu
