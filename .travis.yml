@@ -12,7 +12,8 @@ cache:
   directories:
     - ${HOME}/.composer/cache
 
-#script:
+script:
+    - true
 #    - phpunit --coverage-clover=coverage.xml
 
 
@@ -39,6 +40,9 @@ after_success:
 
     # Installing dependencies
     - ssh deploy /home/deployer/composer.phar install -d /home/deployer/git/rockparade
+
+    # Clear Symfony cache
+    - ssh deploy /home/deployer/git/rockparade/bin/console ca:cl -e prod
 
 #notifications:
 #    slack: rockparade:IxVBagXvchm7GgEPukl71YTu
