@@ -18,16 +18,15 @@ class BandFixture implements FixtureInterface
     /** {@inheritDoc} */
     public function load(ObjectManager $manager)
     {
-        $user = new User('bander', 'Bander', 1, '');
-        $band = new Band('Banders', $user, 'Band description.', new ForegoneHashGenerator('Banders'));
-        $bandMember = new BandMember($band, $user, 'bass guitar', 'loremus unitus');
+        $creator = $manager->getRepository(User::class)->findOneByLogin('first');
+        $band = new Band('Banders', $creator, 'Band description.', new ForegoneHashGenerator('Banders'));
+        $bandMember = new BandMember($band, $creator, 'bass guitar', 'loremus unitus');
 
         $entities = [
-            $user,
             new User('derban', 'Derban', 2, ''),
             new User('rocker', 'Hard Rocker', 3, ''),
             $band,
-            new Band('Existing Band', $user, 'Second Band description.'),
+            new Band('Existing Band', $creator, 'Second Band description.'),
             $bandMember,
         ];
 

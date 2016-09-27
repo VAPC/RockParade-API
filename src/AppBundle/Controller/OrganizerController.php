@@ -2,10 +2,11 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Controller\Infrastructure\RestController;
+use AppBundle\Controller\Infrastructure\AmbassadorController;
 use AppBundle\Entity\Organizer;
 use AppBundle\Form\Ambassador\OrganizerFormType;
 use AppBundle\Form\Ambassador\OrganizerMemberFormType;
+use AppBundle\Service\Ambassador\AmbassadorType;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @author Vehsamrak
  * @Route("organizer")
  */
-class OrganizerController extends RestController
+class OrganizerController extends AmbassadorController
 {
 
     /**
@@ -177,5 +178,25 @@ class OrganizerController extends RestController
         );
 
         return $this->respond($response);
+    }
+
+    /**
+     * Delete member from organizer
+     * @Route("/{id}/member/{userLogin}", name="organizer_member_delete")
+     * @Method("DELETE")
+     * @Security("has_role('ROLE_USER')")
+     * @ApiDoc(
+     *     section="Organizer",
+     *     statusCodes={
+     *         204="Member was deleted from organizer",
+     *         404="Organizer or user was not found",
+     *     }
+     * )
+     * @param string $id band id
+     * @param string $userLogin member login
+     */
+    public function deleteMemberAction(string $id, string $userLogin): Response
+    {
+        return parent::deleteMember(new AmbassadorType(Organizer::class), $this->getUser(), $id, $userLogin);
     }
 }

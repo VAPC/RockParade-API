@@ -204,7 +204,7 @@ class BandControllerTest extends FunctionalTester
     /** @test */
     public function deleteMemberAction_DELETEBandNameMemberLoginRequest_bandMemberDeleted()
     {
-        $this->sendDeleteRequest('/api/band/Banders/member/bander');
+        $this->sendDeleteRequest('/api/band/Banders/member/first');
         $this->assertEquals(204, $this->getResponseCode());
 
         $this->sendGetRequest('/api/band/Banders');
@@ -218,14 +218,14 @@ class BandControllerTest extends FunctionalTester
         $this->followRedirects();
         $parameters = [
             'ambassador'        => self::BAND_NAME_FIRST,
-            'login'             => self::BAND_USER_LOGIN_FIRST,
+            'login'             => self::USER_LOGIN_EXECUTOR,
             'short_description' => self::BAND_MEMBER_SECOND_SHORT_DESCRIPTION,
             'description'       => self::BAND_MEMBER_SECOND_DESCRIPTION,
         ];
 
         $this->sendGetRequest('/api/band/Banders');
         $contents = $this->getResponseContents();
-        $this->assertEquals(self::BAND_USER_LOGIN_FIRST, $contents['data']['members'][0]['login']);
+        $this->assertEquals(self::USER_LOGIN_EXECUTOR, $contents['data']['members'][0]['login']);
         $this->assertEquals(self::BAND_MEMBER_FIRST_DESCRIPTION, $contents['data']['members'][0]['description']);
         $this->assertEquals(self::BAND_MEMBER_FIRST_SHORT_DESCRIPTION, $contents['data']['members'][0]['short_description']);
 
@@ -234,7 +234,7 @@ class BandControllerTest extends FunctionalTester
 
         $this->sendGetRequest('/api/band/Banders');
         $contents = $this->getResponseContents();
-        $this->assertEquals(self::BAND_USER_LOGIN_FIRST, $contents['data']['members'][0]['login']);
+        $this->assertEquals(self::USER_LOGIN_EXECUTOR, $contents['data']['members'][0]['login']);
         $this->assertEquals(self::BAND_MEMBER_SECOND_DESCRIPTION, $contents['data']['members'][0]['description']);
         $this->assertEquals(self::BAND_MEMBER_SECOND_SHORT_DESCRIPTION, $contents['data']['members'][0]['short_description']);
     }

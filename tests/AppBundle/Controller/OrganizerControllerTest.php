@@ -24,6 +24,7 @@ class OrganizerControllerTest extends FunctionalTester
     const ORGANIZER_MEMBER_SECOND_SHORT_DESCRIPTION = 'second short description';
     const ORGANIZER_MEMBER_THIRD_SHORT_DESCRIPTION = 'third short description';
     const ORGANIZER_MEMBER_THIRD_DESCRIPTION = 'third description';
+    const ORGANIZER_ID_UNEXISTING = 'unexisting';
 
     /** {@inheritDoc} */
     protected function setUp()
@@ -151,7 +152,7 @@ class OrganizerControllerTest extends FunctionalTester
     /** @test */
     public function createMemberAction_POSTOrganizerIdMembersEmptyRequest_validationError()
     {
-        $this->sendPostRequest(sprintf('/api/organizer/members', self::ORGANIZER_ID_FIRST));
+        $this->sendPostRequest('/api/organizer/members');
         $errors = $this->getResponseContents()['errors'];
 
         $this->assertEquals(400, $this->getResponseCode());
@@ -169,8 +170,44 @@ class OrganizerControllerTest extends FunctionalTester
             'short_description' => self::ORGANIZER_MEMBER_FIRST_SHORT_DESCRIPTION,
         ];
 
-        $this->sendPostRequest(sprintf('/api/organizer/members', self::ORGANIZER_ID_FIRST), $parameters);
+        $this->sendPostRequest('/api/organizer/members', $parameters);
 
         $this->assertEquals(201, $this->getResponseCode());
+    }
+
+    /** @test */
+    public function deleteMemberAction_DELETEOrganizerIdMemberIdRequestWithNotExistingOrganizer_validationError()
+    {
+        $this->sendDeleteRequest(
+            sprintf('/api/organizer/%s/member/%s', self::ORGANIZER_ID_UNEXISTING, self::USER_CREATOR_LOGIN)
+        );
+
+        $this->assertEquals(404, $this->getResponseCode());
+    }
+
+    /** @test */
+    public function deleteMemberAction_DELETEOrganizerIdMemberIdRequestWithExistingOrganizerAndMember_memberDeleted()
+    {
+        $this->sendDeleteRequest(
+            sprintf('/api/organizer/%s/member/%s', self::ORGANIZER_ID_FIRST, self::USER_CREATOR_LOGIN)
+        );
+
+        $this->assertEquals(204, $this->getResponseCode());
+    }
+
+    /** @test */
+    public function deleteMemberAction_DELETEOrganizerIdMemberIdRequestAndExecutorIsNotCreator_accessDenied()
+    {
+        $this->givenExecutorNotEventCreator();
+        $this->sendDeleteRequest(
+            sprintf('/api/organizer/%s/member/%s', self::ORGANIZER_ID_FIRST, self::USER_CREATOR_LOGIN)
+        );
+
+        $this->assertEquals(403, $this->getResponseCode());
+    }
+
+    private function givenExecutorNotEventCreator()
+    {
+        $this->setAuthToken(UserFixture::TEST_TOKEN_SECOND);
     }
 }

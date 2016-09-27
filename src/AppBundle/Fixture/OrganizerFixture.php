@@ -3,6 +3,7 @@
 namespace AppBundle\Fixture;
 
 use AppBundle\Entity\Organizer;
+use AppBundle\Entity\OrganizerMember;
 use AppBundle\Entity\User;
 use AppBundle\Service\ForegoneHashGenerator;
 use Doctrine\Common\DataFixtures\FixtureInterface;
@@ -17,15 +18,16 @@ class OrganizerFixture implements FixtureInterface
     /** {@inheritDoc} */
     public function load(ObjectManager $manager)
     {
-        $user = new User('bander', 'Bander', 1, '');
-        $organizer = new Organizer('Org', $user, 'Organizer description.', new ForegoneHashGenerator('test-organizer'));
+        $creator = $manager->getRepository(User::class)->findOneByLogin('first');
+        $organizer = new Organizer('Org', $creator, 'Organizer description.', new ForegoneHashGenerator('test-organizer'));
+        $organizerMember = new OrganizerMember($organizer, $creator);
 
         $entities = [
-            $user,
             new User('derban', 'Derban', 2, ''),
             new User('rocker', 'Hard Rocker', 3, ''),
             $organizer,
-            new Organizer('Existing Organizer', $user, 'Second Organizer description.'),
+            $organizerMember,
+            new Organizer('Existing Organizer', $creator, 'Second Organizer description.'),
         ];
 
         foreach ($entities as $entity) {

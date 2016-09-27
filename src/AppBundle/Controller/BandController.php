@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Controller\Infrastructure\AmbassadorController;
 use AppBundle\Entity\Band;
 use AppBundle\Entity\BandMember;
 use AppBundle\Entity\Repository\BandRepository;
@@ -12,8 +13,8 @@ use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
 use AppBundle\Response\Infrastructure\AbstractApiResponse;
+use AppBundle\Service\Ambassador\AmbassadorType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use AppBundle\Controller\Infrastructure\RestController;
 use AppBundle\Response\ApiError;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -26,7 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @author Vehsamrak
  * @Route("band")
  */
-class BandController extends RestController
+class BandController extends AmbassadorController
 {
 
     /**
@@ -230,35 +231,9 @@ class BandController extends RestController
      * @param string $id band id
      * @param string $userLogin member login
      */
-    public function deleteMemberAction(string $id, string $userLogin)
+    public function deleteMemberAction(string $id, string $userLogin): Response
     {
-        $bandRepository = $this->get('rockparade.band_repository');
-        $band = $bandRepository->findOneById($id);
-
-        if ($band) {
-            $userRepository = $this->get('rockparade.user_repository');
-            $user = $userRepository->findOneByLogin($userLogin);
-
-            if ($user) {
-                $bandMemberRepository = $this->get('rockparade.band_member_repository');
-                $bandMember = $bandMemberRepository->findByAmbassadorAndUser($band, $user);
-
-                if ($bandMember) {
-                    $band->removeMember($bandMember);
-                    $bandRepository->flush();
-
-                    $response = new EmptyApiResponse(Response::HTTP_NO_CONTENT);
-                } else {
-                    $response = $this->createEntityNotFoundResponse(BandMember::class, $userLogin);
-                }
-            } else {
-                $response = $this->createEntityNotFoundResponse(User::class, $userLogin);
-            }
-        } else {
-            $response = $this->createEntityNotFoundResponse(Band::class, $id);
-        }
-
-        return $this->respond($response);
+        return parent::deleteMember(new AmbassadorType(Band::class), $this->getUser(), $id, $userLogin);
     }
     
     /**

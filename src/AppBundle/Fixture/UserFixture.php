@@ -23,6 +23,7 @@ class UserFixture implements FixtureInterface
             new User('first', 'Mr. First', 4, '', null, 'The very first test user.', self::TEST_TOKEN),
             new User('second', 'Mr. Second', 5, '', null, 'The second test user.', self::TEST_TOKEN_SECOND),
             new User('third', 'Mr. Third', 6, '', null, 'The third test user.', self::TEST_TOKEN_THIRD),
+            new User('bander', 'Bander', 7, ''),
         ];
 
         foreach ($users as $user) {
