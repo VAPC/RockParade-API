@@ -42,10 +42,6 @@ services:
         class: AppBundle\Entity\Repository\BandMemberRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ['AppBundle\Entity\BandMember']
-    rockparade.role_repository:
-        class: AppBundle\Entity\Repository\RoleRepository
-        factory: ['@doctrine.orm.entity_manager', 'getRepository']
-        arguments: ['AppBundle\Entity\Role']
     rockparade.event_repository:
         class: AppBundle\Entity\Repository\EventRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
