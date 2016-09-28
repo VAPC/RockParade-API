@@ -34,7 +34,6 @@ after_success:
     - git config --global push.default simple
     - git remote add deploy ssh://deploy/~/git/rockparade
     - git fetch --unshallow || true
-    - git fetch origin "+refs/heads/*:refs/remotes/origin/*"
     - git push deploy master
 
     # Installing dependencies
