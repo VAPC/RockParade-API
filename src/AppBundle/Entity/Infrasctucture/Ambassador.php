@@ -115,6 +115,11 @@ abstract class Ambassador
         return $this->creator;
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function getMemberClass(): string
     {
         if ($this instanceof Band) {

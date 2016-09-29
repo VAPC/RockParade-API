@@ -9,6 +9,7 @@ use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\User;
 use AppBundle\Form\Ambassador\BandFormType;
 use AppBundle\Form\Ambassador\BandMemberFormType;
+use AppBundle\Form\Ambassador\UpdateBandFormType;
 use AppBundle\Response\ApiValidationError;
 use AppBundle\Response\CreatedApiResponse;
 use AppBundle\Response\EmptyApiResponse;
@@ -134,7 +135,7 @@ class BandController extends AmbassadorController
      *             "description"="band description"
      *         },
      *         {
-     *             "name"="users",
+     *             "name"="members",
      *             "dataType"="array",
      *             "requirement"="true",
      *             "description"="logins of band musicians"
@@ -155,7 +156,7 @@ class BandController extends AmbassadorController
         /** @var Band $band */
         $band = $bandRepository->findOneById($id);
 
-        $form = $this->createForm(BandFormType::class);
+        $form = $this->createForm(UpdateBandFormType::class);
         $this->processForm($request, $form);
         $form = $this->get('rockparade.band')->processFormAndUpdateBand($form, $band, $this->getUser());
 

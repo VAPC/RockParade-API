@@ -65,18 +65,10 @@ class BandService extends EntityService
             return null;
         }
 
-        $membersData = $form->get(self::ATTRIBUTE_MEMBERS)->getData();
-
-        if (!$membersData) {
-            $form->addError(new FormError(sprintf('Parameter "%s" is mandatory.', self::ATTRIBUTE_MEMBERS)));
-
-            return null;
-        }
-
         $bandNewName = $form->get('name')->getData();
         $description = $form->get('description')->getData();
 
-        if ($this->bandRepository->findOneByName($bandNewName)) {
+        if ($band && $band->getName() !== $bandNewName && $this->bandRepository->findOneByName($bandNewName)) {
             $form->addError(new FormError(sprintf('Band with name "%s" already exists.', $bandNewName)));
 
             return null;
@@ -90,11 +82,13 @@ class BandService extends EntityService
             $this->bandRepository->persist($band);
         }
 
-        $bandMembers = $this->getBandMembersFromForm($band, $form);
-        $bandMembers[] = $this->createAmbassadorMemberFromCreator($band, $creator);
+        if ($form->get(self::ATTRIBUTE_MEMBERS)->getData()) {
+            $bandMembers = $this->getBandMembersFromForm($band, $form);
+            $bandMembers[] = $this->createAmbassadorMemberFromCreator($band, $creator);
 
-        foreach ($bandMembers as $bandMember) {
-            $band->addMember($bandMember);
+            foreach ($bandMembers as $bandMember) {
+                $band->addMember($bandMember);
+            }
         }
     }
 
