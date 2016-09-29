@@ -160,7 +160,6 @@ class BandControllerTest extends FunctionalTester
     /** @test */
     public function editAction_PUTBandNameRequestWithSameNameAndDifferentDescription_bandUpdatedWithNewParameters()
     {
-        $this->givenExecutorNotEventCreator();
         $parameters = [
             'name'        => self::BAND_NAME_FIRST,
             'description' => self::BAND_DESCRIPTION_FIRST_EDITED,
@@ -174,6 +173,20 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals(200, $this->getResponseCode());
         $this->assertEquals(self::BAND_NAME_FIRST, $contents['data']['name']);
         $this->assertEquals(self::BAND_DESCRIPTION_FIRST_EDITED, $contents['data']['description']);
+    }
+
+    /** @test */
+    public function editAction_PUTBandNameRequestAndExecutorIsNotCreator_accessDenied()
+    {
+        $this->givenExecutorNotEventCreator();
+        $parameters = [
+            'name'        => self::BAND_NAME_FIRST,
+            'description' => self::BAND_DESCRIPTION_FIRST_EDITED,
+        ];
+
+        $this->sendPutRequest('/api/band/Banders', $parameters);
+
+        $this->assertEquals(403, $this->getResponseCode());
     }
 
     /** @test */

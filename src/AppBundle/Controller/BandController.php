@@ -155,12 +155,23 @@ class BandController extends AmbassadorController
         $bandRepository = $this->get('rockparade.band_repository');
         /** @var Band $band */
         $band = $bandRepository->findOneById($id);
+        /** @var User $executor */
+        $executor = $this->getUser();
 
-        $form = $this->createForm(UpdateBandFormType::class);
-        $this->processForm($request, $form);
-        $form = $this->get('rockparade.band')->processFormAndUpdateBand($form, $band, $this->getUser());
+        if (!$band) {
+        	return $this->createEntityNotFoundResponse(Band::class, $id);
+        }
 
-        return $this->respond($this->createResponseFromUpdateForm($form));
+        if ($band->getCreator()->getLogin() !== $executor->getLogin()) {
+            $response = new ApiError('Only ambassador creator can edit it.', Response::HTTP_FORBIDDEN);
+        } else {
+            $form = $this->createForm(UpdateBandFormType::class);
+            $this->processForm($request, $form);
+            $form = $this->get('rockparade.band')->processFormAndUpdateBand($form, $band, $this->getUser());
+            $response = $this->createResponseFromUpdateForm($form);
+        }
+
+        return $this->respond($response);
     }
 
     /**
