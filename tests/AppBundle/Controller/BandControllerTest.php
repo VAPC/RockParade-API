@@ -160,6 +160,7 @@ class BandControllerTest extends FunctionalTester
     /** @test */
     public function editAction_PUTBandNameRequestWithSameNameAndDifferentDescription_bandUpdatedWithNewParameters()
     {
+        $this->givenExecutorNotEventCreator();
         $parameters = [
             'name'        => self::BAND_NAME_FIRST,
             'description' => self::BAND_DESCRIPTION_FIRST_EDITED,
@@ -255,5 +256,10 @@ class BandControllerTest extends FunctionalTester
         $this->assertEquals(self::USER_LOGIN_EXECUTOR, $contents['data']['members'][0]['login']);
         $this->assertEquals(self::BAND_MEMBER_SECOND_DESCRIPTION, $contents['data']['members'][0]['description']);
         $this->assertEquals(self::BAND_MEMBER_SECOND_SHORT_DESCRIPTION, $contents['data']['members'][0]['short_description']);
+    }
+
+    private function givenExecutorNotEventCreator()
+    {
+        $this->setAuthToken(UserFixture::TEST_TOKEN_SECOND);
     }
 }

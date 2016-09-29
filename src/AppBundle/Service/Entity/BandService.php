@@ -10,6 +10,7 @@ use AppBundle\Entity\Repository\BandMemberRepository;
 use AppBundle\Entity\Repository\BandRepository;
 use AppBundle\Entity\Repository\UserRepository;
 use AppBundle\Entity\User;
+use AppBundle\Form\Ambassador\UpdateBandFormType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 
@@ -82,13 +83,18 @@ class BandService extends EntityService
             $this->bandRepository->persist($band);
         }
 
-        if ($form->get(self::ATTRIBUTE_MEMBERS)->getData()) {
-            $bandMembers = $this->getBandMembersFromForm($band, $form);
-            $bandMembers[] = $this->createAmbassadorMemberFromCreator($band, $creator);
+        $bandMembers = [];
 
-            foreach ($bandMembers as $bandMember) {
-                $band->addMember($bandMember);
-            }
+        if (!$form instanceof UpdateBandFormType) {
+            $bandMembers[] = $this->createAmbassadorMemberFromCreator($band, $creator);
+        }
+
+        if ($form->get(self::ATTRIBUTE_MEMBERS)->getData()) {
+            $bandMembers = array_merge($bandMembers, $this->getBandMembersFromForm($band, $form));
+        }
+
+        foreach ($bandMembers as $bandMember) {
+            $band->addMember($bandMember);
         }
     }
 
