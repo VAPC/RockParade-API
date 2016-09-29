@@ -75,17 +75,14 @@ class BandService extends EntityService
             return null;
         }
 
+        $bandMembers = [];
+
         if ($band) {
             $band->setName($bandNewName);
             $band->setDescription($description);
         } else {
             $band = new Band($bandNewName, $creator, $description);
             $this->bandRepository->persist($band);
-        }
-
-        $bandMembers = [];
-
-        if (!$form instanceof UpdateBandFormType) {
             $bandMembers[] = $this->createAmbassadorMemberFromCreator($band, $creator);
         }
 
