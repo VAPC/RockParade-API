@@ -11,7 +11,6 @@ class HashGenerator
     public static function generate(int $length = 8): string
     {
         $chunksNumber = ceil($length / 4);
-
         $hashString = '';
 
         while ($chunksNumber > 0) {
