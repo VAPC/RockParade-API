@@ -37,7 +37,7 @@ How to run server
 How to run tests
 ================
 1. Go to project directory and run `composer install`.
-2. Run tests `vendor/bin/phpunit tests`
+2. Run tests `vendor/bin/phpunit tests`.
 
 API documentation
 =================
